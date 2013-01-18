@@ -18,7 +18,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 <ivy-module version="1.0">
-  <info organisation="org.apache.sqoop" module="${name}-test">
+  <info organisation="com.mapr.sqoop" module="${name}-test">
     <license name="Apache 2.0"/>
     <ivyauthor name="Sqoop Team" url="http://sqoop.apache.org/" />
     <description>
@@ -40,11 +40,18 @@ under the License.
     <artifact conf="master"/>
   </publications>
   <dependencies>
-    <!-- Dependencies for Cloudera's Distribution for Hadoop -->
+   <dependency org="com.mapr.hadoop" name="hadoop-all" rev="${hadoop-all.version}"
+     conf="common->default">
+     <artifact name="hadoop-all" type="pom" ext="pom"/>
+   </dependency>
+   <dependency org="com.mapr.hadoop" name="hadoop-test" 
+     rev="${hadoop-test.version}" conf="common->default"/>
+
+    <!-- Dependencies for Cloudera's Distribution for Hadoop 
     <dependency org="com.cloudera.hadoop" name="hadoop-core"
       rev="${hadoop-core.cloudera.version}" conf="common->default"/>
     <dependency org="com.cloudera.hadoop" name="hadoop-test"
-      rev="${hadoop-core.cloudera.version}" conf="common->default"/>
+      rev="${hadoop-core.cloudera.version}" conf="common->default"/> -->
     <dependency org="junit" name="junit" rev="${junit.version}"
       conf="common->default"/>
     <dependency org="hsqldb" name="hsqldb" rev="${hsqldb.version}"

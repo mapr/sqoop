@@ -47,6 +47,7 @@ under the License.
   <property name="repo.dir" value="${user.home}/.m2/repository"/>
   <property name="maven2.pattern.ext"  value="${maven2.pattern}.[ext]"/>
   <property name="resolvers" value="default" override="false"/>
+  <include url="${user.home}/.ivy2/ivysettings-public.xml"/>
   <settings defaultResolver="${resolvers}"/>
 
   <resolvers>
@@ -66,6 +67,7 @@ under the License.
 
     <chain name="default" dual="true" checkmodified="true"
         changingPattern=".*SNAPSHOT">
+       <resolver ref="mapr-central"/>
       <resolver ref="apache-snapshot"/> 
       <resolver ref="cloudera-releases"/>
       <resolver ref="cloudera-staging"/> 
@@ -73,6 +75,7 @@ under the License.
     </chain>
 
     <chain name="internal" dual="true">
+       <resolver ref="mapr-central"/>
       <resolver ref="fs"/>
       <resolver ref="apache-snapshot"/> 
       <resolver ref="cloudera-staging"/> 
@@ -85,6 +88,6 @@ under the License.
 
   </resolvers>
   <modules>
-     <module organisation="org.apache.hadoop" name="hadoop-*" resolver="${resolvers}"/>
+     <module organisation="com.mapr.hadoop" name="hadoop-*" resolver="${resolvers}"/>
   </modules>
 </ivysettings>

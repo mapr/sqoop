@@ -20,7 +20,7 @@ under the License.
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-  <info organisation="com.cloudera.sqoop" module="${name}">
+  <info organisation="com.mapr.sqoop" module="${name}">
     <license name="Apache 2.0"/>
     <ivyauthor name="Sqoop Team" url="http://github.com/cloudera/sqoop" />
     <description>
@@ -110,9 +110,9 @@ under the License.
       rev="${hadoop.version}" conf="hadoop100test->default"/>
 
     <!-- Dependencies for Hadoop 0.20 -->
-    <dependency org="org.apache.hadoop" name="hadoop-core"
+    <dependency org="com.mapr.hadoop" name="hadoop-all"
       rev="${hadoop.version}" conf="hadoop20->default"/>
-    <dependency org="org.apache.hadoop" name="hadoop-test"
+    <dependency org="com.mapr.hadoop" name="hadoop-test"
       rev="${hadoop.version}" conf="hadoop20test->default"/>
 
     <!-- Common dependencies for Sqoop -->
@@ -154,7 +154,7 @@ under the License.
     <dependency org="commons-collections" name="commons-collections"
       rev="${commons-collections.version}" conf="releaseaudit->default"/>
 
-    <dependency org="org.apache.hbase" name="hbase"
+    <dependency org="com.mapr.hbase" name="hbase"
       rev="${hbase.version}" conf="hbase->default">
       <artifact name="hbase" type="jar"/>
       <artifact name="hbase" type="test-jar" ext="jar" m:classifier="tests"/>
@@ -164,6 +164,7 @@ under the License.
       <exclude org="org.apache.thrift" module="thrift"/>
       <exclude org="log4j" module="log4j"/>
       <exclude org="org.apache.hadoop" module="hadoop-core" />
+      <exclude org="com.mapr.hadoop" module="hadoop-all" />
       <exclude org="com.cloudera.cdh" module="zookeeper-ant" />
     </dependency>
 
