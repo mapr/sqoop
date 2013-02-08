@@ -31,6 +31,13 @@
     </classpath>
   </taskdef>
 
+  <!-- Allow override of MAVEN CENTRAL form command line for ivy purposes -->
+  <property environment="env" />
+  <condition property="forivy.MAVEN_CENTRAL" value="${env.MAVEN_CENTRAL}">
+    <isset property="env.MAVEN_CENTRAL" />
+  </condition>
+  <property name="forivy.MAVEN_CENTRAL" value="http://repo1.maven.org/maven2/" />
+
   <!-- Ivy library properties -->
   <property name="ivy.dir" location="${basedir}/ivy" />
   <loadproperties srcfile="${ivy.dir}/libraries.properties"/>
