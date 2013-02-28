@@ -58,10 +58,10 @@
   <if>
     <equals arg1="${hadoopversion}" arg2="20" />
     <then>
-      <property name="hadoop.version" value="0.20.2-2.1.2-SNAPSHOT" />
-      <property name="hbase.version" value="0.92.2-mapr-SNAPSHOT" />
+      <property name="hadoop.version" value="0.20.2-2.1.2" />
+      <property name="hbase.version" value="0.92.2-mapr" />
       <property name="zookeeper.version" value="3.3.6-cdh3u1" />
-      <property name="hadoop.version.full" value="0.20.2-2.1.2-SNAPSHOT" />
+      <property name="hadoop.version.full" value="0.20.2-2.1.2" />
     </then>
 
     <elseif>
@@ -108,7 +108,7 @@
   <property environment="env"/>
   <property name="name" value="sqoop" />
   <property name="Name" value="Sqoop" />
-  <property name="version" value="1.4.2-mapr-SNAPSHOT" />
+  <property name="version" value="1.4.2-mapr" />
 
   <!-- The last version released. -->
   <property name="oldversion" value="1.4.1-incubating" />
@@ -201,7 +201,7 @@
   <!--property name="mvn.repo" value="snapshots" /-->
   <property name="mvn.repo.id" value="mapr-snapshots" />
   <property name="mvn.deploy.url"
-      value="${env.MAPR_SNAPSHOTS_REPO}"/> 
+      value="${env.MAPR_RELEASES_REPO}"/> 
   <property name="sqoop.pom" value="${mvn.build.dir}/sqoop.pom" />
   <property name="sqooptest.pom" value="${mvn.build.dir}/sqoop-test.pom" />
 
