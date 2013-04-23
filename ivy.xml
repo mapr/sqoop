@@ -154,7 +154,7 @@ under the License.
     <dependency org="commons-collections" name="commons-collections"
       rev="${commons-collections.version}" conf="releaseaudit->default"/>
 
-    <dependency org="com.mapr.hbase" name="hbase"
+    <dependency org="org.apache.hbase" name="hbase"
       rev="${hbase.version}" conf="hbase->default">
       <artifact name="hbase" type="jar"/>
       <artifact name="hbase" type="test-jar" ext="jar" m:classifier="tests"/>
