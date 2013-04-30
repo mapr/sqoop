@@ -33,6 +33,9 @@ under the License.
   -->
   <property name="repo.maven.org" value="${forivy.MAVEN_CENTRAL}"
       override="false"/>
+  <property name="releases.mapr.com"
+    value="http://repository.mapr.com/maven/"
+      override="false"/>
   <property name="snapshot.apache.org"
       value="https://repository.apache.org/content/repositories/snapshots/"
       override="false"/>
@@ -50,6 +53,8 @@ under the License.
   <settings defaultResolver="${resolvers}"/>
 
   <resolvers>
+    <ibiblio name="mapr-releases" root="${releases.mapr.com}"
+        pattern="${maven2.pattern.ext}" m2compatible="true"/>
     <ibiblio name="maven2" root="${repo.maven.org}"
         pattern="${maven2.pattern.ext}" m2compatible="true"/>
     <ibiblio name="cloudera-releases" root="${releases.cloudera.com}"
@@ -66,6 +71,7 @@ under the License.
 
     <chain name="default" dual="true" checkmodified="true"
        changingPattern=".*SNAPSHOT">
+       <resolver ref="mapr-releases"/>
        <resolver ref="apache-snapshot"/> 
        <resolver ref="cloudera-releases"/>
        <resolver ref="cloudera-staging"/> 
@@ -85,6 +91,6 @@ under the License.
 
   </resolvers>
   <modules>
-     <module organisation="com.mapr.hadoop" name="hadoop-*" resolver="${resolvers}"/>
+     <module organisation="org.apache.hadoop" name="hadoop-*" resolver="${resolvers}"/>
   </modules>
 </ivysettings>

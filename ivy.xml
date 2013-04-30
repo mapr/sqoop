@@ -20,7 +20,7 @@ under the License.
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-  <info organisation="com.mapr.sqoop" module="${name}">
+  <info organisation="org.apache.sqoop" module="${name}">
     <license name="Apache 2.0"/>
     <ivyauthor name="Sqoop Team" url="http://github.com/cloudera/sqoop" />
     <description>
@@ -110,9 +110,9 @@ under the License.
       rev="${hadoop.version}" conf="hadoop100test->default"/>
 
     <!-- Dependencies for Hadoop 0.20 -->
-    <dependency org="com.mapr.hadoop" name="hadoop-all"
+    <dependency org="org.apache.hadoop" name="hadoop-core"
       rev="${hadoop.version}" conf="hadoop20->default"/>
-    <dependency org="com.mapr.hadoop" name="hadoop-test"
+    <dependency org="org.apache.hadoop" name="hadoop-test"
       rev="${hadoop.version}" conf="hadoop20test->default"/>
 
     <!-- Common dependencies for Sqoop -->
@@ -164,7 +164,6 @@ under the License.
       <exclude org="org.apache.thrift" module="thrift"/>
       <exclude org="log4j" module="log4j"/>
       <exclude org="org.apache.hadoop" module="hadoop-core" />
-      <exclude org="com.mapr.hadoop" module="hadoop-all" />
       <exclude org="com.cloudera.cdh" module="zookeeper-ant" />
     </dependency>
 
