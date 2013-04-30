@@ -20,7 +20,7 @@
   limitations under the License.
 -->
 
-<project name="sqoop" default="jar-all"
+<project name="sqoop" default="package-all"
     xmlns:artifact="urn:maven-artifact-ant"
     xmlns:ivy="antlib:org.apache.ivy.ant">
 
@@ -58,10 +58,10 @@
   <if>
     <equals arg1="${hadoopversion}" arg2="20" />
     <then>
-      <property name="hadoop.version" value="0.20.2-2.1.2" />
+      <property name="hadoop.version" value="1.0.3-mapr-2.1.2.1" />
       <property name="hbase.version" value="0.92.2-mapr" />
       <property name="zookeeper.version" value="3.3.6-cdh3u1" />
-      <property name="hadoop.version.full" value="0.20.2-2.1.2" />
+      <property name="hadoop.version.full" value="1.0.3-mapr-2.1.2.1" />
     </then>
 
     <elseif>
@@ -167,7 +167,7 @@
   <property name="relnotes.filename"
       location="${build.relnotes.dir}/sqoop-${version}.releasenotes.html" />
 
-  <property name="bin.artifact.name" value="${artifact.name}.bin__hadoop-${hadoop.version.full}" />
+  <property name="bin.artifact.name" value="${artifact.name}.hadoop-${hadoop.version.full}" />
   <property name="dist.dir" location="${build.dir}/${bin.artifact.name}" />
   <property name="tar.file" location="${build.dir}/${bin.artifact.name}.tar.gz" />
   <property name="build.docs.timestamp"
@@ -311,6 +311,11 @@
       <include name="**/*.jar" />
     </fileset>
   </path>
+
+
+  <target name="package-all"
+      depends="init,mvn-prep,jar-all,srcjars"
+      description="Building All Packages"/>
 
   <!-- "init" target used for setup purposes. -->
   <target name="init">
