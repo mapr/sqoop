@@ -75,8 +75,8 @@ under the License.
     <artifact conf="master"/>
   </publications>
   <dependencies>
-    <dependency org="com.mapr.hadoop" name="mapr-core" rev="${hadoop.version}">
-      <artifact name="mapr-core" type="jar"/>
+    <dependency org="com.mapr.hadoop" name="maprfs" rev="${hadoop.version}">
+      <artifact name="maprfs" type="jar"/>
     </dependency>
     <!-- Dependencies for Hadoop 2.0.0 -->
     <dependency org="org.apache.hadoop" name="hadoop-common"
