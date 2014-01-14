@@ -588,7 +588,7 @@ EOF
             fork="true"
             failonerror="true"
             output="${build.dir}/tools-list">
-          <jvmarg value="-Dhadoop.security.log.file=./build/security-audit.log" />
+          <jvmarg value="-verbose:class -Dhadoop.security.log.file=./build/security-audit.log" />
           <arg value="help" />
           <classpath refid="compile.classpath"/>
         </java>
