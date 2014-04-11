@@ -337,7 +337,7 @@ Get all the version metadata of Sqoop software in the server side.
     "date":"Wed Aug  7 13:31:36 PDT 2013",
     "user":"mengwei.ding",
     "url":"git:\/\/mding-MBP.local\/Users\/mengwei.ding\/Documents\/workspace\/sqoop2\/common",
-    "version":"2.0.0-SNAPSHOT"
+    "version":"2.0.0-mapr-SNAPSHOT"
   }
 
 /v1/connector/[cid] - [GET] - Get Connector
@@ -556,7 +556,7 @@ So far, the resource contains only explanations for fields of forms. For example
             "type":"CONNECTION"
           }
         ],
-        "version":"2.0.0-SNAPSHOT"
+        "version":"2.0.0-mapr-SNAPSHOT"
       }
     ]
   }
