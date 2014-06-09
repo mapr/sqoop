@@ -1,3 +1,57 @@
+1.99.4 (unreleased)
+
+  SUB-TASK
+
+    SQOOP-927: Sqoop2: Integration: Mapreduce specific tests should be running on MiniCluster
+
+    SQOOP-1153: Sqoop2: Integration: Add test for enabling and disabling connections and objects
+
+    SQOOP-1254: Sqoop2: Tool: Upgrade tool
+
+    SQOOP-1262: Sqoop2: Tool: Create user guide entry for the Tooling infrastructure
+
+  BUG
+
+    SQOOP-1218: Sqoop2: Upgrade Hadoop 2 to GA release 2.2.0
+
+    SQOOP-1247: Sqoop2: Distribution module is missing dependency on Tomcat module
+
+    SQOOP-1258: Sqoop2: FrameworkMetadataUpgrade can't handle new inputs
+
+    SQOOP-1263: Using CATALINA_HOME as CATALINA_BASE
+
+    SQOOP-1264: Sqoop2: Remove unnecessary cd command calls from sqoop.sh
+
+    SQOOP-1285: Sqoop2: ToolRunner is not exiting with proper exit value on error
+
+    SQOOP-1291: Sqoop2: Binary package do not have top level commands executable
+
+  IMPROVEMENT
+
+    SQOOP-773: Batch execution support for client commands
+
+    SQOOP-1189: Sqoop2: Ensure that clone methods will correctly copy over all values from all parents
+
+    SQOOP-1225: Sqoop 2 documentation for connector development
+
+    SQOOP-1144: Sqoop2: Add fixVersion to PreCommit branch detection
+
+    SQOOP-1290: Sqoop2: Kill Tomcat in case that Sqoop Server fails to load
+
+  NEW FEATURE
+
+    SQOOP-1232: Sqoop2: Provide tooling infrastructure for Sqoop2
+
+  TASK
+
+    SQOOP-1219: Sqoop2: Bump up Tomcat version to 6.0.37
+
+    SQOOP-1220: Sqoop2: Improve default catalina.properties file to work out of the box on both Hadoop 1 and 2
+
+    SQOOP-1266: Sqoop2: Introduce top level commands
+
+    SQOOP-1234: Sqoop2: Clean up comments in MSubmission class
+
 Release 1.99.3
 
   SUB-TASK
