@@ -20,9 +20,9 @@ http://sqoop.apache.org/
 Sqoop uses the Maven build system, and it can be compiled and built running the
 following commands:
 
-  mvn compile # Compile project
+  mvn install -Dhadoop.profile=100 -DskipTests # Compile project for MRv1
   mvn package # Build source artifact
-  mvn package -Pbinary # Build binary artifact
+  mvn package -Pbinary -Dhadoop.profile=100 -DskipTests # Build binary artifact for MRv1
 
 Sqoop is using Sphinx plugin to generate documentation that have higher memory
 requirements that might not fit into default maven configuration. You might need
