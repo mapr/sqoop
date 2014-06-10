@@ -1,4 +1,4 @@
-Release 1.99.3
+Release 1.99.3-mapr-1405
 
   SUB-TASK
 
@@ -50,7 +50,7 @@ Release 1.99.3
 
     SQOOP-1115: Sqoop2: Integration: Provide helper methods for synchronous job submission
 
-    SQOOP-1200: Sqoop2 1.99.3 Pom files version change on release branch
+    SQOOP-1200: Sqoop2 1.99.3-mapr-1405 Pom files version change on release branch
 
     SQOOP-1201: Sqoop2: Update docs to reflect correct version on the release branch
 
