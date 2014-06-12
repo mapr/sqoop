@@ -59,8 +59,8 @@
     <equals arg1="${hadoopversion}" arg2="20" />
     <then>
       <property name="hadoop.version" value="1.0.3-mapr-3.1.0" />
-      <property name="hbase.version" value="0.94.9-mapr" />
-      <property name="zookeeper.version" value="3.3.6" />
+      <property name="hbase.version" value="0.94.13-mapr-1401" />
+      <property name="zookeeper.version" value="3.4.5" />
       <property name="hadoop.version.full" value="1.0.3-mapr-3.1.0" />
       <property name="hcatalog.version" value="0.11.0" />
     </then>
@@ -69,8 +69,8 @@
       <equals arg1="${hadoopversion}" arg2="23" />
       <then>
         <property name="hadoop.version" value="0.23.1" />
-        <property name="hbase.version" value="0.92.0" />
-        <property name="zookeeper.version" value="3.4.2" />
+        <property name="hbase.version" value="0.94.13" />
+        <property name="zookeeper.version" value="3.4.5" />
         <property name="hadoop.version.full" value="0.23" />
         <property name="hcatalog.version" value="0.11.0" />
       </then>
@@ -112,7 +112,7 @@
   <property environment="env"/>
   <property name="name" value="sqoop" />
   <property name="Name" value="Sqoop" />
-  <property name="version" value="1.4.4-mapr-SNAPSHOT" />
+  <property name="version" value="1.4.4-mapr-1401" />
 
   <!-- The last version released. -->
   <property name="oldversion" value="1.4.3-mapr" />
@@ -206,7 +206,7 @@
   <!--property name="mvn.repo" value="snapshots" /-->
   <property name="mvn.repo.id" value="mapr-snapshots" />
   <property name="mvn.deploy.url"
-      value="${env.MAPR_SNAPSHOTS_REPO}"/> 
+      value="${env.MAPR_RELEASES_REPO}"/> 
   <property name="sqoop.pom" value="${mvn.build.dir}/sqoop.pom" />
   <property name="sqooptest.pom" value="${mvn.build.dir}/sqoop-test.pom" />
 
@@ -562,6 +562,8 @@ EOF
          the wrapper scripts to invoke each of these.
       -->
     <mkdir dir="${build.bin.dir}" />
+    <property name="exposedCompileClasspath" refid="compile.classpath"/>
+    <echo message="Running Sqoop with classpath: ${exposedCompileClasspath}"/>
     <if>
       <equals arg1="${windows}" arg2="true" />
       <then>
@@ -586,6 +588,7 @@ EOF
             fork="true"
             failonerror="true"
             output="${build.dir}/tools-list">
+          <jvmarg value="-verbose:class"/>
           <jvmarg value="-Dhadoop.security.log.file=./build/security-audit.log" />
           <arg value="help" />
           <classpath refid="compile.classpath"/>
