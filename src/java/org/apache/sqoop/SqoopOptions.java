@@ -23,6 +23,7 @@ import com.cloudera.sqoop.SqoopOptions.IncrementalMode;
 import com.cloudera.sqoop.SqoopOptions.UpdateMode;
 import java.io.File;
 import java.io.IOException;
+import java.lang.String;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,6 +95,8 @@ public class SqoopOptions implements Cloneable {
   // loadProperties() and writeProperties() methods. Then add command-line
   // arguments in the appropriate tools. The names of all command-line args
   // are stored as constants in BaseSqoopTool.
+
+  @StoredAsProperty("hadoop.job.history.user.location") private String hadoopJobHistoryUserLocation;
 
   @StoredAsProperty("verbose") private boolean verbose;
 
@@ -839,6 +842,7 @@ public class SqoopOptions implements Cloneable {
   }
 
   private void initDefaults(Configuration baseConfiguration) {
+    this.hadoopJobHistoryUserLocation = "none";
     // first, set the true defaults if nothing else happens.
     // default action is to run the full pipeline.
     this.hadoopMapRedHome = System.getenv("HADOOP_MAPRED_HOME");
@@ -2180,5 +2184,13 @@ public class SqoopOptions implements Cloneable {
 
   public void setCall(String theCall) {
     this.call = theCall;
+  }
+
+  public String getHadoopJobHistoryUserLocation() {
+     return hadoopJobHistoryUserLocation;
+  }
+
+  public void setHadoopJobHistoryUserLocation(String hadoopJobHistoryUserLocation) {
+    this.hadoopJobHistoryUserLocation = hadoopJobHistoryUserLocation;
   }
 }

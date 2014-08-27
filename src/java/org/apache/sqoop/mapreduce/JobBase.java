@@ -59,6 +59,7 @@ public class JobBase {
   protected final boolean isHCatJob;
 
   public static final String PROPERTY_VERBOSE = "sqoop.verbose";
+  public static final String PROPERTY_HADOOP_JOB_HISTORY_USER_LOCATION = "hadoop.job.history.user.location";
 
   public JobBase() {
     this(null);
@@ -340,5 +341,11 @@ public class JobBase {
 
     // So far, propagate only verbose flag
     configuration.setBoolean(PROPERTY_VERBOSE, options.getVerbose());
+
+    String[] location = configuration.getStrings(PROPERTY_HADOOP_JOB_HISTORY_USER_LOCATION);
+    if (location==null || location.length == 0){
+        configuration.setStrings(PROPERTY_HADOOP_JOB_HISTORY_USER_LOCATION, options.getHadoopJobHistoryUserLocation());
+        LOG.info("Setting default value for " + PROPERTY_HADOOP_JOB_HISTORY_USER_LOCATION + "=" + options.getHadoopJobHistoryUserLocation());
+    }
   }
 }
