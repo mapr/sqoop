@@ -19,18 +19,18 @@ package org.apache.sqoop.connector.jdbc;
 
 import junit.framework.TestCase;
 
-public class GenericJdbcExecutorTest extends TestCase {
+public class CommonJdbcExecutorTest extends TestCase {
   private final String table;
   private final String emptyTable;
-  private final GenericJdbcExecutor executor;
+  private final IBaseJdbcExecutor executor;
 
   private static final int START = -50;
   private static final int NUMBER_OF_ROWS = 974;
 
-  public GenericJdbcExecutorTest() {
+  public CommonJdbcExecutorTest() {
     table = getClass().getSimpleName().toUpperCase();
     emptyTable = table + "_EMPTY";
-    executor = new GenericJdbcExecutor(GenericJdbcTestConstants.DRIVER,
+    executor = new CommonJdbcExecutor(GenericJdbcTestConstants.DRIVER,
       GenericJdbcTestConstants.URL, null, null);
   }
 

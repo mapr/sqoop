@@ -43,11 +43,12 @@ public class GenericJdbcExportDestroyer extends Destroyer<ConnectionConfiguratio
 
   private void moveDataToDestinationTable(ConnectionConfiguration connectorConf,
     boolean success, String stageTableName, String tableName) {
-    GenericJdbcExecutor executor =
-      new GenericJdbcExecutor(connectorConf.connection.jdbcDriver,
-        connectorConf.connection.connectionString,
-        connectorConf.connection.username,
-        connectorConf.connection.password);
+
+      IBaseJdbcExecutor executor = JdbcExecutorFactory.build(
+              connectorConf.connection.jdbcDriver,
+              connectorConf.connection.connectionString,
+              connectorConf.connection.username,
+              connectorConf.connection.password);
 
     if(success) {
       LOG.info("Job completed, transferring data from stage table to " +

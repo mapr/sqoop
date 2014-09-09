@@ -42,7 +42,7 @@ public class GenericJdbcImportInitializer extends Initializer<ConnectionConfigur
   private static final Logger LOG =
     Logger.getLogger(GenericJdbcImportInitializer.class);
 
-  private GenericJdbcExecutor executor;
+  private IBaseJdbcExecutor executor;
 
   @Override
   public void initialize(InitializerContext context, ConnectionConfiguration connection, ImportJobConfiguration job) {
@@ -122,7 +122,7 @@ public class GenericJdbcImportInitializer extends Initializer<ConnectionConfigur
     assert driver != null;
     assert url != null;
 
-    executor = new GenericJdbcExecutor(driver, url, username, password);
+    executor = JdbcExecutorFactory.build(driver, url, username, password);
   }
 
   private void configurePartitionProperties(MutableContext context, ConnectionConfiguration connectionConfig, ImportJobConfiguration jobConfig) {

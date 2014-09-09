@@ -33,7 +33,7 @@ import org.apache.sqoop.utils.ClassUtils;
 
 public class GenericJdbcExportInitializer extends Initializer<ConnectionConfiguration, ExportJobConfiguration> {
 
-  private GenericJdbcExecutor executor;
+  private IBaseJdbcExecutor executor;
   private static final Logger LOG =
     Logger.getLogger(GenericJdbcExportInitializer.class);
 
@@ -70,7 +70,7 @@ public class GenericJdbcExportInitializer extends Initializer<ConnectionConfigur
     assert driver != null;
     assert url != null;
 
-    executor = new GenericJdbcExecutor(driver, url, username, password);
+    executor = JdbcExecutorFactory.build(driver, url, username, password);
   }
 
   private void configureTableProperties(MutableContext context, ConnectionConfiguration connectionConfig, ExportJobConfiguration jobConfig) {

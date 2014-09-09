@@ -39,7 +39,7 @@ public class GenericJdbcImportExtractor extends Extractor<ConnectionConfiguratio
     String url = connection.connection.connectionString;
     String username = connection.connection.username;
     String password = connection.connection.password;
-    GenericJdbcExecutor executor = new GenericJdbcExecutor(driver, url, username, password);
+    IBaseJdbcExecutor executor = JdbcExecutorFactory.build(driver, url, username, password);
 
     String query = context.getString(GenericJdbcConnectorConstants.CONNECTOR_JDBC_DATA_SQL);
     String conditions = partition.getConditions();

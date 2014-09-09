@@ -39,7 +39,7 @@ public class TestExportInitializer extends TestCase {
   private final String schemalessTableSql;
   private final String tableColumns;
 
-  private GenericJdbcExecutor executor;
+  private IBaseJdbcExecutor executor;
 
   public TestExportInitializer() {
     schemaName = getClass().getSimpleName().toUpperCase() + "SCHEMA";
@@ -54,7 +54,7 @@ public class TestExportInitializer extends TestCase {
 
   @Override
   public void setUp() {
-    executor = new GenericJdbcExecutor(GenericJdbcTestConstants.DRIVER,
+    executor = new CommonJdbcExecutor(GenericJdbcTestConstants.DRIVER,
         GenericJdbcTestConstants.URL, null, null);
 
     String fullTableName = executor.delimitIdentifier(schemaName) + "." + executor.delimitIdentifier(tableName);

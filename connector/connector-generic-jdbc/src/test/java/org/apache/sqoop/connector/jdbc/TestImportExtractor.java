@@ -31,7 +31,7 @@ public class TestImportExtractor extends TestCase {
 
   private final String tableName;
 
-  private GenericJdbcExecutor executor;
+  private IBaseJdbcExecutor executor;
 
   private static final int START = -50;
   private static final int NUMBER_OF_ROWS = 101;
@@ -42,7 +42,7 @@ public class TestImportExtractor extends TestCase {
 
   @Override
   public void setUp() {
-    executor = new GenericJdbcExecutor(GenericJdbcTestConstants.DRIVER,
+    executor = new CommonJdbcExecutor(GenericJdbcTestConstants.DRIVER,
         GenericJdbcTestConstants.URL, null, null);
 
     if (!executor.existTable(tableName)) {
