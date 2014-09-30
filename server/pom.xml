@@ -24,7 +24,7 @@ limitations under the License.
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>sqoop</artifactId>
-    <version>1.99.3-mapr</version>
+    <version>1.99.3-mapr-1409</version>
   </parent>
 
   <groupId>org.apache.sqoop</groupId>
@@ -68,7 +68,7 @@ limitations under the License.
     <dependency>
       <groupId>org.apache.sqoop.connector</groupId>
       <artifactId>sqoop-connector-mysql-jdbc</artifactId>
-      <version>1.99.3-mapr</version>
+      <version>1.99.3-mapr-1409</version>
     </dependency>
 -->
 
