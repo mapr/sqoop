@@ -20,7 +20,7 @@ under the License.
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-  <info organisation="com.cloudera.sqoop" module="${name}">
+  <info organisation="org.apache.sqoop" module="${name}">
     <license name="Apache 2.0"/>
     <ivyauthor name="Sqoop Team" url="http://github.com/cloudera/sqoop" />
     <description>
@@ -80,6 +80,9 @@ under the License.
       conf="common->default"/>
     <dependency org="org.aspectj" name="aspectjrt" rev="${aspectj.version}"
       conf="common->default"/>
+    <dependency org="com.mapr.hadoop" name="maprfs" rev="${hadoop.version}" conf="common->default">
+      <artifact name="maprfs" type="jar"/>
+    </dependency>
 
     <!-- Common dependencies for Sqoop -->
     <dependency org="commons-cli" name="commons-cli"
