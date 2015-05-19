@@ -110,6 +110,8 @@ done
 # Get standard environment variables
 PRGDIR=`dirname "$PRG"`
 
+CATALINA_PID=$PRGDIR/../logs/catalina.pid
+
 # Only set CATALINA_HOME if not already set
 [ -z "$CATALINA_HOME" ] && CATALINA_HOME=`cd "$PRGDIR/.." >/dev/null; pwd`
 
