@@ -341,7 +341,7 @@ Get all the connectors registered in Sqoop
         name: "hdfs-connector",
         class: "org.apache.sqoop.connector.hdfs.HdfsConnector",
         all-config-resources: {},
-        version: "2.0.0-SNAPSHOT"
+        version: "2.0.0-mapr-SNAPSHOT"
     }, {
         id: 2,
         link-config: [],
@@ -349,7 +349,7 @@ Get all the connectors registered in Sqoop
         name: "generic-jdbc-connector",
         class: "org.apache.sqoop.connector.jdbc.GenericJdbcConnector",
         all-config - resources: {},
-        version: "2.0.0-SNAPSHOT"
+        version: "2.0.0-mapr-SNAPSHOT"
     }]
   }
 

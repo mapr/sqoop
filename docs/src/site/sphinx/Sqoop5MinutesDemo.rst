@@ -37,10 +37,10 @@ Verify that connection is working by simple version checking: ::
 
   sqoop:000> show version --all
   client version:
-    Sqoop 2.0.0-SNAPSHOT source revision 418c5f637c3f09b94ea7fc3b0a4610831373a25f
+    Sqoop 2.0.0-mapr-SNAPSHOT source revision 418c5f637c3f09b94ea7fc3b0a4610831373a25f
     Compiled by vbasavaraj on Mon Nov  3 08:18:21 PST 2014
   server version:
-    Sqoop 2.0.0-SNAPSHOT source revision 418c5f637c3f09b94ea7fc3b0a4610831373a25f
+    Sqoop 2.0.0-mapr-SNAPSHOT source revision 418c5f637c3f09b94ea7fc3b0a4610831373a25f
     Compiled by vbasavaraj on Mon Nov  3 08:18:21 PST 2014
   API versions:
     [v1]
