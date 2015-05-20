@@ -52,30 +52,24 @@ hadoopVersionFile="${MapRHomeDir}/conf/hadoop_version"
 
 cat ${BASEDIR}/server/conf/catalina.properties | egrep -v -e '^common.loader' > ${BASEDIR}/server/conf/catalina.properties.tmp
 cp -f ${BASEDIR}/server/conf/catalina.properties.tmp ${BASEDIR}/server/conf/catalina.properties
-if [ -f ${MapRHomeDir}/MapRBuildVersion ]; then
-    MAPR_VERSION=`cat ${MapRHomeDir}/MapRBuildVersion | awk -F "." '{print $1"."$2}'`
-
-    #if mapr-core release >=4.0 returns boolean 1, else returns boolean 0
-    POST_YARN=`echo | awk -v cur=$MAPR_VERSION -v min=4.0 '{if (cur >= min) printf("1"); else printf ("0");}'`
-    if [ "$POST_YARN" = "0" ]; then
-		echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/hadoop-0.20.2/lib/*.jar" >> ${BASEDIR}/server/conf/catalina.properties
-    else
-		if [ -f ${MapRHomeDir}/conf/hadoop_version ]
-		then
-			hadoop_mode=`cat ${MapRHomeDir}/conf/hadoop_version | grep default_mode | cut -d '=' -f 2`
-			yarn_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep yarn_version | cut -d '=' -f 2`
-			classic_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep classic_version | cut -d '=' -f 2`
-			HADOOP_YARN_VERSION="hadoop-$yarn_version"
-			HADOOP_ClASSIC_VERSION="hadoop-$classic_version"
-		else
-			echo 'Unknown hadoop version'
-		fi
-		if [ "$hadoop_mode" = "yarn" ]; then
-			echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/mapreduce/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/yarn/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/tools/lib/*.jar,${MapRHomeDir}/lib/*.jar" >> ${BASEDIR}/server/conf/catalina.properties
-		elif [ "$hadoop_mode" = "classic" ]; then
-			echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-0.20.2-dev-capacity-scheduler.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-core.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-fairscheduler.jar" >> ${BASEDIR}/server/conf/catalina.properties
-		fi
-    fi
+cat ${BASEDIR}/server/conf/sqoop.properties | egrep -v -e '^org.apache.sqoop.submission.engine.mapreduce.configuration.directory' > ${BASEDIR}/server/conf/sqoop.properties.tmp
+cp -f ${BASEDIR}/server/conf/sqoop.properties.tmp ${BASEDIR}/server/conf/sqoop.properties
+if [ -f ${MapRHomeDir}/conf/hadoop_version ]
+then
+	hadoop_mode=`cat ${MapRHomeDir}/conf/hadoop_version | grep default_mode | cut -d '=' -f 2`
+	yarn_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep yarn_version | cut -d '=' -f 2`
+	classic_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep classic_version | cut -d '=' -f 2`
+	HADOOP_YARN_VERSION="hadoop-$yarn_version"
+	HADOOP_ClASSIC_VERSION="hadoop-$classic_version"
+else
+	echo 'Unknown hadoop version'
+fi
+if [ "$hadoop_mode" = "yarn" ]; then
+	echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/mapreduce/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/yarn/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/tools/lib/*.jar,${MapRHomeDir}/lib/*.jar" >> ${BASEDIR}/server/conf/catalina.properties
+  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/etc/hadoop/" >> ${BASEDIR}/server/conf/sqoop.properties
+elif [ "$hadoop_mode" = "classic" ]; then
+	echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-0.20.2-dev-capacity-scheduler.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-core.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-fairscheduler.jar" >> ${BASEDIR}/server/conf/catalina.properties
+  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/conf/" >> ${BASEDIR}/server/conf/sqoop.properties
 fi
 
 CATALINA_BIN=${CATALINA_BIN:-${BASEDIR}/server/bin}
@@ -145,7 +139,7 @@ case $COMMAND in
     if [ -n "${JAVA_HOME}" ] ; then
         EXEC_JAVA="${JAVA_HOME}/bin/java"
     fi
-    ${EXEC_JAVA} -classpath ${CLASSPATH} org.apache.sqoop.shell.SqoopShell $2
+    ${EXEC_JAVA} -Djava.security.auth.login.config=${MapRHomeDir}/conf/mapr.login.conf -classpath ${CLASSPATH} org.apache.sqoop.shell.SqoopShell $2
     ;;
 
   *)
