@@ -53,6 +53,13 @@ public final class SecurityConstants {
           PREFIX_AUTHENTICATION_CONFIG + "handler";
 
   /**
+   * The config specifies the sqoop custom authentication handler class.
+   * <tt>org.apache.sqoop.security.authentication.custom_handler</tt>.
+   */
+  public static final String CUSTOM_AUTHENTICATION_HANDLER =
+      PREFIX_AUTHENTICATION_CONFIG + "custom_handler";
+
+  /**
    * The config enables or disables anonymous authentication.
    * <tt>org.apache.sqoop.security.authentication.anonymous</tt>.
    */
@@ -153,7 +160,7 @@ public final class SecurityConstants {
    */
   public static final String TOKEN_KIND = "sqoop_token_kind";
 
-  public static enum TYPE {SIMPLE, KERBEROS}
+  public static enum TYPE {SIMPLE, KERBEROS, CUSTOM}
 
   private SecurityConstants() {
     // Instantiation of this class is prohibited

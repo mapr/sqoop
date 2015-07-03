@@ -18,9 +18,10 @@
 function print_usage(){
   echo "Usage: sqoop.sh COMMAND"
   echo "       where COMMAND is one of:"
-  echo "  server <start/stop>    Start/stop the server"
-  echo "  client [script]        Start an interactive shell without a script"
-  echo "                         or run a script with a batch shell"
+  echo "  server <start/stop>              Start/stop the server"
+  echo "  client [script] [--custom]       Start an interactive shell without a script"
+  echo "                                   or run a script with a batch shell"
+  echo "                                   option --custom set custom authentication"
   echo ""
 }
 
@@ -44,6 +45,14 @@ done
 
 BASEDIR=`dirname ${PRG}`
 BASEDIR=`cd ${BASEDIR}/..;pwd`
+MAPR_CONF_DIR=/opt/mapr/conf
+ENV_FILE=env.sh
+export SQOOP2_HOST=$(hostname -f)
+
+# MapR change. Source env.sh if it exists
+if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
+    source ${MAPR_CONF_DIR}/env.sh
+fi
 
 echo "Sqoop home directory: ${BASEDIR}"
 
@@ -84,6 +93,7 @@ setup_catalina_opts() {
 
   catalina_opts="-Dsqoop.http.port=${SQOOP_HTTP_PORT}";
   catalina_opts="${catalina_opts} -Dsqoop.admin.port=${SQOOP_ADMIN_PORT}";
+  catalina_opts="${catalina_opts} ${MAPR_AUTH_CLIENT_OPTS}"
 
   echo "Adding to CATALINA_OPTS:    ${catalina_opts}"
 
@@ -155,16 +165,47 @@ case $COMMAND in
     ;;
 
   client)
+
+    # Second argument may been security argument or script name
+    if [[ $2 == --*  ]]; then
+      SCRIPT_NAME=""
+    else
+      SCRIPT_NAME=$2
+    fi
+
+    MAPR_VERSION=`cat /opt/mapr/MapRBuildVersion | awk -F "." '{print $1"."$2}'`
+
+    if [[ $2 == "--custom" ]] || [[ $3 == "--custom" ]]; then
+      echo "Using MaprDelegationTokenAuthenticator"
+      # if mapr-core release <= 5.0 then return 1, else return 0
+      if [[ `echo | awk -v cur=$MAPR_VERSION -v min=5.0 '{if (cur <= min) printf("1"); else printf ("0");}'` -eq 1 ]]; then
+        CUSTOM_AUTH_OPTS="-DauthClass=org.apache.sqoop.client.request.MaprDelegationTokenAuthenticator"
+      else
+        CUSTOM_AUTH_OPTS="-DauthClass=com.mapr.security.maprauth.MaprDelegationTokenAuthenticator"
+      fi
+    else
+      echo "Using default authenticator"
+      CUSTOM_AUTH_OPTS="-DauthClass=org.apache.hadoop.security.token.delegation.web.KerberosDelegationTokenAuthenticator"
+    fi
+
+
     # Build class path with full path to each library
     for f in $CLIENT_LIB/*.jar; do
       CLASSPATH="${CLASSPATH}:$f"
+    done
+
+    for f in ${MapRHomeDir}/lib/*.jar; do
+      # Remove slf4j jars for prevent conflicts with sqoop`s slf4j jars
+      if [[ $f != *slf4j* ]]; then
+        CLASSPATH="${CLASSPATH}:$f"
+      fi
     done
 
     EXEC_JAVA='java'
     if [ -n "${JAVA_HOME}" ] ; then
         EXEC_JAVA="${JAVA_HOME}/bin/java"
     fi
-    ${EXEC_JAVA} -Djava.security.auth.login.config=${MapRHomeDir}/conf/mapr.login.conf -classpath ${CLASSPATH} org.apache.sqoop.shell.SqoopShell $2
+    ${EXEC_JAVA} ${CUSTOM_AUTH_OPTS} -Djava.security.auth.login.config=${MapRHomeDir}/conf/mapr.login.conf -classpath ${CLASSPATH} org.apache.sqoop.shell.SqoopShell $SCRIPT_NAME
     ;;
 
   *)
