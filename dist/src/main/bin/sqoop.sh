@@ -75,6 +75,8 @@ fi
 CATALINA_BIN=${CATALINA_BIN:-${BASEDIR}/server/bin}
 CLIENT_LIB=${CLIENT_LIB:-${BASEDIR}/shell/lib}
 
+export CATALINA_PID="${CATALINA_BIN}/catalina.pid"
+
 setup_catalina_opts() {
   # The Java System properties 'sqoop.http.port' and 'sqoop.admin.port' are
   # not used by Sqoop. They are used in Tomcat's server.xml configuration file
@@ -111,22 +113,45 @@ case $COMMAND in
     fi
     actionCmd=$2
 
-    source ${BASEDIR}/bin/sqoop-sys.sh
-    setup_catalina_opts
+    case $actionCmd in
+      status)
+        if [ ! -z "$CATALINA_PID" ]; then
+          if [ -f "$CATALINA_PID" ]; then
+            if [ -s "$CATALINA_PID" ]; then
+              if [ -r "$CATALINA_PID" ]; then
+                PID=`cat "$CATALINA_PID"`
+                ps -p $PID >/dev/null 2>&1
+                if [ $? -eq 0 ] ; then
+                  echo "Tomcat is running with PID $PID."
+                  exit 0
+                fi
+              fi
+            fi
+          fi
+        fi
+        echo "Most likely Tomcat is not running"
+        exit 1
 
-    # There seems to be a bug in catalina.sh whereby catalina.sh doesn't respect
-    # CATALINA_OPTS when stopping the tomcat server. Consequently, we have to hack around
-    # by specifying the CATALINA_OPTS properties in JAVA_OPTS variable
-    if [ "$actionCmd" == "stop" ]; then
-      export JAVA_OPTS="$JAVA_OPTS $CATALINA_OPTS"
-    fi
+        ;;
+      *)
+        source ${BASEDIR}/bin/sqoop-sys.sh
+        setup_catalina_opts
 
-    # Remove the first 2 command line arguments (server and action command (start/stop)) so we can pass
-    # the rest to catalina.sh script
-    shift
-    shift
+        # There seems to be a bug in catalina.sh whereby catalina.sh doesn't respect
+        # CATALINA_OPTS when stopping the tomcat server. Consequently, we have to hack around
+        # by specifying the CATALINA_OPTS properties in JAVA_OPTS variable
+        if [ "$actionCmd" == "stop" ]; then
+          export JAVA_OPTS="$JAVA_OPTS $CATALINA_OPTS"
+        fi
 
-    $CATALINA_BIN/catalina.sh $actionCmd "$@"
+        # Remove the first 2 command line arguments (server and action command (start/stop)) so we can pass
+        # the rest to catalina.sh script
+        shift
+        shift
+
+        $CATALINA_BIN/catalina.sh $actionCmd "$@"
+        ;;
+    esac
     ;;
 
   client)
