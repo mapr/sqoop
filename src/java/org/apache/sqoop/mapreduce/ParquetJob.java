@@ -23,6 +23,11 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapreduce.security.token.delegation.DelegationTokenIdentifier;
+import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.token.Token;
 import org.kitesdk.data.CompressionType;
 import org.kitesdk.data.Dataset;
 import org.kitesdk.data.DatasetDescriptor;
@@ -33,6 +38,8 @@ import org.kitesdk.data.mapreduce.DatasetKeyOutputFormat;
 import org.kitesdk.data.spi.SchemaValidationUtil;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Helper class for setting up a Parquet MapReduce job.
@@ -41,11 +48,22 @@ public final class ParquetJob {
 
   public static final Log LOG = LogFactory.getLog(ParquetJob.class.getName());
 
+  public static final String HIVE_CONF_CLASS = "org.apache.hadoop.hive.conf.HiveConf";
+  public static final String HIVE_METASTORE_CLIENT_CLASS = "org.apache.hadoop.hive.metastore.HiveMetaStoreClient";
+  public static final String HIVE_METASTORE_SASL_ENABLED = "hive.metastore.sasl.enabled";
+  // Purposefully choosing the same token alias as the one Oozie chooses.
+  // Make sure we don't generate a new delegation token if oozie
+  // has already generated one.
+  public static final String HIVE_METASTORE_TOKEN_ALIAS = "HCat Token";
+
   private ParquetJob() {
   }
 
   private static final String CONF_AVRO_SCHEMA = "parquetjob.avro.schema";
   static final String CONF_OUTPUT_CODEC = "parquetjob.output.codec";
+  enum WriteMode {
+    DEFAULT, APPEND, OVERWRITE
+  };
 
   public static Schema getAvroSchema(Configuration conf) {
     return new Schema.Parser().parse(conf.get(CONF_AVRO_SCHEMA));
@@ -70,15 +88,27 @@ public final class ParquetJob {
    * {@link org.apache.sqoop.lib.SqoopRecord}. The output key is
    * {@link org.apache.avro.generic.GenericRecord}.
    */
-  public static void configureImportJob(Configuration conf, Schema schema,
-      String uri, boolean reuseExistingDataset, boolean overwrite) throws IOException {
+  public static void configureImportJob(JobConf conf, Schema schema,
+      String uri, WriteMode writeMode) throws IOException {
     Dataset dataset;
-    if (reuseExistingDataset || overwrite) {
-      try {
-        dataset = Datasets.load(uri);
-      } catch (DatasetNotFoundException ex) {
-        dataset = createDataset(schema, getCompressionType(conf), uri);
+    Configuration hiveConf = getHiveConf(conf);
+
+    // Add hive delegation token only if we don't already have one.
+    if (uri.startsWith("dataset:hive") && isSecureMetastore(hiveConf)) {
+      // Copy hive configs to job config
+      addHiveConfigs(hiveConf, conf);
+
+      if (conf.getCredentials().getToken(new Text(HIVE_METASTORE_TOKEN_ALIAS)) == null) {
+        addHiveDelegationToken(conf);
       }
+    }
+
+    if (Datasets.exists(uri)) {
+      if (WriteMode.DEFAULT.equals(writeMode)) {
+        throw new IOException("Destination exists! " + uri);
+      }
+
+      dataset = Datasets.load(uri);
       Schema writtenWith = dataset.getDescriptor().getSchema();
       if (!SchemaValidationUtil.canRead(writtenWith, schema)) {
         throw new IOException(
@@ -90,10 +120,14 @@ public final class ParquetJob {
     }
     conf.set(CONF_AVRO_SCHEMA, schema.toString());
 
-    if (overwrite) {
-      DatasetKeyOutputFormat.configure(conf).overwrite(dataset);
+    DatasetKeyOutputFormat.ConfigBuilder builder =
+        DatasetKeyOutputFormat.configure(conf);
+    if (WriteMode.OVERWRITE.equals(writeMode)) {
+      builder.overwrite(dataset);
+    } else if (WriteMode.APPEND.equals(writeMode)) {
+      builder.appendTo(dataset);
     } else {
-      DatasetKeyOutputFormat.configure(conf).writeTo(dataset);
+      builder.writeTo(dataset);
     }
   }
 
@@ -107,4 +141,84 @@ public final class ParquetJob {
     return Datasets.create(uri, descriptor, GenericRecord.class);
   }
 
+  private static boolean isSecureMetastore(Configuration conf) {
+    return conf != null && conf.getBoolean(HIVE_METASTORE_SASL_ENABLED, false);
+  }
+
+  /**
+   * Dynamically create hive configuration object.
+   * @param conf
+   * @return
+   */
+  private static Configuration getHiveConf(Configuration conf) {
+    try {
+      Class HiveConfClass = Class.forName(HIVE_CONF_CLASS);
+      return ((Configuration)(HiveConfClass.getConstructor(Configuration.class, Class.class)
+          .newInstance(conf, Configuration.class)));
+    } catch (ClassNotFoundException ex) {
+      LOG.error("Could not load " + HIVE_CONF_CLASS
+          + ". Make sure HIVE_CONF_DIR is set correctly.");
+    } catch (Exception ex) {
+      LOG.error("Could not instantiate HiveConf instance.", ex);
+    }
+    return null;
+  }
+
+  /**
+   * Add hive delegation token to credentials store.
+   * @param conf
+   */
+  private static void addHiveDelegationToken(JobConf conf) {
+    // Need to use reflection since there's no compile time dependency on the client libs.
+    Class<?> HiveConfClass;
+    Class<?> HiveMetaStoreClientClass;
+
+    try {
+      HiveMetaStoreClientClass = Class.forName(HIVE_METASTORE_CLIENT_CLASS);
+    } catch (ClassNotFoundException ex) {
+      LOG.error("Could not load " + HIVE_METASTORE_CLIENT_CLASS
+          + " when adding hive delegation token. "
+          + "Make sure HIVE_CONF_DIR is set correctly.", ex);
+      throw new RuntimeException("Couldn't fetch delegation token.", ex);
+    }
+
+    try {
+      HiveConfClass = Class.forName(HIVE_CONF_CLASS);
+    } catch (ClassNotFoundException ex) {
+      LOG.error("Could not load " + HIVE_CONF_CLASS
+          + " when adding hive delegation token."
+          + " Make sure HIVE_CONF_DIR is set correctly.", ex);
+      throw new RuntimeException("Couldn't fetch delegation token.", ex);
+    }
+
+    try {
+      Object client = HiveMetaStoreClientClass.getConstructor(HiveConfClass).newInstance(
+          HiveConfClass.getConstructor(Configuration.class, Class.class).newInstance(conf, Configuration.class)
+      );
+      // getDelegationToken(String kerberosPrincial)
+      Method getDelegationTokenMethod = HiveMetaStoreClientClass.getMethod("getDelegationToken", String.class);
+      Object tokenStringForm = getDelegationTokenMethod.invoke(client, UserGroupInformation.getLoginUser().getShortUserName());
+
+      // Load token
+      Token<DelegationTokenIdentifier> metastoreToken = new Token<DelegationTokenIdentifier>();
+      metastoreToken.decodeFromUrlString(tokenStringForm.toString());
+      conf.getCredentials().addToken(new Text(HIVE_METASTORE_TOKEN_ALIAS), metastoreToken);
+
+      LOG.debug("Successfully fetched hive metastore delegation token. " + metastoreToken);
+    } catch (Exception ex) {
+      LOG.error("Couldn't fetch delegation token.", ex);
+      throw new RuntimeException("Couldn't fetch delegation token.", ex);
+    }
+  }
+
+  /**
+   * Add hive conf to configuration object without overriding already set properties.
+   * @param hiveConf
+   * @param conf
+   */
+  private static void addHiveConfigs(Configuration hiveConf, Configuration conf) {
+    for (Map.Entry<String, String> item : hiveConf) {
+      conf.setIfUnset(item.getKey(), item.getValue());
+    }
+  }
 }
