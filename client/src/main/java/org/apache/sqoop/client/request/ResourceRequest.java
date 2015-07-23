@@ -25,6 +25,7 @@ import org.apache.hadoop.security.authentication.client.ConnectionConfigurator;
 import org.apache.hadoop.security.authentication.client.PseudoAuthenticator;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.delegation.web.DelegationTokenAuthenticatedURL;
+import org.apache.hadoop.security.token.delegation.web.DelegationTokenAuthenticator;
 import org.apache.log4j.Logger;
 import org.apache.sqoop.client.ClientError;
 import org.apache.sqoop.common.SqoopException;
@@ -65,11 +66,21 @@ public class ResourceRequest {
   protected String doHttpRequest(String strURL, String method, String data) {
     DataOutputStream wr = null;
     BufferedReader reader = null;
+    DelegationTokenAuthenticator dta = null;
     try {
 //    This user name is only in simple mode. In Kerberos mode, this user name will be ignored by Sqoop server and user name in UGI which is authenticated by Kerberos server will be used instead.
       strURL = addUsername(strURL);
       URL url = new URL(strURL);
-      HttpURLConnection conn = new DelegationTokenAuthenticatedURL().openConnection(url, authToken);
+      String authenticatorClass = System.getProperty("authClass");
+
+      if (null != authenticatorClass) {
+        dta = (DelegationTokenAuthenticator) ResourceRequest.class
+            .getClassLoader()
+            .loadClass(authenticatorClass)
+            .newInstance();
+      }
+
+      HttpURLConnection conn = new DelegationTokenAuthenticatedURL(dta, null).openConnection(url, authToken);
 
       conn.setRequestMethod(method);
 //      Sqoop is using JSON for data transfers
@@ -148,7 +159,16 @@ public class ResourceRequest {
       throw new SqoopException(ClientError.CLIENT_0000, ex);
     } catch (AuthenticationException ex) {
       LOG.trace("ERROR: ", ex);
-      throw new SqoopException(ClientError.CLIENT_0004, ex);
+      throw new SqoopException(ClientError.CLIENT_0005, ex);
+    } catch (InstantiationException ex) {
+      LOG.trace("ERROR: ", ex);
+      throw new SqoopException(ClientError.CLIENT_0001, ex);
+    } catch (IllegalAccessException ex) {
+      LOG.trace("ERROR: ", ex);
+      throw new SqoopException(ClientError.CLIENT_0001, ex);
+    } catch (ClassNotFoundException ex) {
+      LOG.trace("ERROR: ", ex);
+      throw new SqoopException(ClientError.CLIENT_0001, ex);
     } finally {
       try {
         if (wr != null) {
