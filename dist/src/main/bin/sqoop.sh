@@ -59,32 +59,8 @@ echo "Sqoop home directory: ${BASEDIR}"
 MapRHomeDir=/opt/mapr
 hadoopVersionFile="${MapRHomeDir}/conf/hadoop_version"
 
-cat ${BASEDIR}/server/conf/catalina.properties | egrep -v -e '^common.loader' > ${BASEDIR}/server/conf/catalina.properties.tmp
-cp -f ${BASEDIR}/server/conf/catalina.properties.tmp ${BASEDIR}/server/conf/catalina.properties
-cat ${BASEDIR}/server/conf/sqoop.properties | egrep -v -e '^org.apache.sqoop.submission.engine.mapreduce.configuration.directory' > ${BASEDIR}/server/conf/sqoop.properties.tmp
-cp -f ${BASEDIR}/server/conf/sqoop.properties.tmp ${BASEDIR}/server/conf/sqoop.properties
-if [ -f ${MapRHomeDir}/conf/hadoop_version ]
-then
-	hadoop_mode=`cat ${MapRHomeDir}/conf/hadoop_version | grep default_mode | cut -d '=' -f 2`
-	yarn_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep yarn_version | cut -d '=' -f 2`
-	classic_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep classic_version | cut -d '=' -f 2`
-	HADOOP_YARN_VERSION="hadoop-$yarn_version"
-	HADOOP_ClASSIC_VERSION="hadoop-$classic_version"
-else
-	echo 'Unknown hadoop version'
-fi
-if [ "$hadoop_mode" = "yarn" ]; then
-	echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/mapreduce/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/yarn/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/tools/lib/*.jar,${MapRHomeDir}/lib/*.jar" >> ${BASEDIR}/server/conf/catalina.properties
-  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/etc/hadoop/" >> ${BASEDIR}/server/conf/sqoop.properties
-elif [ "$hadoop_mode" = "classic" ]; then
-	echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-0.20.2-dev-capacity-scheduler.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-core.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-fairscheduler.jar" >> ${BASEDIR}/server/conf/catalina.properties
-  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/conf/" >> ${BASEDIR}/server/conf/sqoop.properties
-fi
-
 CATALINA_BIN=${CATALINA_BIN:-${BASEDIR}/server/bin}
 CLIENT_LIB=${CLIENT_LIB:-${BASEDIR}/shell/lib}
-
-export CATALINA_PID="${CATALINA_BIN}/catalina.pid"
 
 setup_catalina_opts() {
   # The Java System properties 'sqoop.http.port' and 'sqoop.admin.port' are
@@ -117,6 +93,30 @@ case $COMMAND in
     $CATALINA_BIN/tool-wrapper.sh -server org.apache.sqoop.tomcat.TomcatToolRunner $@
     ;;
   server)
+    cat ${BASEDIR}/server/conf/catalina.properties | egrep -v -e '^common.loader' > ${BASEDIR}/server/conf/catalina.properties.tmp
+    cp -f ${BASEDIR}/server/conf/catalina.properties.tmp ${BASEDIR}/server/conf/catalina.properties
+    cat ${BASEDIR}/server/conf/sqoop.properties | egrep -v -e '^org.apache.sqoop.submission.engine.mapreduce.configuration.directory' > ${BASEDIR}/server/conf/sqoop.properties.tmp
+    cp -f ${BASEDIR}/server/conf/sqoop.properties.tmp ${BASEDIR}/server/conf/sqoop.properties
+    if [ -f ${MapRHomeDir}/conf/hadoop_version ]
+    then
+	    hadoop_mode=`cat ${MapRHomeDir}/conf/hadoop_version | grep default_mode | cut -d '=' -f 2`
+	    yarn_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep yarn_version | cut -d '=' -f 2`
+	    classic_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep classic_version | cut -d '=' -f 2`
+	    HADOOP_YARN_VERSION="hadoop-$yarn_version"
+	    HADOOP_ClASSIC_VERSION="hadoop-$classic_version"
+    else
+    	echo 'Unknown hadoop version'
+    fi
+    if [ "$hadoop_mode" = "yarn" ]; then
+	    echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/mapreduce/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/yarn/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/tools/lib/*.jar,${MapRHomeDir}/lib/*.jar" >> ${BASEDIR}/server/conf/catalina.properties
+        echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/etc/hadoop/" >> ${BASEDIR}/server/conf/sqoop.properties
+    elif [ "$hadoop_mode" = "classic" ]; then
+	    echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-0.20.2-dev-capacity-scheduler.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-core.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-fairscheduler.jar" >> ${BASEDIR}/server/conf/catalina.properties
+        echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/conf/" >> ${BASEDIR}/server/conf/sqoop.properties
+    fi
+
+    export CATALINA_PID="${CATALINA_BIN}/catalina.pid"
+
     if [ $# = 1 ]; then
       echo "Usage: sqoop.sh server <start/stop>"
       exit
