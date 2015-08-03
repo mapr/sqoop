@@ -26,7 +26,7 @@ limitations under the License.
 
   <groupId>org.apache</groupId>
   <artifactId>sqoop</artifactId>
-  <version>1.99.6-mapr</version>
+  <version>1.99.6-mapr-1507</version>
   <description>Apache Sqoop</description>
   <name>Sqoop</name>
   <packaging>pom</packaging>
