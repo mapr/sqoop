@@ -123,7 +123,8 @@ public class DataDrivenImportJob extends ImportJobBase {
       return getMaprSpecificKiteUri(conf);
     }
   }
-
+  
+  //TODO : MAPR-19680 It's temporary changes and it'll be removed when kite will add maprfs support.
   private String getMaprSpecificKiteUri(Configuration conf) throws IOException {
     FileSystem fs = FileSystem.get(conf);
     String uri = fs.makeQualified(getContext().getDestination()).toString();
