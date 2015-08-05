@@ -120,8 +120,18 @@ public class DataDrivenImportJob extends ImportJobBase {
           options.getHiveTableName();
       return String.format("dataset:hive:/%s/%s", hiveDatabase, hiveTable);
     } else {
-      FileSystem fs = FileSystem.get(conf);
-      return "dataset:" + fs.makeQualified(getContext().getDestination());
+      return getMaprSpecificKiteUri(conf);
+    }
+  }
+
+  private String getMaprSpecificKiteUri(Configuration conf) throws IOException {
+    FileSystem fs = FileSystem.get(conf);
+    String uri = fs.makeQualified(getContext().getDestination()).toString();
+
+    if (uri.contains("maprfs:/")) {
+      return "dataset:" + uri.replace("maprfs:/", "hdfs:/");
+    } else {
+      return "dataset" + uri;
     }
   }
 
