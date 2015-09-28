@@ -76,7 +76,8 @@ public final class AvroUtil {
    * Convert Column name into Avro column name.
    */
   public static String toAvroColumn(String column) {
-    return toAvroIdentifier(column);
+    String candidate = ClassWriter.toJavaIdentifier(column);
+    return toAvroIdentifier(candidate);
   }
 
   /**
