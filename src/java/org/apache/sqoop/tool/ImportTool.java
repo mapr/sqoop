@@ -621,6 +621,7 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
     try {
       if (options.doHiveImport()) {
+        options.getConf().addDefaultResource("hive-site.xml");
         hiveImport = new HiveImport(options, manager, options.getConf(), false);
       }
 
