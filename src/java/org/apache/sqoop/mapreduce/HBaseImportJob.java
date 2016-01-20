@@ -219,7 +219,7 @@ public class HBaseImportJob extends DataDrivenImportJob {
         // Create the table.
         LOG.info("Creating missing HBase table " + tableName);
         tableDesc =  new HTableDescriptor(tableName);
-        tableDesc.addFamily(colDesc);
+        HTableDescriptorProxy.addFamily(tableDesc, colDesc);
         admin.createTable(tableDesc);
       } else {
         LOG.warn("Could not find HBase table " + tableName);

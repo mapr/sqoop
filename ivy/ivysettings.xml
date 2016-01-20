@@ -40,6 +40,9 @@ under the License.
   <property name="snapshot.apache.org"
       value="https://repository.apache.org/content/repositories/snapshots/"
       override="false"/>
+  <property name="release.apache.org"
+      value="https://repository.apache.org/content/repositories/releases/"
+      override="false"/>  
   <property name="staging.cloudera.com"
       value="https://repository.cloudera.com/content/repositories/staging/"
       override="false"/>
@@ -66,6 +69,8 @@ under the License.
         pattern="${maven2.pattern.ext}" m2compatible="true"/>
     <ibiblio name="cloudera-releases" root="${releases.cloudera.com}"
         pattern="${maven2.pattern.ext}" m2compatible="true"/>
+    <ibiblio name="apache-release" root="${release.apache.org}"
+        pattern="${maven2.pattern.ext}" m2compatible="true" />
     <ibiblio name="apache-snapshot" root="${snapshot.apache.org}"
         m2compatible="true" checkmodified="true" changingPattern=".*SNAPSHOT"/>
     <ibiblio name="cloudera-staging" root="${staging.cloudera.com}"
@@ -87,6 +92,7 @@ under the License.
       <resolver ref="fs2"/>
       <resolver ref="fs"/>
       <resolver ref="mapr-releases"/>
+      <resolver ref="apache-release"/>
       <resolver ref="apache-snapshot"/>
       <resolver ref="datanucleus"/>
       <resolver ref="cloudera-releases"/>
