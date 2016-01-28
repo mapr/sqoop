@@ -212,7 +212,7 @@
   <property environment="env"/>
   <property name="name" value="sqoop" />
   <property name="Name" value="Sqoop" />
-  <property name="version" value="1.4.6-mapr" />
+  <property name="version" value="1.4.6-mapr-1601" />
 
   <!-- The last version released. -->
   <property name="oldversion" value="1.4.5-mapr" />
