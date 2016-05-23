@@ -1042,7 +1042,7 @@
 
   <target name="relnotes" depends="relnotes-uptodate" unless="relnotes.exists"
       description="Generate release notes">
-    <exec executable="${python}" failonerror="yes">
+    <exec executable="${python}" failonerror="false">
       <arg value="${script.src.dir}/relnotes.py" />
       <arg value="${build.relnotes.dir}" />
       <arg value="${basedir}" />
