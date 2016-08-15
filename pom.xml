@@ -687,6 +687,11 @@ limitations under the License.
         <version>${avro.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.2</version>
+      </dependency>
+      <dependency>
         <groupId>net.sourceforge.findbugs</groupId>
         <artifactId>annotations</artifactId>
         <version>${findbugs.version}</version>
