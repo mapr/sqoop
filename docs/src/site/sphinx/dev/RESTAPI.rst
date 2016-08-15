@@ -318,7 +318,7 @@ Get all the version metadata of Sqoop software in the server side.
    {
     source-url: "git://vbasavaraj.local/Users/vbasavaraj/Projects/SqoopRefactoring/sqoop2/common",
     source-revision: "418c5f637c3f09b94ea7fc3b0a4610831373a25f",
-    build-version: "2.0.0-SNAPSHOT",
+    build-version: "2.0.0-mapr-SNAPSHOT",
     api-versions: [
        "v1"
      ],
@@ -347,7 +347,7 @@ Get all the connectors registered in Sqoop
         name: "hdfs-connector",
         class: "org.apache.sqoop.connector.hdfs.HdfsConnector",
         all-config-resources: {},
-        version: "2.0.0-SNAPSHOT"
+        version: "2.0.0-mapr-SNAPSHOT"
     }, {
         id: 2,
         link-config: [],
