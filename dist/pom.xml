@@ -168,7 +168,10 @@ limitations under the License.
                     </copy>
                     <copy file="../shell/target/sqoop-shell-${project.version}.jar"
                       toDir="target/sqoop-${project.version}-bin-hadoop${hadoop.version}/shell/lib"/>
-
+                    <!-- Build "conf.d" directory -->
+                    <copy todir="target/sqoop-${project.version}-bin-hadoop${hadoop.version}/conf.d">
+                      <fileset dir="src/main/conf.d"/>
+                    </copy>
                     <!-- Build tools client directory -->
                     <copy todir="target/sqoop-${project.version}-bin-hadoop${hadoop.version}/tools/lib">
                       <fileset dir="../tools/target/lib">
