@@ -28,13 +28,45 @@ function sqoop_server_classpath_set {
 
   HADOOP_COMMON_HOME=${HADOOP_COMMON_HOME:-${HADOOP_HOME}/share/hadoop/common}
   HADOOP_HDFS_HOME=${HADOOP_HDFS_HOME:-${HADOOP_HOME}/share/hadoop/hdfs}
-  HADOOP_MAPRED_HOME=${HADOOP_MAPRED_HOME:-${HADOOP_HOME}/share/hadoop/mapreduce}
-  HADOOP_YARN_HOME=${HADOOP_YARN_HOME:-${HADOOP_HOME}/share/hadoop/yarn}
 
-  if [[ ! (-d "${HADOOP_COMMON_HOME}" && -d "${HADOOP_HDFS_HOME}" && -d "${HADOOP_MAPRED_HOME}" && -d "${HADOOP_YARN_HOME}") ]]; then
-    echo "Can't load the Hadoop related java lib, please check the setting for the following environment variables:"
-    echo "    HADOOP_COMMON_HOME, HADOOP_HDFS_HOME, HADOOP_MAPRED_HOME, HADOOP_YARN_HOME"
-    exit
+  if [ "$hadoop_mode" = "yarn" ]; then
+    HADOOP_MAPRED_HOME=${HADOOP_MAPRED_HOME:-${HADOOP_HOME}/share/hadoop/mapreduce}
+    HADOOP_YARN_HOME=${HADOOP_YARN_HOME:-${HADOOP_HOME}/share/hadoop/yarn}
+
+    if [[ ! (-d "${HADOOP_COMMON_HOME}" && -d "${HADOOP_HDFS_HOME}" && -d "${HADOOP_MAPRED_HOME}" && -d "${HADOOP_YARN_HOME}") ]]; then
+      echo "Can't load the Hadoop related java lib, please check the setting for the following environment variables:"
+      echo "    HADOOP_COMMON_HOME, HADOOP_HDFS_HOME, HADOOP_MAPRED_HOME, HADOOP_YARN_HOME"
+      exit
+    fi
+
+    for f in $HADOOP_HDFS_HOME/lib/*.jar; do
+      CLASSPATH="${CLASSPATH}:$f"
+    done
+
+    for f in $HADOOP_MAPRED_HOME/*.jar; do
+      CLASSPATH="${CLASSPATH}:$f"
+    done
+
+    for f in $HADOOP_MAPRED_HOME/lib/*.jar; do
+      CLASSPATH="${CLASSPATH}:$f"
+    done
+
+    for f in $HADOOP_YARN_HOME/*.jar; do
+      CLASSPATH="${CLASSPATH}:$f"
+    done
+
+    for f in $HADOOP_YARN_HOME/lib/*.jar; do
+      CLASSPATH="${CLASSPATH}:$f"
+    done
+
+  elif [ "$hadoop_mode" = "classic" ]; then
+    HADOOP_CLASSIC_HOME=${HADOOP_CLASSIC_HOME:-${HADOOP_HOME}}
+    for f in $HADOOP_CLASSIC_HOME/*.jar; do
+      CLASSPATH="${CLASSPATH}:$f"
+    done
+    for f in $HADOOP_CLASSIC_HOME/lib/*.jar; do
+      CLASSPATH="${CLASSPATH}:$f"
+    done
   fi
 
   for f in $SQOOP_SERVER_LIB/*.jar; do
@@ -50,26 +82,6 @@ function sqoop_server_classpath_set {
   done
 
   for f in $HADOOP_HDFS_HOME/*.jar; do
-    CLASSPATH="${CLASSPATH}:$f"
-  done
-
-  for f in $HADOOP_HDFS_HOME/lib/*.jar; do
-    CLASSPATH="${CLASSPATH}:$f"
-  done
-
-  for f in $HADOOP_MAPRED_HOME/*.jar; do
-    CLASSPATH="${CLASSPATH}:$f"
-  done
-
-  for f in $HADOOP_MAPRED_HOME/lib/*.jar; do
-    CLASSPATH="${CLASSPATH}:$f"
-  done
-
-  for f in $HADOOP_YARN_HOME/*.jar; do
-    CLASSPATH="${CLASSPATH}:$f"
-  done
-
-  for f in $HADOOP_YARN_HOME/lib/*.jar; do
     CLASSPATH="${CLASSPATH}:$f"
   done
 
@@ -133,24 +145,22 @@ echo "Sqoop home directory: ${BASEDIR}"
 MapRHomeDir=/opt/mapr
 hadoopVersionFile="${MapRHomeDir}/conf/hadoop_version"
 
-cat ${BASEDIR}/server/conf/catalina.properties | egrep -v -e '^common.loader' > ${BASEDIR}/server/conf/catalina.properties.tmp
-cp -f ${BASEDIR}/server/conf/catalina.properties.tmp ${BASEDIR}/server/conf/catalina.properties
 if [ -f ${MapRHomeDir}/conf/hadoop_version ]
 then
-	hadoop_mode=`cat ${MapRHomeDir}/conf/hadoop_version | grep default_mode | cut -d '=' -f 2`
-	yarn_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep yarn_version | cut -d '=' -f 2`
-	classic_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep classic_version | cut -d '=' -f 2`
-	HADOOP_YARN_VERSION="hadoop-$yarn_version"
-	HADOOP_ClASSIC_VERSION="hadoop-$classic_version"
+  hadoop_mode=`cat ${MapRHomeDir}/conf/hadoop_version | grep default_mode | cut -d '=' -f 2`
+  yarn_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep yarn_version | cut -d '=' -f 2`
+  classic_version=`cat ${MapRHomeDir}/conf/hadoop_version | grep classic_version | cut -d '=' -f 2`
+  HADOOP_YARN_VERSION="hadoop-$yarn_version"
+  HADOOP_ClASSIC_VERSION="hadoop-$classic_version"
 else
-	echo 'Unknown hadoop version'
+  echo 'Unknown hadoop version'
 fi
 if [ "$hadoop_mode" = "yarn" ]; then
-	echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/mapreduce/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/yarn/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/tools/lib/*.jar,${MapRHomeDir}/lib/*.jar" >> ${BASEDIR}/server/conf/catalina.properties
-  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/etc/hadoop/" >> ${BASEDIR}/server/conf/sqoop.properties
+  HADOOP_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
+  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${HADOOP_HOME}/etc/hadoop/" >> ${BASEDIR}/server/conf/sqoop.properties
 elif [ "$hadoop_mode" = "classic" ]; then
-	echo "common.loader=\${catalina.base}/lib,\${catalina.base}/lib/*.jar,\${catalina.home}/lib,\${catalina.home}/lib/*.jar,\${catalina.home}/../lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/lib/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/common/*.jar,${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}/share/hadoop/hdfs/*.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-0.20.2-dev-capacity-scheduler.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-core.jar,${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/lib/hadoop-${classic_version}-dev-fairscheduler.jar" >> ${BASEDIR}/server/conf/catalina.properties
-echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}/conf/" >> ${BASEDIR}/server/conf/sqoop.properties
+  HADOOP_HOME=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}
+  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${HADOOP_HOME}/conf/" >> ${BASEDIR}/server/conf/sqoop.properties
 fi
 
 SQOOP_CLIENT_LIB=${BASEDIR}/shell/lib
@@ -195,7 +205,7 @@ case $COMMAND in
     ;;
   server)
     if [ $# = 1 ]; then
-      echo "Usage: sqoop.sh server <start/stop>"
+      echo "Usage: sqoop.sh server <start/stop/status>"
       exit
     fi
 
@@ -248,8 +258,19 @@ case $COMMAND in
         rm -f "${sqoop_pidfile}"
         echo "Sqoop2 server stopped."
       ;;
+      status)
+        # check sqoop server status.
+        is_sqoop_server_running
+        if [[ $? -eq 0 ]]; then
+          echo "The Sqoop server started."
+          exit
+        elfi
+          echo "The Sqoop server stopped."
+          exit
+        fi
+      ;;
       *)
-        echo "Unknown command, usage: sqoop.sh server <start/stop>"
+        echo "Unknown command, usage: sqoop.sh server <start/stop/status>"
         exit
       ;;
     esac
