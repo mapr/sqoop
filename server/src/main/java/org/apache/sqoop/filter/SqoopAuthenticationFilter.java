@@ -18,7 +18,9 @@
 package org.apache.sqoop.filter;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.SaslRpcServer;
 import org.apache.hadoop.security.SecurityUtil;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authentication.server.KerberosAuthenticationHandler;
 import org.apache.hadoop.security.authentication.server.PseudoAuthenticationHandler;
 import org.apache.hadoop.security.token.delegation.web.DelegationTokenAuthenticationFilter;
@@ -75,6 +77,12 @@ public class SqoopAuthenticationFilter extends DelegationTokenAuthenticationFilt
 
       properties.setProperty(KerberosAuthenticationHandler.PRINCIPAL, hostPrincipal);
       properties.setProperty(KerberosAuthenticationHandler.KEYTAB, keytab);
+    } else if (type.equalsIgnoreCase(SecurityConstants.TYPE.CUSTOM.name())) {
+      Configuration conf = new Configuration();
+      conf.set("hadoop.security.authentication", "custom");
+      UserGroupInformation.setConfiguration(conf);
+      properties.setProperty(AUTH_TYPE, mapContext.getString(SecurityConstants.CUSTOM_AUTHENTICATION_HANDLER).trim());
+      setHandlerAuthMethod(SaslRpcServer.AuthMethod.TOKEN);
     } else if (type.equalsIgnoreCase(SecurityConstants.TYPE.SIMPLE.name())) {
       properties.setProperty(AUTH_TYPE, PseudoDelegationTokenAuthenticationHandler.class.getName());
       properties.setProperty(PseudoAuthenticationHandler.ANONYMOUS_ALLOWED,
