@@ -167,10 +167,10 @@ else
 fi
 if [ "$hadoop_mode" = "yarn" ]; then
   HADOOP_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
-  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${HADOOP_HOME}/etc/hadoop/" >> ${BASEDIR}/server/conf/sqoop.properties
+  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${HADOOP_HOME}/etc/hadoop/" >> ${BASEDIR}/conf/sqoop.properties
 elif [ "$hadoop_mode" = "classic" ]; then
   HADOOP_HOME=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}
-  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${HADOOP_HOME}/conf/" >> ${BASEDIR}/server/conf/sqoop.properties
+  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${HADOOP_HOME}/conf/" >> ${BASEDIR}/conf/sqoop.properties
 fi
 
 SQOOP_CLIENT_LIB=${BASEDIR}/shell/lib

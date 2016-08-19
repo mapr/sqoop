@@ -123,7 +123,7 @@ public class GenericJdbcExecutor implements AutoCloseable {
 
     // Fill in defaults if they were not pre-entered by user
     if(link.dialect.identifierEnclose == null) {
-      link.dialect.identifierEnclose = "\"";
+      link.dialect.identifierEnclose = "";
     }
   }
 
