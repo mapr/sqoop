@@ -190,6 +190,8 @@ under the License.
       conf="common->default;redist->default"/>
     <dependency org="commons-io" name="commons-io" rev="${commons-io.version}"
       conf="common->default;redist->default"/>
+    <dependency org="org.apache.commons" name="commons-lang3" rev="${commons-lang3.version}"
+      conf="common->default;redist->default"/>
     <dependency org="org.kitesdk" name="kite-data-mapreduce" rev="${kite-data.version}"
       conf="avro->default;redist->default"/>
     <dependency org="org.kitesdk" name="kite-data-maprfs" rev="${kite-data.version}"
