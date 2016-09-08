@@ -273,10 +273,10 @@ case $COMMAND in
         is_sqoop_server_running
         if [[ $? -eq 0 ]]; then
           echo "The Sqoop server started."
-          exit
-        elfi
+          exit 0
+        else
           echo "The Sqoop server stopped."
-          exit
+          exit 1
         fi
       ;;
       *)
