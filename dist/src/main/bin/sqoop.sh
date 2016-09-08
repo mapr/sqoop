@@ -165,6 +165,10 @@ then
 else
   echo 'Unknown hadoop version'
 fi
+
+cat ${BASEDIR}/conf/sqoop.properties | egrep -v -e '^org.apache.sqoop.submission.engine.mapreduce.configuration.directory' > ${BASEDIR}/conf/sqoop.properties.tmp
+cp -f ${BASEDIR}/conf/sqoop.properties.tmp ${BASEDIR}/conf/sqoop.properties
+
 if [ "$hadoop_mode" = "yarn" ]; then
   HADOOP_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
   echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${HADOOP_HOME}/etc/hadoop/" >> ${BASEDIR}/conf/sqoop.properties
