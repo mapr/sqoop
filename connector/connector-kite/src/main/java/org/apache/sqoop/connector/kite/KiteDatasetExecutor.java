@@ -164,7 +164,7 @@ public class KiteDatasetExecutor {
    * Workaround for managing temporary datasets.
    */
   public static String suggestTemporaryDatasetUri(LinkConfig linkConfig, String uri) {
-    if (uri.startsWith("dataset:hdfs:") || uri.startsWith("dataset:hive:")) {
+    if (uri.startsWith("dataset:maprfs:") || uri.startsWith("dataset:hdfs:") || uri.startsWith("dataset:hive:")) {
       int pathStart = uri.indexOf(":") + 1;
       pathStart = uri.indexOf(":", pathStart);
       int pathEnd = uri.lastIndexOf("?");

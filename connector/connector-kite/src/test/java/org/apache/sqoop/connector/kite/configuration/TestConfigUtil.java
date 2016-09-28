@@ -29,13 +29,13 @@ public class TestConfigUtil {
   @Test
   public void testBuildDatasetUri() {
     String actual = ConfigUtil.buildDatasetUri("namenode:8020",
-        "dataset:hdfs:/path/to/ds");
-    assertEquals("dataset:hdfs://namenode:8020/path/to/ds", actual);
+        "dataset:maprfs:///path/to/ds");
+    assertEquals("dataset:maprfs:///namenode:8020/path/to/ds", actual);
   }
 
   @Test
   public void testBuildDatasetUriHdfsHostPortIgnored() {
-    String expected = "dataset:hdfs://namenode2:8020/path/to/ds";
+    String expected = "dataset:maprfs:///namenode2:8020/path/to/ds";
     String actual = ConfigUtil.buildDatasetUri("namenode:8020", expected);
     assertEquals(expected, actual);
   }
