@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 @InterfaceStability.Unstable
 public class DatasetURIValidator extends AbstractValidator<String> {
 
-  private static final Pattern DATASET_URI_PATTERN = Pattern.compile("^dataset:(hive|hdfs|file):.*$");
+  private static final Pattern DATASET_URI_PATTERN = Pattern.compile("^dataset:(hive|maprfs|hdfs|file):.*$");
 
   @Override
   public void validate(String uri) {

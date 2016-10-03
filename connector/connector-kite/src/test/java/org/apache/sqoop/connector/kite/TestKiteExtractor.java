@@ -78,7 +78,7 @@ public class TestKiteExtractor {
     LinkConfiguration linkConfig = new LinkConfiguration();
     FromJobConfiguration jobConfig = new FromJobConfiguration();
     KiteDatasetPartition partition = new KiteDatasetPartition();
-    partition.setUri("dataset:hdfs:/path/to/dataset");
+    partition.setUri("dataset:maprfs:///path/to/dataset");
     OngoingStubbing<Object[]> readRecordMethodStub = when(executorMock.readRecord());
     final int NUMBER_OF_ROWS = 1000;
     for (int i = 0; i < NUMBER_OF_ROWS; i++) {

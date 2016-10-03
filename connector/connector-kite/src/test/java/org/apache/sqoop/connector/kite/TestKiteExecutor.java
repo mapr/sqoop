@@ -154,12 +154,12 @@ public class TestKiteExecutor {
 
   @Test
   public void testSuggestTemporaryDatasetUri() {
-    String uri = "dataset:hdfs:/tmp/sqoop/test";
+    String uri = "dataset:maprfs:///tmp/sqoop/test";
     String suggestedUri = KiteDatasetExecutor.suggestTemporaryDatasetUri(new LinkConfig(), uri);
     assertTrue(suggestedUri.length() > uri.length());
     assertTrue(suggestedUri.contains(uri));
 
-    uri = "dataset:hdfs://namenode:8020/tmp/sqoop/test";
+    uri = "dataset:maprfs:///namenode:8020/tmp/sqoop/test";
     suggestedUri = KiteDatasetExecutor.suggestTemporaryDatasetUri(new LinkConfig(), uri);
     assertTrue(suggestedUri.length() > uri.length());
     assertTrue(suggestedUri.contains(uri));

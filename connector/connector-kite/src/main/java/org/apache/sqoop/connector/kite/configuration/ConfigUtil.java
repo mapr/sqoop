@@ -69,11 +69,13 @@ public class ConfigUtil {
   }
 
   public static boolean isHdfsJob(ToJobConfig toJobConfig) {
-    return toJobConfig.uri.startsWith("dataset:hdfs:");
+    return toJobConfig.uri.startsWith("dataset:maprfs:") ||
+            toJobConfig.uri.startsWith("dataset:hdfs:");
   }
 
   public static boolean isHdfsJob(FromJobConfig fromJobConfig) {
-    return fromJobConfig.uri.startsWith("dataset:hdfs:");
+    return fromJobConfig.uri.startsWith("dataset:maprfs:") ||
+            fromJobConfig.uri.startsWith("dataset:hdfs:");
   }
 
   public static String removeDatasetPrefix(String uri) {

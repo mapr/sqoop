@@ -42,8 +42,8 @@ public class HostAndPortValidator extends AbstractValidator<String> {
     boolean valid = false;
     try {
       URI uri = new URI("hdfs://" + hostPortString);
-      valid = uri.getHost() != null &&
-          (!hostPortString.contains(":") || uri.getPort() > -1);
+      valid = (hostPortString.equals("maprfs:///")) || (uri.getHost() != null &&
+          (!hostPortString.contains(":") || uri.getPort() > -1));
     } catch (URISyntaxException ignored) {
     }
     if (!valid) {
