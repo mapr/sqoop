@@ -27,12 +27,12 @@ function print_usage(){
 
 function sqoop_server_classpath_set {
 
-  HADOOP_COMMON_HOME=${HADOOP_COMMON_HOME:-${HADOOP_HOME}/share/hadoop/common}
-  HADOOP_HDFS_HOME=${HADOOP_HDFS_HOME:-${HADOOP_HOME}/share/hadoop/hdfs}
+  HADOOP_COMMON_HOME=${HADOOP_COMMON_HOME:-${YARN_HOME}/share/hadoop/common}
+  HADOOP_HDFS_HOME=${HADOOP_HDFS_HOME:-${YARN_HOME}/share/hadoop/hdfs}
 
   if [ "$hadoop_mode" = "yarn" ]; then
-    HADOOP_MAPRED_HOME=${HADOOP_MAPRED_HOME:-${HADOOP_HOME}/share/hadoop/mapreduce}
-    HADOOP_YARN_HOME=${HADOOP_YARN_HOME:-${HADOOP_HOME}/share/hadoop/yarn}
+    HADOOP_MAPRED_HOME=${HADOOP_MAPRED_HOME:-${YARN_HOME}/share/hadoop/mapreduce}
+    HADOOP_YARN_HOME=${HADOOP_YARN_HOME:-${YARN_HOME}/share/hadoop/yarn}
 
     if [[ ! (-d "${HADOOP_COMMON_HOME}" && -d "${HADOOP_HDFS_HOME}" && -d "${HADOOP_MAPRED_HOME}" && -d "${HADOOP_YARN_HOME}") ]]; then
       echo "Can't load the Hadoop related java lib, please check the setting for the following environment variables:"
@@ -61,7 +61,7 @@ function sqoop_server_classpath_set {
     done
 
   elif [ "$hadoop_mode" = "classic" ]; then
-    HADOOP_CLASSIC_HOME=${HADOOP_CLASSIC_HOME:-${HADOOP_HOME}}
+    HADOOP_CLASSIC_HOME=${HADOOP_CLASSIC_HOME:-${CLASSIC_HOME}}
     for f in $HADOOP_CLASSIC_HOME/*.jar; do
       CLASSPATH="${CLASSPATH}:$f"
     done
@@ -170,11 +170,11 @@ cat ${BASEDIR}/conf/sqoop.properties | egrep -v -e '^org.apache.sqoop.submission
 cp -f ${BASEDIR}/conf/sqoop.properties.tmp ${BASEDIR}/conf/sqoop.properties
 
 if [ "$hadoop_mode" = "yarn" ]; then
-  HADOOP_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
-  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${HADOOP_HOME}/etc/hadoop/" >> ${BASEDIR}/conf/sqoop.properties
+  YARN_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
+  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${YARN_HOME}/etc/hadoop/" >> ${BASEDIR}/conf/sqoop.properties
 elif [ "$hadoop_mode" = "classic" ]; then
-  HADOOP_HOME=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}
-  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${HADOOP_HOME}/conf/" >> ${BASEDIR}/conf/sqoop.properties
+  CLASSIC_HOME=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}
+  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${CLASSIC_HOME}/conf/" >> ${BASEDIR}/conf/sqoop.properties
 fi
 
 SQOOP_CLIENT_LIB=${BASEDIR}/shell/lib

@@ -157,7 +157,19 @@ public class ConnectorClassLoader extends URLClassLoader {
 
   public ConnectorClassLoader(String connectorJar, ClassLoader parent,
       List<String> systemClasses, boolean overrideDefaultSystemClasses) throws IOException {
-    this(new File(connectorJar).toURI().toURL(), parent, systemClasses, overrideDefaultSystemClasses);
+    this(getExistingURL(new File(connectorJar).toURI().toURL(), connectorJar), parent, systemClasses, overrideDefaultSystemClasses);
+  }
+
+  private static URL getExistingURL(URL url, String connectorJar) throws MalformedURLException {
+    if (!new File(url.toString()).exists()){
+      String[] classPath = System.getProperty("java.class.path").split(":");
+      for(int i = 0; i < classPath.length; i++){
+        if (classPath[i].contains(connectorJar)){
+          return new File(classPath[i]).toURI().toURL();
+        }
+      }
+    }
+    return url;
   }
 
   static URL[] constructUrlsFromClasspath(String classpath)
