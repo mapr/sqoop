@@ -120,6 +120,19 @@ under the License.
       <exclude org="org.apache.avro" module="avro" />
     </dependency>
 
+    <dependency org="org.apache.sqoop.connector" name="sqoop-connector-tdch" rev="${sqoop-tdch.version}"
+                conf="common->default;redist->default">
+    </dependency>
+    <dependency org="com.teradata" name="tdgssconfig" rev="${teradata.version}"
+                conf="common->default;redist->default">
+    </dependency>
+    <dependency org="com.teradata" name="connector" rev="${teradata.version}"
+                conf="common->default;redist->default">
+    </dependency>
+    <dependency org="com.teradata" name="jdbc" rev="${teradata.version}"
+                conf="common->default;redist->default">
+    </dependency>
+
     <!-- dependencies for static analysis -->
     <dependency org="checkstyle" name="checkstyle" rev="${checkstyle.version}"
       conf="checkstyle->default" />
