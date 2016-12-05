@@ -24,20 +24,34 @@ import com.cloudera.sqoop.tool.BaseSqoopTool;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.sqoop.manager.oracle.OracleUtils;
+
 import com.cloudera.sqoop.lib.DelimiterSet;
 import com.cloudera.sqoop.tool.ImportTool;
 import com.cloudera.sqoop.testutil.HsqldbTestServer;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test aspects of the SqoopOptions class.
  */
+@RunWith(JUnit4.class)
 public class TestSqoopOptions extends TestCase {
 
   // tests for the toChar() parser
+  @Test
   public void testNormalChar() throws Exception {
     assertEquals('a', SqoopOptions.toChar("a"));
   }
 
+  @Test
   public void testEmptyString() throws Exception {
     try {
       SqoopOptions.toChar("");
@@ -47,6 +61,7 @@ public class TestSqoopOptions extends TestCase {
     }
   }
 
+  @Test
   public void testNullString() throws Exception {
     try {
       SqoopOptions.toChar(null);
@@ -56,45 +71,55 @@ public class TestSqoopOptions extends TestCase {
     }
   }
 
+  @Test
   public void testTooLong() throws Exception {
     // Should just use the first character and log a warning.
     assertEquals('x', SqoopOptions.toChar("xyz"));
   }
 
+  @Test
   public void testHexChar1() throws Exception {
     assertEquals(0xF, SqoopOptions.toChar("\\0xf"));
   }
 
+  @Test
   public void testHexChar2() throws Exception {
     assertEquals(0xF, SqoopOptions.toChar("\\0xF"));
   }
 
+  @Test
   public void testHexChar3() throws Exception {
     assertEquals(0xF0, SqoopOptions.toChar("\\0xf0"));
   }
 
+  @Test
   public void testHexChar4() throws Exception {
     assertEquals(0xF0, SqoopOptions.toChar("\\0Xf0"));
   }
 
+  @Test
   public void testEscapeChar1() throws Exception {
     assertEquals('\n', SqoopOptions.toChar("\\n"));
   }
 
+  @Test
   public void testEscapeChar2() throws Exception {
     assertEquals('\\', SqoopOptions.toChar("\\\\"));
   }
 
+  @Test
   public void testEscapeChar3() throws Exception {
     assertEquals('\\', SqoopOptions.toChar("\\"));
   }
 
+  @Test
   public void testWhitespaceToChar() throws Exception {
     assertEquals(' ', SqoopOptions.toChar(" "));
     assertEquals(' ', SqoopOptions.toChar("   "));
     assertEquals('\t', SqoopOptions.toChar("\t"));
   }
 
+  @Test
   public void testUnknownEscape1() throws Exception {
     try {
       SqoopOptions.toChar("\\Q");
@@ -104,6 +129,7 @@ public class TestSqoopOptions extends TestCase {
     }
   }
 
+  @Test
   public void testUnknownEscape2() throws Exception {
     try {
       SqoopOptions.toChar("\\nn");
@@ -113,30 +139,37 @@ public class TestSqoopOptions extends TestCase {
     }
   }
 
+  @Test
   public void testEscapeNul1() throws Exception {
     assertEquals(DelimiterSet.NULL_CHAR, SqoopOptions.toChar("\\0"));
   }
 
+  @Test
   public void testEscapeNul2() throws Exception {
     assertEquals(DelimiterSet.NULL_CHAR, SqoopOptions.toChar("\\00"));
   }
 
+  @Test
   public void testEscapeNul3() throws Exception {
     assertEquals(DelimiterSet.NULL_CHAR, SqoopOptions.toChar("\\0000"));
   }
 
+  @Test
   public void testEscapeNul4() throws Exception {
     assertEquals(DelimiterSet.NULL_CHAR, SqoopOptions.toChar("\\0x0"));
   }
 
+  @Test
   public void testOctalChar1() throws Exception {
     assertEquals(04, SqoopOptions.toChar("\\04"));
   }
 
+  @Test
   public void testOctalChar2() throws Exception {
     assertEquals(045, SqoopOptions.toChar("\\045"));
   }
 
+  @Test
   public void testErrOctalChar() throws Exception {
     try {
       SqoopOptions.toChar("\\095");
@@ -146,6 +179,7 @@ public class TestSqoopOptions extends TestCase {
     }
   }
 
+  @Test
   public void testErrHexChar() throws Exception {
     try {
       SqoopOptions.toChar("\\0x9K5");
@@ -161,6 +195,7 @@ public class TestSqoopOptions extends TestCase {
   }
 
   // test that setting output delimiters also sets input delimiters
+  @Test
   public void testDelimitersInherit() throws Exception {
     String [] args = {
       "--fields-terminated-by",
@@ -174,6 +209,7 @@ public class TestSqoopOptions extends TestCase {
 
   // Test that setting output delimiters and setting input delims
   // separately works.
+  @Test
   public void testDelimOverride1() throws Exception {
     String [] args = {
       "--fields-terminated-by",
@@ -188,6 +224,7 @@ public class TestSqoopOptions extends TestCase {
   }
 
   // test that the order in which delims are specified doesn't matter
+  @Test
   public void testDelimOverride2() throws Exception {
     String [] args = {
       "--input-fields-terminated-by",
@@ -201,6 +238,7 @@ public class TestSqoopOptions extends TestCase {
     assertEquals('|', opts.getOutputFieldDelim());
   }
 
+  @Test
   public void testBadNumMappers1() throws Exception {
     String [] args = {
       "--num-mappers",
@@ -215,6 +253,7 @@ public class TestSqoopOptions extends TestCase {
     }
   }
 
+  @Test
   public void testBadNumMappers2() throws Exception {
     String [] args = {
       "-m",
@@ -229,6 +268,7 @@ public class TestSqoopOptions extends TestCase {
     }
   }
 
+  @Test
   public void testGoodNumMappers() throws Exception {
     String [] args = {
       "-m",
@@ -239,6 +279,7 @@ public class TestSqoopOptions extends TestCase {
     assertEquals(4, opts.getNumMappers());
   }
 
+  @Test
   public void testHivePartitionParams() throws Exception {
     String[] args = {
         "--hive-partition-key", "ds",
@@ -249,6 +290,7 @@ public class TestSqoopOptions extends TestCase {
     assertEquals("20110413", opts.getHivePartitionValue());
   }
 
+  @Test
   public void testBoundaryQueryParams() throws Exception {
     String[] args = {
       "--boundary-query", "select 1, 2",
@@ -258,6 +300,7 @@ public class TestSqoopOptions extends TestCase {
     assertEquals("select 1, 2", opts.getBoundaryQuery());
   }
 
+  @Test
   public void testMapColumnHiveParams() throws Exception {
     String[] args = {
       "--map-column-hive", "id=STRING",
@@ -269,6 +312,7 @@ public class TestSqoopOptions extends TestCase {
     assertEquals("STRING", mapping.get("id"));
   }
 
+  @Test
   public void testMalformedMapColumnHiveParams() throws Exception {
     String[] args = {
       "--map-column-hive", "id",
@@ -281,6 +325,7 @@ public class TestSqoopOptions extends TestCase {
     }
   }
 
+  @Test
   public void testMapColumnJavaParams() throws Exception {
     String[] args = {
       "--map-column-java", "id=String",
@@ -292,6 +337,7 @@ public class TestSqoopOptions extends TestCase {
     assertEquals("String", mapping.get("id"));
   }
 
+  @Test
   public void testMalfromedMapColumnJavaParams() throws Exception {
     String[] args = {
       "--map-column-java", "id",
@@ -304,12 +350,14 @@ public class TestSqoopOptions extends TestCase {
     }
   }
 
+  @Test
   public void testSkipDistCacheOption() throws Exception {
     String[] args = {"--skip-dist-cache"};
     SqoopOptions opts = parse(args);
     assertTrue(opts.isSkipDistCache());
   }
 
+  @Test
   public void testPropertySerialization1() {
     // Test that if we write a SqoopOptions out to a Properties,
     // and then read it back in, we get all the same results.
@@ -350,6 +398,7 @@ public class TestSqoopOptions extends TestCase {
             connParams, in.getConnectionParams());
   }
 
+  @Test
   public void testPropertySerialization2() {
     // Test that if we write a SqoopOptions out to a Properties,
     // and then read it back in, we get all the same results.
@@ -389,8 +438,61 @@ public class TestSqoopOptions extends TestCase {
     assertEquals("connection params don't match",
             connParams, in.getConnectionParams());
   }
+    @Test
+    public void valueOfOracleEscapingDisabledInHadoopConfigurationInstanceOfSqoopOptionsShouldBeFalseIfTheValueOfTheRelatedEnvironmentVariableIsSetToFalse() {
+        System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "false");
+        SqoopOptions opts = new SqoopOptions();
 
+        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+                is(equalTo(false)));
+    }
+
+    @Test
+    public void valueOfOracleEscapingDisabledInHadoopConfigurationInstanceOfSqoopOptionsShouldBeTrueIfTheValueOfTheRelatedEnvironmentVariableIsSetToTrue() {
+        System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "true");
+        SqoopOptions opts = new SqoopOptions();
+
+        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+                is(equalTo(true)));
+    }
+
+    @Test
+    public void valueOfOracleEscapingDisabledInHadoopConfigurationInstanceOfSqoopOptionsShouldBeFalseIfTheValueOfTheRelatedEnvironmentVariableIsSetToAnyNonBooleanValue() {
+        System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "falsetrue");
+        SqoopOptions opts = new SqoopOptions();
+
+        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+                is(equalTo(false)));
+    }
+
+    @Test
+    public void valueOfOracleEscapingDisabledShouldBeAbleToSavedAndLoadedBackWithTheSameValue() {
+        System.clearProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED);
+        SqoopOptions opts = new SqoopOptions();
+        opts.setOracleEscapingDisabled(false);
+        Properties out = opts.writeProperties();
+        opts = new SqoopOptions();
+        opts.loadProperties(out);
+
+        assertThat(opts.isOracleEscapingDisabled(), is(equalTo(false)));
+        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+                is(equalTo(false)));
+    }
+
+    @Test
+    public void valueOfOracleEscapingDisabledShouldBeEqualToNullIfASqoopOptionsInstanceWasLoadedWhichDidntContainASavedValueForIt() {
+        System.clearProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED);
+        SqoopOptions opts = new SqoopOptions();
+        Properties out = opts.writeProperties();
+        opts = new SqoopOptions();
+        opts.loadProperties(out);
+
+        assertThat(opts.isOracleEscapingDisabled(), is(equalTo(true)));
+        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+                is(equalTo(true)));
+    }
   // test that hadoop-home is accepted as an option
+  @Test
   public void testHadoopHome() throws Exception {
     String [] args = {
       "--hadoop-home",
@@ -402,12 +504,12 @@ public class TestSqoopOptions extends TestCase {
   }
 
   // test that hadoop-home is accepted as an option
+  @Test
   public void testHadoopMapRedOverridesHadoopHome() throws Exception {
-	String[] args = { "--hadoop-home", "/usr/lib/hadoop-ignored",
-	  "--hadoop-mapred-home", "/usr/lib/hadoop", };
+    String[] args = { "--hadoop-home", "/usr/lib/hadoop-ignored", "--hadoop-mapred-home", "/usr/lib/hadoop", };
 
-	SqoopOptions opts = parse(args);
-	assertEquals("/usr/lib/hadoop", opts.getHadoopMapRedHome());
+    SqoopOptions opts = parse(args);
+    assertEquals("/usr/lib/hadoop", opts.getHadoopMapRedHome());
   }
 
 
@@ -425,6 +527,7 @@ public class TestSqoopOptions extends TestCase {
   }
 
   //test compatability of --detele-target-dir with import
+  @Test
   public void testDeteleTargetDir() throws Exception {
     String [] extraArgs = {
       "--delete-target-dir",
@@ -437,6 +540,7 @@ public class TestSqoopOptions extends TestCase {
   }
 
   //test incompatability of --delete-target-dir & --append with import
+  @Test
   public void testDeleteTargetDirWithAppend() throws Exception {
     String [] extraArgs = {
       "--append",
@@ -451,6 +555,7 @@ public class TestSqoopOptions extends TestCase {
   }
 
   //test incompatability of --delete-target-dir with incremental import
+  @Test
   public void testDeleteWithIncrementalImport() throws Exception {
     String [] extraArgs = {
       "--incremental", "append",
@@ -466,6 +571,7 @@ public class TestSqoopOptions extends TestCase {
 
   // test that hbase bulk load import with table name and target dir
   // passes validation
+  @Test
   public void testHBaseBulkLoad() throws Exception {
     String [] extraArgs = {
         longArgument(BaseSqoopTool.HBASE_BULK_LOAD_ENABLED_ARG),
@@ -477,6 +583,7 @@ public class TestSqoopOptions extends TestCase {
   }
 
   // test that hbase bulk load import with a missing --hbase-table fails
+  @Test
   public void testHBaseBulkLoadMissingHbaseTable() throws Exception {
     String [] extraArgs = {
         longArgument(BaseSqoopTool.HBASE_BULK_LOAD_ENABLED_ARG),
@@ -493,6 +600,7 @@ public class TestSqoopOptions extends TestCase {
     return String.format("--%s", argument);
   }
 
+  @Test
   public void testRelaxedIsolation() throws Exception {
     String extraArgs[] = {
       "--relaxed-isolation",
@@ -500,6 +608,7 @@ public class TestSqoopOptions extends TestCase {
     validateImportOptions(extraArgs);
   }
 
+  @Test
   public void testResetToOneMapper() throws Exception {
     String extraArgs[] = {
       "--autoreset-to-one-mapper",
@@ -507,6 +616,7 @@ public class TestSqoopOptions extends TestCase {
     validateImportOptions(extraArgs);
   }
 
+  @Test
   public void testResetToOneMapperAndSplitBy() throws Exception {
     String extraArgs[] = {
       "--autoreset-to-one-mapper",

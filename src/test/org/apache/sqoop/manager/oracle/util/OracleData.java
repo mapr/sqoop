@@ -52,7 +52,8 @@ public final class OracleData {
     StringBuilder result = new StringBuilder();
     String delim = "";
     for (OracleDataDefinition column : tableDefinition.getColumnList()) {
-      result.append(delim).append(OracleUtils.escapeIdentifier(column.getColumnName())).append(" ").append(
+      result.append(delim).append(OracleUtils.escapeIdentifier(column.getColumnName())).append(" ")
+          .append(
           column.getDataType());
       delim = ",\n";
     }

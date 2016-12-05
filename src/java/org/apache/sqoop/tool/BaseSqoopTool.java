@@ -163,6 +163,7 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
   public static final String CALL_ARG = "call";
   public static final String SKIP_DISTCACHE_ARG = "skip-dist-cache";
   public static final String RELAXED_ISOLATION = "relaxed-isolation";
+  public static final String ORACLE_ESCAPING_DISABLED = "oracle-escaping-disabled";
 
   // Arguments for validation.
   public static final String VALIDATE_ARG = "validate";
@@ -522,6 +523,13 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
             .hasArg().withDescription("Use custom format for columns of timestamp type")
             .withLongOpt(TIMESTAMP_FORMAT)
             .create());
+
+    commonOpts.addOption(OptionBuilder
+        .withDescription("Disable the escaping mechanism of the Oracle/OraOop connection managers")
+        .withLongOpt(ORACLE_ESCAPING_DISABLED)
+        .hasArg()
+        .withArgName("boolean")
+        .create());
 
     return commonOpts;
   }
@@ -1091,6 +1099,10 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
 
     if (in.hasOption(TIMESTAMP_FORMAT)) {
       out.setTimestampFormat(in.getOptionValue(TIMESTAMP_FORMAT));
+    }
+
+    if (in.hasOption(ORACLE_ESCAPING_DISABLED)) {
+      out.setOracleEscapingDisabled(Boolean.parseBoolean(in.getOptionValue(ORACLE_ESCAPING_DISABLED)));
     }
   }
 
