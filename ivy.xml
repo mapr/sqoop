@@ -201,6 +201,12 @@ under the License.
 
     <dependency org="org.apache.sqoop.connector" name="sqoop-connector-tdch" rev="${sqoop-tdch.version}"
                 conf="common->default;redist->default">
+      <exclude org="org.apache.hadoop" module="hadoop-mapreduce-client-core"/>
+      <exclude org="org.apache.hadoop" module="hadoop-mapreduce-client-jobclient"/>
+      <exclude org="org.apache.hadoop" module="hadoop-minicluster"/>
+      <exclude org="org.apache.hadoop" module="hadoop-auth"/>
+      <exclude org="org.apache.hadoop" module="hadoop-common"/>
+      <exclude org="org.apache.sqoop" module="sqoop"/>
     </dependency>
     <dependency org="com.teradata" name="tdgssconfig" rev="${teradata.version}"
                 conf="common->default;redist->default">
