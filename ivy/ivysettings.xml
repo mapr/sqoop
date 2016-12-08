@@ -31,6 +31,8 @@ under the License.
           http://ibiblio.lsu.edu/main/pub/packages/maven2
           http://www.ibiblio.net/pub/packages/maven2
   -->
+  <property name="checksums" value="" />
+
   <property name="repo.maven.org"
       value="${forivy.MAVEN_CENTRAL}"
       override="false"/>
