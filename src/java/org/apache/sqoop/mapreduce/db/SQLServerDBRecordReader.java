@@ -212,7 +212,7 @@ public class SQLServerDBRecordReader<T extends SqoopRecord> extends
       StringBuilder lowerClause = new StringBuilder();
       lowerClause.append(getDBConf().getInputOrderBy());
       lowerClause.append(" > ");
-      lowerClause.append(lastRecordKey.toString());
+      lowerClause.append("'" + lastRecordKey.toString() + "'");
 
       // Get the select query with the lowerClause, and split upper clause
       selectQuery = getSelectQuery(lowerClause.toString(),
