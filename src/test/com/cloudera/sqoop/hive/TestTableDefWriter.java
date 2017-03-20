@@ -30,26 +30,38 @@ import org.apache.sqoop.util.SqlTypeMap;
 import com.cloudera.sqoop.SqoopOptions;
 import com.cloudera.sqoop.tool.ImportTool;
 import com.cloudera.sqoop.testutil.HsqldbTestServer;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
 import java.sql.Types;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 
 /**
  * Test Hive DDL statement generation.
  */
-public class TestTableDefWriter extends TestCase {
+public class TestTableDefWriter {
 
   public static final Log LOG = LogFactory.getLog(
       TestTableDefWriter.class.getName());
 
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
   // Test getHiveOctalCharCode and expect an IllegalArgumentException.
   private void expectExceptionInCharCode(int charCode) {
-    try {
-      TableDefWriter.getHiveOctalCharCode(charCode);
-      fail("Expected IllegalArgumentException");
-    } catch (IllegalArgumentException iae) {
-      // Expected; ok.
-    }
+    thrown.expect(IllegalArgumentException.class);
+    thrown.reportMissingExceptionWithMessage("Expected IllegalArgumentException with out-of-range Hive delimiter");
+    TableDefWriter.getHiveOctalCharCode(charCode);
   }
 
+  @Test
   public void testHiveOctalCharCode() {
     assertEquals("\\000", TableDefWriter.getHiveOctalCharCode(0));
     assertEquals("\\001", TableDefWriter.getHiveOctalCharCode(1));
@@ -61,6 +73,7 @@ public class TestTableDefWriter extends TestCase {
     expectExceptionInCharCode(254);
   }
 
+  @Test
   public void testDifferentTableNames() throws Exception {
     Configuration conf = new Configuration();
     SqoopOptions options = new SqoopOptions();
@@ -83,6 +96,7 @@ public class TestTableDefWriter extends TestCase {
     assertTrue(loadData.indexOf("/inputTable'") != -1);
   }
 
+  @Test
   public void testDifferentTargetDirs() throws Exception {
     String targetDir = "targetDir";
     String inputTable = "inputTable";
@@ -111,6 +125,7 @@ public class TestTableDefWriter extends TestCase {
     assertTrue(loadData.indexOf("/" + targetDir + "'") != -1);
   }
 
+  @Test
   public void testPartitions() throws Exception {
     String[] args = {
         "--hive-partition-key", "ds",
@@ -137,6 +152,7 @@ public class TestTableDefWriter extends TestCase {
     assertTrue(loadData.endsWith(" PARTITION (ds='20110413')"));
   }
 
+  @Test
   public void testLzoSplitting() throws Exception {
     String[] args = {
         "--compress",
@@ -165,7 +181,8 @@ public class TestTableDefWriter extends TestCase {
         createTable);
   }
 
-  public void testUserMapping() throws Exception {
+  @Test
+  public void testUserMappingNoDecimal() throws Exception {
     String[] args = {
         "--map-column-hive", "id=STRING,value=INTEGER",
     };
@@ -191,6 +208,44 @@ public class TestTableDefWriter extends TestCase {
     assertFalse(createTable.contains("`value` STRING"));
   }
 
+  @Test
+  public void testUserMappingWithDecimal() throws Exception {
+    String[] args = {
+        "--map-column-hive", "id=STRING,value2=DECIMAL(13,5),value1=INTEGER," +
+                             "value3=DECIMAL(4,5),value4=VARCHAR(255)",
+    };
+    Configuration conf = new Configuration();
+    SqoopOptions options =
+        new ImportTool().parseArguments(args, null, null, false);
+    TableDefWriter writer = new TableDefWriter(options,
+        null, HsqldbTestServer.getTableName(), "outputTable", conf, false);
+
+    Map<String, Integer> colTypes = new SqlTypeMap<String, Integer>();
+    colTypes.put("id", Types.INTEGER);
+    colTypes.put("value1", Types.VARCHAR);
+    colTypes.put("value2", Types.DOUBLE);
+    colTypes.put("value3", Types.FLOAT);
+    colTypes.put("value4", Types.CHAR);
+    writer.setColumnTypes(colTypes);
+
+    String createTable = writer.getCreateTableStmt();
+
+    assertNotNull(createTable);
+
+    assertTrue(createTable.contains("`id` STRING"));
+    assertTrue(createTable.contains("`value1` INTEGER"));
+    assertTrue(createTable.contains("`value2` DECIMAL(13,5)"));
+    assertTrue(createTable.contains("`value3` DECIMAL(4,5)"));
+    assertTrue(createTable.contains("`value4` VARCHAR(255)"));
+
+    assertFalse(createTable.contains("`id` INTEGER"));
+    assertFalse(createTable.contains("`value1` STRING"));
+    assertFalse(createTable.contains("`value2` DOUBLE"));
+    assertFalse(createTable.contains("`value3` FLOAT"));
+    assertFalse(createTable.contains("`value4` CHAR"));
+  }
+
+  @Test
   public void testUserMappingFailWhenCantBeApplied() throws Exception {
     String[] args = {
         "--map-column-hive", "id=STRING,value=INTEGER",
@@ -205,14 +260,12 @@ public class TestTableDefWriter extends TestCase {
     colTypes.put("id", Types.INTEGER);
     writer.setColumnTypes(colTypes);
 
-    try {
-      String createTable = writer.getCreateTableStmt();
-      fail("Expected failure on non applied mapping.");
-    } catch(IllegalArgumentException iae) {
-      // Expected, ok
-    }
+    thrown.expect(IllegalArgumentException.class);
+    thrown.reportMissingExceptionWithMessage("Expected IllegalArgumentException on non applied Hive type mapping");
+    String createTable = writer.getCreateTableStmt();
   }
 
+  @Test
   public void testHiveDatabase() throws Exception {
     String[] args = {
         "--hive-database", "db",
@@ -234,4 +287,5 @@ public class TestTableDefWriter extends TestCase {
     assertNotNull(loadStmt);
     assertTrue(createTable.contains("`db`.`outputTable`"));
   }
+
 }
