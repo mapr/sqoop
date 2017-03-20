@@ -20,30 +20,47 @@ package com.cloudera.sqoop;
 
 import java.util.Properties;
 
-import com.cloudera.sqoop.tool.BaseSqoopTool;
-import junit.framework.TestCase;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.sqoop.manager.oracle.OracleUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.cloudera.sqoop.lib.DelimiterSet;
-import com.cloudera.sqoop.tool.ImportTool;
 import com.cloudera.sqoop.testutil.HsqldbTestServer;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import com.cloudera.sqoop.tool.BaseSqoopTool;
+import com.cloudera.sqoop.tool.ImportTool;
 
+import static org.apache.sqoop.Sqoop.SQOOP_RETHROW_PROPERTY;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Test aspects of the SqoopOptions class.
  */
-@RunWith(JUnit4.class)
-public class TestSqoopOptions extends TestCase {
+public class TestSqoopOptions {
+
+  private Properties originalSystemProperties;
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
+  @Before
+  public void setup() {
+   originalSystemProperties = System.getProperties();
+  }
+
+  @After
+  public void tearDown() {
+    System.setProperties(originalSystemProperties);
+  }
 
   // tests for the toChar() parser
   @Test
@@ -53,22 +70,16 @@ public class TestSqoopOptions extends TestCase {
 
   @Test
   public void testEmptyString() throws Exception {
-    try {
-      SqoopOptions.toChar("");
-      fail("Expected exception");
-    } catch (SqoopOptions.InvalidOptionsException ioe) {
-      // expect this.
-    }
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected InvalidOptionsException on empty string");
+    SqoopOptions.toChar("");
   }
 
   @Test
   public void testNullString() throws Exception {
-    try {
-      SqoopOptions.toChar(null);
-      fail("Expected exception");
-    } catch (SqoopOptions.InvalidOptionsException ioe) {
-      // expect this.
-    }
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected InvalidOptionsException on null string");
+    SqoopOptions.toChar(null);
   }
 
   @Test
@@ -121,22 +132,16 @@ public class TestSqoopOptions extends TestCase {
 
   @Test
   public void testUnknownEscape1() throws Exception {
-    try {
-      SqoopOptions.toChar("\\Q");
-      fail("Expected exception");
-    } catch (SqoopOptions.InvalidOptionsException ioe) {
-      // expect this.
-    }
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected InvalidOptionsException on unknown escaping");
+    SqoopOptions.toChar("\\Q");
   }
 
   @Test
   public void testUnknownEscape2() throws Exception {
-    try {
-      SqoopOptions.toChar("\\nn");
-      fail("Expected exception");
-    } catch (SqoopOptions.InvalidOptionsException ioe) {
-      // expect this.
-    }
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected InvalidOptionsException on unknown escaping");
+    SqoopOptions.toChar("\\nn");
   }
 
   @Test
@@ -171,22 +176,16 @@ public class TestSqoopOptions extends TestCase {
 
   @Test
   public void testErrOctalChar() throws Exception {
-    try {
-      SqoopOptions.toChar("\\095");
-      fail("Expected exception");
-    } catch (NumberFormatException nfe) {
-      // expected.
-    }
+    thrown.expect(NumberFormatException.class);
+    thrown.reportMissingExceptionWithMessage("Expected NumberFormatException on erroneous octal char");
+    SqoopOptions.toChar("\\095");
   }
 
   @Test
   public void testErrHexChar() throws Exception {
-    try {
-      SqoopOptions.toChar("\\0x9K5");
-      fail("Expected exception");
-    } catch (NumberFormatException nfe) {
-      // expected.
-    }
+    thrown.expect(NumberFormatException.class);
+    thrown.reportMissingExceptionWithMessage("Expected NumberFormatException on erroneous hex char");
+    SqoopOptions.toChar("\\0x9K5");
   }
 
   private SqoopOptions parse(String [] argv) throws Exception {
@@ -245,12 +244,9 @@ public class TestSqoopOptions extends TestCase {
       "x",
     };
 
-    try {
-      parse(args);
-      fail("Expected InvalidOptionsException");
-    } catch (SqoopOptions.InvalidOptionsException ioe) {
-      // expected.
-    }
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected InvalidOptionsException on invalid --num-mappers argument");
+    parse(args);
   }
 
   @Test
@@ -260,12 +256,9 @@ public class TestSqoopOptions extends TestCase {
       "x",
     };
 
-    try {
-      parse(args);
-      fail("Expected InvalidOptionsException");
-    } catch (SqoopOptions.InvalidOptionsException ioe) {
-      // expected.
-    }
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected InvalidOptionsException on invalid -m argument");
+    parse(args);
   }
 
   @Test
@@ -438,59 +431,219 @@ public class TestSqoopOptions extends TestCase {
     assertEquals("connection params don't match",
             connParams, in.getConnectionParams());
   }
-    @Test
-    public void valueOfOracleEscapingDisabledInHadoopConfigurationInstanceOfSqoopOptionsShouldBeFalseIfTheValueOfTheRelatedEnvironmentVariableIsSetToFalse() {
-        System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "false");
-        SqoopOptions opts = new SqoopOptions();
 
-        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
-                is(equalTo(false)));
-    }
+  @Test
+  public void testDefaultTempRootDir() {
+    SqoopOptions opts = new SqoopOptions();
 
-    @Test
-    public void valueOfOracleEscapingDisabledInHadoopConfigurationInstanceOfSqoopOptionsShouldBeTrueIfTheValueOfTheRelatedEnvironmentVariableIsSetToTrue() {
-        System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "true");
-        SqoopOptions opts = new SqoopOptions();
+    assertEquals("_sqoop", opts.getTempRootDir());
+  }
 
-        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
-                is(equalTo(true)));
-    }
+  @Test
+  public void testDefaultLoadedTempRootDir() {
+    SqoopOptions out = new SqoopOptions();
+    Properties props = out.writeProperties();
+    SqoopOptions opts = new SqoopOptions();
+    opts.loadProperties(props);
 
-    @Test
-    public void valueOfOracleEscapingDisabledInHadoopConfigurationInstanceOfSqoopOptionsShouldBeFalseIfTheValueOfTheRelatedEnvironmentVariableIsSetToAnyNonBooleanValue() {
-        System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "falsetrue");
-        SqoopOptions opts = new SqoopOptions();
+    assertEquals("_sqoop", opts.getTempRootDir());
+  }
 
-        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
-                is(equalTo(false)));
-    }
+  @Test
+  public void testLoadedTempRootDir() {
+    SqoopOptions out = new SqoopOptions();
+    final String tempRootDir = "customRoot";
+    out.setTempRootDir(tempRootDir);
+    Properties props = out.writeProperties();
+    SqoopOptions opts = new SqoopOptions();
+    opts.loadProperties(props);
 
-    @Test
-    public void valueOfOracleEscapingDisabledShouldBeAbleToSavedAndLoadedBackWithTheSameValue() {
-        System.clearProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED);
-        SqoopOptions opts = new SqoopOptions();
-        opts.setOracleEscapingDisabled(false);
-        Properties out = opts.writeProperties();
-        opts = new SqoopOptions();
-        opts.loadProperties(out);
+    assertEquals(tempRootDir, opts.getTempRootDir());
+  }
 
-        assertThat(opts.isOracleEscapingDisabled(), is(equalTo(false)));
-        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
-                is(equalTo(false)));
-    }
+  @Test
+  public void testNulledTempRootDir() {
+    SqoopOptions out = new SqoopOptions();
+    out.setTempRootDir(null);
+    Properties props = out.writeProperties();
+    SqoopOptions opts = new SqoopOptions();
+    opts.loadProperties(props);
 
-    @Test
-    public void valueOfOracleEscapingDisabledShouldBeEqualToNullIfASqoopOptionsInstanceWasLoadedWhichDidntContainASavedValueForIt() {
-        System.clearProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED);
-        SqoopOptions opts = new SqoopOptions();
-        Properties out = opts.writeProperties();
-        opts = new SqoopOptions();
-        opts.loadProperties(out);
+    assertEquals("_sqoop", opts.getTempRootDir());
+  }
 
-        assertThat(opts.isOracleEscapingDisabled(), is(equalTo(true)));
-        assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
-                is(equalTo(true)));
-    }
+  @Test
+  public void testDefaultThrowOnErrorWithNotSetSystemProperty() {
+    System.clearProperty(SQOOP_RETHROW_PROPERTY);
+    SqoopOptions opts = new SqoopOptions();
+    assertFalse(opts.isThrowOnError());
+  }
+
+  @Test
+  public void testDefaultThrowOnErrorWithSetSystemProperty() {
+    String testSqoopRethrowProperty = "";
+    System.setProperty(SQOOP_RETHROW_PROPERTY, testSqoopRethrowProperty);
+    SqoopOptions opts = new SqoopOptions();
+
+    assertTrue(opts.isThrowOnError());
+  }
+
+  @Test
+  public void testDefaultLoadedThrowOnErrorWithNotSetSystemProperty() {
+    System.clearProperty(SQOOP_RETHROW_PROPERTY);
+    SqoopOptions out = new SqoopOptions();
+    Properties props = out.writeProperties();
+    SqoopOptions opts = new SqoopOptions();
+    opts.loadProperties(props);
+
+    assertFalse(opts.isThrowOnError());
+  }
+
+  @Test
+  public void testDefaultLoadedThrowOnErrorWithSetSystemProperty() {
+    String testSqoopRethrowProperty = "";
+    System.setProperty(SQOOP_RETHROW_PROPERTY, testSqoopRethrowProperty);
+    SqoopOptions out = new SqoopOptions();
+    Properties props = out.writeProperties();
+    SqoopOptions opts = new SqoopOptions();
+    opts.loadProperties(props);
+
+    assertTrue(opts.isThrowOnError());
+  }
+
+  @Test
+  public void testThrowOnErrorWithNotSetSystemProperty() throws Exception {
+    System.clearProperty(SQOOP_RETHROW_PROPERTY);
+    String[] args = {"--throw-on-error"};
+    SqoopOptions opts = parse(args);
+
+    assertTrue(opts.isThrowOnError());
+  }
+
+  @Test
+  public void testThrowOnErrorWithSetSystemProperty() throws Exception {
+    String testSqoopRethrowProperty = "";
+    System.setProperty(SQOOP_RETHROW_PROPERTY, testSqoopRethrowProperty);
+    String[] args = {"--throw-on-error"};
+    SqoopOptions opts = parse(args);
+
+    assertTrue(opts.isThrowOnError());
+  }
+
+  @Test
+  public void defaultValueOfOracleEscapingDisabledShouldBeFalse() {
+    System.clearProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED);
+    SqoopOptions opts = new SqoopOptions();
+
+    assertThat(opts.isOracleEscapingDisabled(), is(equalTo(true)));
+  }
+
+  @Test
+  public void valueOfOracleEscapingDisabledShouldBeFalseIfTheValueOfTheRelatedEnvironmentVariableIsSetToFalse() {
+    System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "false");
+    SqoopOptions opts = new SqoopOptions();
+
+    assertThat(opts.isOracleEscapingDisabled(), is(equalTo(false)));
+  }
+
+  @Test
+  public void valueOfOracleEscapingDisabledShouldBeTrueIfTheValueOfTheRelatedEnvironmentVariableIsSetToTrue() {
+    System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "true");
+    SqoopOptions opts = new SqoopOptions();
+
+    assertThat(opts.isOracleEscapingDisabled(), is(equalTo(true)));
+  }
+
+  @Test
+  public void valueOfOracleEscapingDisabledShouldBeFalseIfTheValueOfTheRelatedEnvironmentVariableIsSetToAnyNonBooleanValue() {
+    System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "falsetrue");
+    SqoopOptions opts = new SqoopOptions();
+
+    assertThat(opts.isOracleEscapingDisabled(), is(equalTo(false)));
+  }
+
+  @Test
+  public void hadoopConfigurationInstanceOfSqoopOptionsShouldContainTheSameValueForOracleEscapingDisabledAsSqoopOptionsProperty() {
+    SqoopOptions opts = new SqoopOptions();
+
+    assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+        is(equalTo(opts.isOracleEscapingDisabled())));
+  }
+
+  @Test
+  public void hadoopConfigurationInstanceOfSqoopOptionsShouldContainTrueForOracleEscapingDisabledAsTheValueDirectlyHasBeenSetToSqoopOptions() {
+    System.clearProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED);
+    SqoopOptions opts = new SqoopOptions();
+    opts.setOracleEscapingDisabled(true);
+
+    assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+        is(equalTo(true)));
+  }
+
+  @Test
+  public void hadoopConfigurationInstanceOfSqoopOptionsShouldContainFalseForOracleEscapingDisabledAsTheValueDirectlyHasBeenSetToSqoopOptions() {
+    System.clearProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED);
+    SqoopOptions opts = new SqoopOptions();
+    opts.setOracleEscapingDisabled(false);
+
+    assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+        is(equalTo(false)));
+  }
+
+  @Test
+  public void valueOfOracleEscapingDisabledInHadoopConfigurationInstanceOfSqoopOptionsShouldBeFalseIfTheValueOfTheRelatedEnvironmentVariableIsSetToFalse() {
+    System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "false");
+    SqoopOptions opts = new SqoopOptions();
+
+    assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+        is(equalTo(false)));
+  }
+
+  @Test
+  public void valueOfOracleEscapingDisabledInHadoopConfigurationInstanceOfSqoopOptionsShouldBeTrueIfTheValueOfTheRelatedEnvironmentVariableIsSetToTrue() {
+    System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "true");
+    SqoopOptions opts = new SqoopOptions();
+
+    assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+        is(equalTo(true)));
+  }
+
+  @Test
+  public void valueOfOracleEscapingDisabledInHadoopConfigurationInstanceOfSqoopOptionsShouldBeFalseIfTheValueOfTheRelatedEnvironmentVariableIsSetToAnyNonBooleanValue() {
+    System.setProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED, "falsetrue");
+    SqoopOptions opts = new SqoopOptions();
+
+    assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+        is(equalTo(false)));
+  }
+
+  @Test
+  public void valueOfOracleEscapingDisabledShouldBeAbleToSavedAndLoadedBackWithTheSameValue() {
+    System.clearProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED);
+    SqoopOptions opts = new SqoopOptions();
+    opts.setOracleEscapingDisabled(false);
+    Properties out = opts.writeProperties();
+    opts = new SqoopOptions();
+    opts.loadProperties(out);
+
+    assertThat(opts.isOracleEscapingDisabled(), is(equalTo(false)));
+    assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+        is(equalTo(false)));
+  }
+
+  @Test
+  public void valueOfOracleEscapingDisabledShouldBeEqualToNullIfASqoopOptionsInstanceWasLoadedWhichDidntContainASavedValueForIt() {
+    System.clearProperty(SqoopOptions.ORACLE_ESCAPING_DISABLED);
+    SqoopOptions opts = new SqoopOptions();
+    Properties out = opts.writeProperties();
+    opts = new SqoopOptions();
+    opts.loadProperties(out);
+
+    assertThat(opts.isOracleEscapingDisabled(), is(equalTo(true)));
+    assertThat(OracleUtils.isOracleEscapingDisabled(opts.getConf()),
+        is(equalTo(true)));
+  }
+
   // test that hadoop-home is accepted as an option
   @Test
   public void testHadoopHome() throws Exception {
@@ -546,12 +699,11 @@ public class TestSqoopOptions extends TestCase {
       "--append",
       "--delete-target-dir",
     };
-    try {
-      validateImportOptions(extraArgs);
-      fail("Expected InvalidOptionsException");
-    } catch(SqoopOptions.InvalidOptionsException ioe) {
-      // Expected
-    }
+
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected InvalidOptionsException on incompatibility of " +
+        "--delete-target-dir and --append");
+    validateImportOptions(extraArgs);
   }
 
   //test incompatability of --delete-target-dir with incremental import
@@ -561,12 +713,11 @@ public class TestSqoopOptions extends TestCase {
       "--incremental", "append",
       "--delete-target-dir",
     };
-    try {
-      validateImportOptions(extraArgs);
-      fail("Expected InvalidOptionsException");
-    } catch(SqoopOptions.InvalidOptionsException ioe) {
-      // Expected
-    }
+
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected InvalidOptionsException on incompatibility of " +
+        "--delete-target-dir and --incremental");
+    validateImportOptions(extraArgs);
   }
 
   // test that hbase bulk load import with table name and target dir
@@ -588,12 +739,10 @@ public class TestSqoopOptions extends TestCase {
     String [] extraArgs = {
         longArgument(BaseSqoopTool.HBASE_BULK_LOAD_ENABLED_ARG),
         longArgument(BaseSqoopTool.TARGET_DIR_ARG), "./test"};
-    try {
-      validateImportOptions(extraArgs);
-      fail("Expected InvalidOptionsException");
-    } catch (SqoopOptions.InvalidOptionsException ioe) {
-      // Expected
-    }
+
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected InvalidOptionsException because of missing --hbase-table");
+    validateImportOptions(extraArgs);
   }
 
   private static String longArgument(String argument) {
@@ -623,11 +772,26 @@ public class TestSqoopOptions extends TestCase {
       "--split-by",
       "col0",
     };
-    try {
-      validateImportOptions(extraArgs);
-      fail("Expected InvalidOptionsException");
-    } catch (SqoopOptions.InvalidOptionsException ioe) {
-      // Expected
-    }
+
+    thrown.expect(SqoopOptions.InvalidOptionsException.class);
+    thrown.reportMissingExceptionWithMessage("Expected Exception on incompatibility of " +
+        "--autoreset-to-one-mapper and --split-by");
+    validateImportOptions(extraArgs);
   }
+
+  @Test
+  public void testEscapeMapingColumnNames() throws Exception {
+    SqoopOptions opts = new SqoopOptions();
+    // enabled by default
+    assertTrue(opts.getEscapeMappingColumnNamesEnabled());
+
+    String [] args = {
+        "--" + org.apache.sqoop.tool.BaseSqoopTool.ESCAPE_MAPPING_COLUMN_NAMES_ENABLED,
+        "false",
+    };
+
+    opts = parse(args);
+    assertFalse(opts.getEscapeMappingColumnNamesEnabled());
+  }
+
 }
