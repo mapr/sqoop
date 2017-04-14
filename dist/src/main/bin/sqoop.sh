@@ -166,17 +166,6 @@ else
   echo 'Unknown hadoop version'
 fi
 
-cat ${BASEDIR}/conf/sqoop.properties | egrep -v -e '^org.apache.sqoop.submission.engine.mapreduce.configuration.directory' > ${BASEDIR}/conf/sqoop.properties.tmp
-cp -f ${BASEDIR}/conf/sqoop.properties.tmp ${BASEDIR}/conf/sqoop.properties
-
-if [ "$hadoop_mode" = "yarn" ]; then
-  YARN_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
-  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${YARN_HOME}/etc/hadoop/" >> ${BASEDIR}/conf/sqoop.properties
-elif [ "$hadoop_mode" = "classic" ]; then
-  CLASSIC_HOME=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}
-  echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${CLASSIC_HOME}/conf/" >> ${BASEDIR}/conf/sqoop.properties
-fi
-
 SQOOP_CLIENT_LIB=${BASEDIR}/shell/lib
 SQOOP_SERVER_LIB=${BASEDIR}/server/lib
 SQOOP_TOOLS_LIB=${BASEDIR}/tools/lib
@@ -222,6 +211,18 @@ case $COMMAND in
       echo "Usage: sqoop.sh server <start/stop/status>"
       exit
     fi
+
+    cat ${BASEDIR}/conf/sqoop.properties | egrep -v -e '^org.apache.sqoop.submission.engine.mapreduce.configuration.directory' > ${BASEDIR}/conf/sqoop.properties.tmp
+    cp -f ${BASEDIR}/conf/sqoop.properties.tmp ${BASEDIR}/conf/sqoop.properties
+
+    if [ "$hadoop_mode" = "yarn" ]; then
+      YARN_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
+      echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${YARN_HOME}/etc/hadoop/" >> ${BASEDIR}/conf/sqoop.properties
+    elif [ "$hadoop_mode" = "classic" ]; then
+      CLASSIC_HOME=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}
+      echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${CLASSIC_HOME}/conf/" >> ${BASEDIR}/conf/sqoop.properties
+    fi
+
 
     source ${BASEDIR}/bin/sqoop-sys.sh
 
