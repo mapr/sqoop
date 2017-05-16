@@ -197,6 +197,18 @@ public abstract class BaseSqoopTool
           org.apache.sqoop.tool.BaseSqoopTool.OLD_DATASET_ARG;
   public static final String MERGE_KEY_ARG =
           org.apache.sqoop.tool.BaseSqoopTool.MERGE_KEY_ARG;
+  public static final String INPUT_METHOD =
+          org.apache.sqoop.tool.BaseSqoopTool.INPUT_METHOD;
+  public static final String OUTPUT_METHOD =
+          org.apache.sqoop.tool.BaseSqoopTool.OUTPUT_METHOD;
+  public static final String NUM_PARTITIONS_FOR_STAGING_TABLE =
+          org.apache.sqoop.tool.BaseSqoopTool.NUM_PARTITIONS_FOR_STAGING_TABLE;
+  public static final String KEEP_STAGING_TABLE =
+          org.apache.sqoop.tool.BaseSqoopTool.KEEP_STAGING_TABLE;
+  public static final String STAGING_DATABASE =
+          org.apache.sqoop.tool.BaseSqoopTool.STAGING_DATABASE;
+  public static final String STAGING_FORCE =
+          org.apache.sqoop.tool.BaseSqoopTool.STAGING_FORCE;
 
   public BaseSqoopTool() {
   }

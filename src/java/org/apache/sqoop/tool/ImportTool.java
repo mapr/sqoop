@@ -755,6 +755,14 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
       .withDescription("Reset the number of mappers to one mapper if no split key available")
       .withLongOpt(AUTORESET_TO_ONE_MAPPER)
       .create());
+    importOpts.addOption(OptionBuilder.withArgName("input-method")
+            .hasArg().withDescription("input method for import from Teradata")
+            .withLongOpt(INPUT_METHOD)
+            .create());
+    importOpts.addOption(OptionBuilder.withArgName("num-partitions-for-staging-table")
+            .hasArg().withDescription("number of partitions for staging table during import from Teradata")
+            .withLongOpt(NUM_PARTITIONS_FOR_STAGING_TABLE)
+            .create());
     return importOpts;
   }
 
@@ -975,6 +983,14 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
       if (in.hasOption(AUTORESET_TO_ONE_MAPPER)) {
         out.setAutoResetToOneMapper(true);
+      }
+
+      if (in.hasOption(INPUT_METHOD)) {
+        out.setInputMethod(in.getOptionValue(INPUT_METHOD));
+      }
+
+      if (in.hasOption(NUM_PARTITIONS_FOR_STAGING_TABLE)) {
+        out.setNumPartitionsForStagingTable(in.getOptionValue(NUM_PARTITIONS_FOR_STAGING_TABLE));
       }
 
       applyIncrementalOptions(in, out);
