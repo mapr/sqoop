@@ -339,6 +339,14 @@ public class SqoopOptions implements Cloneable {
   // the connection manager fully qualified class name
   @StoredAsProperty("connection.manager") private String connManagerClassName;
 
+  //teradata options
+  @StoredAsProperty("input.method") private String inputMethod;
+  @StoredAsProperty("output.method") private String outputMethod;
+  @StoredAsProperty("num.partitions.for.staging.table") private String numPartitionsForStagingTable;
+  @StoredAsProperty("keep.staging.table") private Boolean keepStagingTable;
+  @StoredAsProperty("staging.database") private String stagingDatabase;
+  @StoredAsProperty("staging.force") private Boolean stagingForce;
+
   // The currently active tool. (Not saved in properties)
   // Used to pass the SqoopTool instance in to mapreduce job configuration
   // (JobBase, etc).
@@ -2556,4 +2564,30 @@ public class SqoopOptions implements Cloneable {
   public void setHCatalogPartitionValues(String hpvs) {
     this.hCatalogPartitionValues = hpvs;
   }
+
+  public void setInputMethod(String input) {this.inputMethod = input;}
+
+  public String getInputMethod() {return inputMethod;}
+
+  public void setOutputMethod(String output) {this.outputMethod = output;}
+
+  public String getOutputMethod() {return outputMethod;}
+
+  public String getNumPartitionsForStagingTable() { return numPartitionsForStagingTable;}
+
+  public void setNumPartitionsForStagingTable(String numPartitionsForStagingTable) {
+    this.numPartitionsForStagingTable = numPartitionsForStagingTable;
+  }
+
+  public Boolean getKeepStagingTable() {return keepStagingTable;}
+
+  public void setKeepStagingTable(Boolean keepStagingTable) {this.keepStagingTable = keepStagingTable;}
+
+  public String getStagingDatabase() {return stagingDatabase;}
+
+  public void setStagingDatabase(String stagingDatabase) {this.stagingDatabase = stagingDatabase;}
+
+  public Boolean getStagingForce() {return stagingForce;}
+
+  public void setStagingForce(Boolean stagingForce) {this.stagingForce = stagingForce;}
 }

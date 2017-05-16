@@ -225,6 +225,14 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
 
   public static final String AUTORESET_TO_ONE_MAPPER = "autoreset-to-one-mapper";
 
+  //Teradata options
+  public static final String INPUT_METHOD = "input-method";
+  public static final String OUTPUT_METHOD = "output-method";
+  public static final String NUM_PARTITIONS_FOR_STAGING_TABLE = "num-partitions-for-staging-table";
+  public static final String KEEP_STAGING_TABLE = "keep-staging-table";
+  public static final String STAGING_DATABASE = "staging-database";
+  public static final String STAGING_FORCE = "staging-force";
+
 
   public BaseSqoopTool() {
   }
@@ -466,6 +474,15 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
         .withDescription("Use read-uncommitted isolation for imports")
         .withLongOpt(RELAXED_ISOLATION)
         .create());
+    //teradata options
+    commonOpts.addOption(OptionBuilder
+            .withDescription("Override the default staging database name")
+            .withLongOpt(STAGING_DATABASE)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .withDescription("Force the connector to create the staging table")
+            .withLongOpt(STAGING_FORCE)
+            .create());
 
     return commonOpts;
   }
@@ -1003,6 +1020,14 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
     }
     if (in.hasOption(RELAXED_ISOLATION)) {
       out.setRelaxedIsolation(true);
+    }
+
+    if (in.hasOption(STAGING_DATABASE)) {
+      out.setStagingDatabase(in.getOptionValue(STAGING_DATABASE));
+    }
+
+    if (in.hasOption(STAGING_FORCE)) {
+      out.setStagingForce(true);
     }
   }
 

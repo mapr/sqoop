@@ -185,6 +185,14 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
              + "procedure (one call per row)")
          .withLongOpt(CALL_ARG)
          .create());
+    exportOpts.addOption(OptionBuilder.withArgName("output-method")
+            .hasArg().withDescription("output method for export to Teradata")
+            .withLongOpt(OUTPUT_METHOD)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("keep-staging-table")
+            .hasArg().withDescription("keep staging table after export to Teradata")
+            .withLongOpt(KEEP_STAGING_TABLE)
+            .create());
 
     addValidationOpts(exportOpts);
 
@@ -285,6 +293,14 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
       if (in.hasOption(CALL_ARG)) {
           out.setCall(in.getOptionValue(CALL_ARG));
+      }
+
+      if (in.hasOption(OUTPUT_METHOD)) {
+        out.setOutputMethod(in.getOptionValue(OUTPUT_METHOD));
+      }
+
+      if (in.hasOption(KEEP_STAGING_TABLE)) {
+        out.setKeepStagingTable(true);
       }
 
       applyValidationOptions(in, out);
