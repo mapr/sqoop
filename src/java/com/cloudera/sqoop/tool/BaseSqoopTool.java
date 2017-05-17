@@ -209,6 +209,18 @@ public abstract class BaseSqoopTool
           org.apache.sqoop.tool.BaseSqoopTool.STAGING_DATABASE;
   public static final String STAGING_FORCE =
           org.apache.sqoop.tool.BaseSqoopTool.STAGING_FORCE;
+  public static final String BATCH_SIZE =
+          org.apache.sqoop.tool.BaseSqoopTool.BATCH_SIZE;
+  public static final String ACCESS_LOCK =
+          org.apache.sqoop.tool.BaseSqoopTool.ACCESS_LOCK;
+  public static final String QUERY_BAND =
+          org.apache.sqoop.tool.BaseSqoopTool.QUERY_BAND;
+  public static final String ERROR_TABLE =
+          org.apache.sqoop.tool.BaseSqoopTool.ERROR_TABLE;
+  public static final String FASTLOAD_SOCKET_HOSTNAME =
+          org.apache.sqoop.tool.BaseSqoopTool.FASTLOAD_SOCKET_HOSTNAME;
+  public static final String SKIP_XVIEWS =
+          org.apache.sqoop.tool.BaseSqoopTool.SKIP_XVIEWS;
 
   public BaseSqoopTool() {
   }

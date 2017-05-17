@@ -186,12 +186,20 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
          .withLongOpt(CALL_ARG)
          .create());
     exportOpts.addOption(OptionBuilder.withArgName("output-method")
-            .hasArg().withDescription("output method for export to Teradata")
+            .hasArg().withDescription("Output method for export to Teradata")
             .withLongOpt(OUTPUT_METHOD)
             .create());
     exportOpts.addOption(OptionBuilder.withArgName("keep-staging-table")
-            .hasArg().withDescription("keep staging table after export to Teradata")
+            .withDescription("Keep staging table after export to Teradata")
             .withLongOpt(KEEP_STAGING_TABLE)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("error-table")
+            .hasArg().withDescription("Specify a prefix for created error tables")
+            .withLongOpt(ERROR_TABLE)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("fastload-socket-hostname")
+            .hasArg().withDescription("Hostname or IP address of the host on which installed Sqoop")
+            .withLongOpt(FASTLOAD_SOCKET_HOSTNAME)
             .create());
 
     addValidationOpts(exportOpts);
@@ -301,6 +309,14 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
       if (in.hasOption(KEEP_STAGING_TABLE)) {
         out.setKeepStagingTable(true);
+      }
+
+      if (in.hasOption(ERROR_TABLE)) {
+        out.setErrorTable(in.getOptionValue(ERROR_TABLE));
+      }
+
+      if (in.hasOption(FASTLOAD_SOCKET_HOSTNAME)) {
+        out.setFastloadSocketHostname(in.getOptionValue(FASTLOAD_SOCKET_HOSTNAME));
       }
 
       applyValidationOptions(in, out);
