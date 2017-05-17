@@ -756,12 +756,16 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
       .withLongOpt(AUTORESET_TO_ONE_MAPPER)
       .create());
     importOpts.addOption(OptionBuilder.withArgName("input-method")
-            .hasArg().withDescription("input method for import from Teradata")
+            .hasArg().withDescription("Input method for import from Teradata")
             .withLongOpt(INPUT_METHOD)
             .create());
     importOpts.addOption(OptionBuilder.withArgName("num-partitions-for-staging-table")
-            .hasArg().withDescription("number of partitions for staging table during import from Teradata")
+            .hasArg().withDescription("Number of partitions for staging table during import from Teradata")
             .withLongOpt(NUM_PARTITIONS_FOR_STAGING_TABLE)
+            .create());
+    importOpts.addOption(OptionBuilder.withArgName("access-lock")
+            .withDescription("Import job is not blocked by concurrent accesses to the same table")
+            .withLongOpt(ACCESS_LOCK)
             .create());
     return importOpts;
   }
@@ -990,7 +994,11 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
       }
 
       if (in.hasOption(NUM_PARTITIONS_FOR_STAGING_TABLE)) {
-        out.setNumPartitionsForStagingTable(in.getOptionValue(NUM_PARTITIONS_FOR_STAGING_TABLE));
+        out.setNumPartitionsForStagingTable(Integer.parseInt(in.getOptionValue(NUM_PARTITIONS_FOR_STAGING_TABLE)));
+      }
+
+      if (in.hasOption(ACCESS_LOCK)) {
+        out.setAccessLock(true);
       }
 
       applyIncrementalOptions(in, out);

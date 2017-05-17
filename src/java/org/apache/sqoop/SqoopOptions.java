@@ -342,10 +342,16 @@ public class SqoopOptions implements Cloneable {
   //teradata options
   @StoredAsProperty("input.method") private String inputMethod;
   @StoredAsProperty("output.method") private String outputMethod;
-  @StoredAsProperty("num.partitions.for.staging.table") private String numPartitionsForStagingTable;
+  @StoredAsProperty("num.partitions.for.staging.table") private int numPartitionsForStagingTable;
   @StoredAsProperty("keep.staging.table") private Boolean keepStagingTable;
   @StoredAsProperty("staging.database") private String stagingDatabase;
   @StoredAsProperty("staging.force") private Boolean stagingForce;
+  @StoredAsProperty("batch.size") private int batchSize;
+  @StoredAsProperty("access.lock") private Boolean accessLock;
+  @StoredAsProperty("query.band") private String queryBand;
+  @StoredAsProperty("error.table") private String errorTable;
+  @StoredAsProperty("fastload.socket.hostname") private String fastloadSocketHostname;
+  @StoredAsProperty("skip.xviews") private Boolean skipXviews;
 
   // The currently active tool. (Not saved in properties)
   // Used to pass the SqoopTool instance in to mapreduce job configuration
@@ -2573,9 +2579,9 @@ public class SqoopOptions implements Cloneable {
 
   public String getOutputMethod() {return outputMethod;}
 
-  public String getNumPartitionsForStagingTable() { return numPartitionsForStagingTable;}
+  public int getNumPartitionsForStagingTable() { return numPartitionsForStagingTable;}
 
-  public void setNumPartitionsForStagingTable(String numPartitionsForStagingTable) {
+  public void setNumPartitionsForStagingTable(int numPartitionsForStagingTable) {
     this.numPartitionsForStagingTable = numPartitionsForStagingTable;
   }
 
@@ -2590,4 +2596,30 @@ public class SqoopOptions implements Cloneable {
   public Boolean getStagingForce() {return stagingForce;}
 
   public void setStagingForce(Boolean stagingForce) {this.stagingForce = stagingForce;}
+
+  public int getBatchSize() {return batchSize;}
+
+  public void setBatchSize(int batchSize) {this.batchSize = batchSize;}
+
+  public Boolean getAccessLock() {return accessLock;}
+
+  public void setAccessLock(Boolean accessLock) {this.accessLock = accessLock;}
+
+  public String getQueryBand() {return queryBand;}
+
+  public void setQueryBand(String queryBand) {this.queryBand = queryBand;}
+
+  public String getErrorTable() {return errorTable;}
+
+  public void setErrorTable(String errorTable) {this.errorTable = errorTable;}
+
+  public String getFastloadSocketHostname() {return fastloadSocketHostname;}
+
+  public void setFastloadSocketHostname(String fastloadSocketHostname) {
+    this.fastloadSocketHostname = fastloadSocketHostname;
+  }
+
+  public Boolean getSkipXviews() {return skipXviews;}
+
+  public void setSkipXviews(Boolean skipXviews) {this.skipXviews = skipXviews;}
 }

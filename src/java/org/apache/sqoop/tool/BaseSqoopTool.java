@@ -232,6 +232,12 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
   public static final String KEEP_STAGING_TABLE = "keep-staging-table";
   public static final String STAGING_DATABASE = "staging-database";
   public static final String STAGING_FORCE = "staging-force";
+  public static final String BATCH_SIZE = "batch-size";
+  public static final String ACCESS_LOCK = "access-lock";
+  public static final String QUERY_BAND = "query-band";
+  public static final String ERROR_TABLE = "error-table";
+  public static final String FASTLOAD_SOCKET_HOSTNAME = "fastload-socket-hostname";
+  public static final String SKIP_XVIEWS = "skip-xviews";
 
 
   public BaseSqoopTool() {
@@ -476,12 +482,24 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
         .create());
     //teradata options
     commonOpts.addOption(OptionBuilder
-            .withDescription("Override the default staging database name")
+            .hasArg().withDescription("Override the default staging database name")
             .withLongOpt(STAGING_DATABASE)
             .create());
     commonOpts.addOption(OptionBuilder
             .withDescription("Force the connector to create the staging table")
             .withLongOpt(STAGING_FORCE)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Specify the number of rows processed together in one batch")
+            .withLongOpt(BATCH_SIZE)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Used to set the value of session level query band to Teradata connection")
+            .withLongOpt(QUERY_BAND)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .withDescription("Connector uses to XViews to obtain metadata")
+            .withLongOpt(SKIP_XVIEWS)
             .create());
 
     return commonOpts;
@@ -1028,6 +1046,18 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
 
     if (in.hasOption(STAGING_FORCE)) {
       out.setStagingForce(true);
+    }
+
+    if (in.hasOption(BATCH_SIZE)) {
+      out.setBatchSize(Integer.parseInt(in.getOptionValue(BATCH_SIZE)));
+    }
+
+    if (in.hasOption(QUERY_BAND)) {
+      out.setQueryBand(in.getOptionValue(QUERY_BAND));
+    }
+
+    if (in.hasOption(SKIP_XVIEWS)) {
+      out.setSkipXviews(true);
     }
   }
 
