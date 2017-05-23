@@ -124,6 +124,10 @@ public class TestConnFactory extends TestCase {
       return null;
     }
 
+    public String [] getColumnNamesForTeradata(String tableName) {
+      return null;
+    }
+
     public String[] getColumnNamesForProcedure(String procedureName) {
       return null;
     }

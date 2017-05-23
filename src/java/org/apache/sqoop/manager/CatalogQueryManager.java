@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.cloudera.sqoop.SqoopOptions;
 import org.apache.sqoop.util.LoggingUtils;
+import com.teradata.connector.teradata.db.TeradataConnection;
 
 /**
  * Database manager that queries catalog tables directly
@@ -181,6 +182,23 @@ public abstract class CatalogQueryManager
     }
 
     return columns.toArray(new String[columns.size()]);
+  }
+
+  public String[] getColumnNamesForTeradata(String tableName){
+    TeradataConnection c = null;
+    String [] columns = null;
+    try {
+      c = new TeradataConnection("com.teradata.jdbc.TeraDriver", options.getConnectString(), options.getUsername(),
+              options.getPassword(), true);
+      c.connect();
+      columns = c.getColumnNamesForTable(tableName);
+      c.close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+    return columns;
   }
 
   protected abstract String getPrimaryKeyQuery(String tableName);
