@@ -71,6 +71,11 @@ public abstract class ConnManager {
   public abstract String [] getColumnNames(String tableName);
 
   /**
+   * Return a list of column names in a table in the order returned by the Teradata db.
+   */
+  public abstract String [] getColumnNamesForTeradata(String tableName);
+
+  /**
    * Return a list of stored procedure argument names in the order
    * that they are declared.
    */

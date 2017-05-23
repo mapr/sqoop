@@ -20,6 +20,7 @@ package org.apache.sqoop.hive;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Date;
@@ -36,6 +37,7 @@ import org.apache.sqoop.io.CodecMap;
 
 import com.cloudera.sqoop.SqoopOptions;
 import com.cloudera.sqoop.manager.ConnManager;
+import org.apache.connectors.td.TeradataManager;
 
 /**
  * Creates (Hive-specific) SQL DDL statements to create tables to hold data
@@ -104,7 +106,11 @@ public class TableDefWriter {
 
       return keyList.toArray(new String[keyList.size()]);
     } else if (null != inputTableName) {
-      return connManager.getColumnNames(inputTableName);
+      if (connManager instanceof TeradataManager) {
+        return connManager.getColumnNamesForTeradata(inputTableName);
+      } else {
+        return connManager.getColumnNames(inputTableName);
+      }
     } else {
       return connManager.getColumnNamesForQuery(options.getSqlQuery());
     }
