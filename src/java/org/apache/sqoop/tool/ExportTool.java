@@ -201,6 +201,14 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
             .hasArg().withDescription("Hostname or IP address of the host on which installed Sqoop")
             .withLongOpt(FASTLOAD_SOCKET_HOSTNAME)
             .create());
+    exportOpts.addOption(OptionBuilder.withArgName("fastload-socket-port")
+            .hasArg().withDescription("Opened port on the host on which installed Sqoop")
+            .withLongOpt(FASTLOAD_SOCKET_PORT)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("fastload-socket-timeout")
+            .hasArg().withDescription("Timeout for fast export")
+            .withLongOpt(FASTLOAD_SOCKET_TIMEOUT)
+            .create());
 
     addValidationOpts(exportOpts);
 
@@ -317,6 +325,14 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
       if (in.hasOption(FASTLOAD_SOCKET_HOSTNAME)) {
         out.setFastloadSocketHostname(in.getOptionValue(FASTLOAD_SOCKET_HOSTNAME));
+      }
+
+      if (in.hasOption(FASTLOAD_SOCKET_PORT)) {
+        out.setFastloadSocketPort(Integer.parseInt(in.getOptionValue(FASTLOAD_SOCKET_PORT)));
+      }
+
+      if (in.hasOption(FASTLOAD_SOCKET_TIMEOUT)) {
+        out.setFastloadSocketTimeout(Long.parseLong(in.getOptionValue(FASTLOAD_SOCKET_TIMEOUT)));
       }
 
       applyValidationOptions(in, out);
