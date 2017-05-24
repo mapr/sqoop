@@ -351,6 +351,8 @@ public class SqoopOptions implements Cloneable {
   @StoredAsProperty("query.band") private String queryBand;
   @StoredAsProperty("error.table") private String errorTable;
   @StoredAsProperty("fastload.socket.hostname") private String fastloadSocketHostname;
+  @StoredAsProperty("fastload.socket.port") private int fastloadSocketPort;
+  @StoredAsProperty("fastload.socket.timeout") private long fastloadSocketTimeout;
   @StoredAsProperty("skip.xviews") private Boolean skipXviews;
 
   // The currently active tool. (Not saved in properties)
@@ -2618,6 +2620,14 @@ public class SqoopOptions implements Cloneable {
   public void setFastloadSocketHostname(String fastloadSocketHostname) {
     this.fastloadSocketHostname = fastloadSocketHostname;
   }
+
+  public int getFastloadSocketPort() {return fastloadSocketPort;}
+
+  public void setFastloadSocketPort(int fastloadSocketPort) {this.fastloadSocketPort = fastloadSocketPort;}
+
+  public long getFastloadSocketTimeout() {return fastloadSocketTimeout;}
+
+  public void setFastloadSocketTimeout(long fastloadSocketTimeout) {this.fastloadSocketTimeout = fastloadSocketTimeout;}
 
   public Boolean getSkipXviews() {return skipXviews;}
 

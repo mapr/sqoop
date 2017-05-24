@@ -219,6 +219,10 @@ public abstract class BaseSqoopTool
           org.apache.sqoop.tool.BaseSqoopTool.ERROR_TABLE;
   public static final String FASTLOAD_SOCKET_HOSTNAME =
           org.apache.sqoop.tool.BaseSqoopTool.FASTLOAD_SOCKET_HOSTNAME;
+  public static final String FASTLOAD_SOCKET_PORT =
+          org.apache.sqoop.tool.BaseSqoopTool.FASTLOAD_SOCKET_PORT;
+  public static final String FASTLOAD_SOCKET_TIMEOUT =
+          org.apache.sqoop.tool.BaseSqoopTool.FASTLOAD_SOCKET_TIMEOUT;
   public static final String SKIP_XVIEWS =
           org.apache.sqoop.tool.BaseSqoopTool.SKIP_XVIEWS;
 

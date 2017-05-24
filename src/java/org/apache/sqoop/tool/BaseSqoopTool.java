@@ -237,6 +237,8 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
   public static final String QUERY_BAND = "query-band";
   public static final String ERROR_TABLE = "error-table";
   public static final String FASTLOAD_SOCKET_HOSTNAME = "fastload-socket-hostname";
+  public static final String FASTLOAD_SOCKET_PORT = "fastload-socket-port";
+  public static final String FASTLOAD_SOCKET_TIMEOUT = "fastload-socket-timeout";
   public static final String SKIP_XVIEWS = "skip-xviews";
 
 
