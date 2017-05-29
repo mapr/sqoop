@@ -225,6 +225,14 @@ public abstract class BaseSqoopTool
           org.apache.sqoop.tool.BaseSqoopTool.FASTLOAD_SOCKET_TIMEOUT;
   public static final String SKIP_XVIEWS =
           org.apache.sqoop.tool.BaseSqoopTool.SKIP_XVIEWS;
+  public static final String ERROR_DATABASE =
+          org.apache.sqoop.tool.BaseSqoopTool.ERROR_DATABASE;
+  public static final String DATE_FORMAT =
+          org.apache.sqoop.tool.BaseSqoopTool.DATE_FORMAT;
+  public static final String TIME_FORMAT =
+          org.apache.sqoop.tool.BaseSqoopTool.TIME_FORMAT;
+  public static final String TIMESTAMP_FORMAT =
+          org.apache.sqoop.tool.BaseSqoopTool.TIMESTAMP_FORMAT;
 
   public BaseSqoopTool() {
   }
