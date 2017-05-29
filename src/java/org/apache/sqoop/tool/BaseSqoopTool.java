@@ -236,10 +236,15 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
   public static final String ACCESS_LOCK = "access-lock";
   public static final String QUERY_BAND = "query-band";
   public static final String ERROR_TABLE = "error-table";
+  public static final String ERROR_DATABASE = "error-database";
   public static final String FASTLOAD_SOCKET_HOSTNAME = "fastload-socket-hostname";
   public static final String FASTLOAD_SOCKET_PORT = "fastload-socket-port";
   public static final String FASTLOAD_SOCKET_TIMEOUT = "fastload-socket-timeout";
   public static final String SKIP_XVIEWS = "skip-xviews";
+  public static final String DATE_FORMAT = "date-format";
+  public static final String TIME_FORMAT = "time-format";
+  public static final String TIMESTAMP_FORMAT = "timestamp-format";
+
 
 
   public BaseSqoopTool() {
@@ -502,6 +507,18 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
     commonOpts.addOption(OptionBuilder
             .withDescription("Connector uses to XViews to obtain metadata")
             .withLongOpt(SKIP_XVIEWS)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Use custom format for columns of date type")
+            .withLongOpt(DATE_FORMAT)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Use custom format for columns of time type")
+            .withLongOpt(TIME_FORMAT)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Use custom format for columns of timestamp type")
+            .withLongOpt(TIMESTAMP_FORMAT)
             .create());
 
     return commonOpts;
@@ -1060,6 +1077,18 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
 
     if (in.hasOption(SKIP_XVIEWS)) {
       out.setSkipXviews(true);
+    }
+
+    if (in.hasOption(DATE_FORMAT)) {
+      out.setDateFormat(in.getOptionValue(DATE_FORMAT));
+    }
+
+    if (in.hasOption(TIME_FORMAT)) {
+      out.setTimeFormat(in.getOptionValue(TIME_FORMAT));
+    }
+
+    if (in.hasOption(TIMESTAMP_FORMAT)) {
+      out.setTimestampFormat(in.getOptionValue(TIMESTAMP_FORMAT));
     }
   }
 

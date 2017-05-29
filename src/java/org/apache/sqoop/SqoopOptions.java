@@ -350,10 +350,14 @@ public class SqoopOptions implements Cloneable {
   @StoredAsProperty("access.lock") private Boolean accessLock;
   @StoredAsProperty("query.band") private String queryBand;
   @StoredAsProperty("error.table") private String errorTable;
+  @StoredAsProperty("error.database") private String errorDatabase;
   @StoredAsProperty("fastload.socket.hostname") private String fastloadSocketHostname;
   @StoredAsProperty("fastload.socket.port") private int fastloadSocketPort;
   @StoredAsProperty("fastload.socket.timeout") private long fastloadSocketTimeout;
   @StoredAsProperty("skip.xviews") private Boolean skipXviews;
+  @StoredAsProperty("date.format") private String dateFormat;
+  @StoredAsProperty("time.format") private String timeFormat;
+  @StoredAsProperty("timestamp.format") private String timestampFormat;
 
   // The currently active tool. (Not saved in properties)
   // Used to pass the SqoopTool instance in to mapreduce job configuration
@@ -1017,6 +1021,9 @@ public class SqoopOptions implements Cloneable {
     // Relaxed isolation will not enabled by default which is the behavior
     // of sqoop until now.
     this.relaxedIsolation = false;
+
+    this.skipXviews = false;
+    this.accessLock = false;
   }
 
   /**
@@ -2632,4 +2639,20 @@ public class SqoopOptions implements Cloneable {
   public Boolean getSkipXviews() {return skipXviews;}
 
   public void setSkipXviews(Boolean skipXviews) {this.skipXviews = skipXviews;}
+
+  public String getErrorDatabase() {return errorDatabase;}
+
+  public void setErrorDatabase(String errorDatabase) {this.errorDatabase = errorDatabase;}
+
+  public String getDateFormat() {return dateFormat;}
+
+  public void setDateFormat(String dateFormat) {this.dateFormat = dateFormat;}
+
+  public String getTimeFormat() {return timeFormat;}
+
+  public void setTimeFormat(String timeFormat) {this.timeFormat = timeFormat;}
+
+  public String getTimestampFormat() {return timestampFormat;}
+
+  public void setTimestampFormat(String timestampFormat) {this.timestampFormat = timestampFormat;}
 }

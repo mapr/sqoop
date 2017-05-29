@@ -197,6 +197,10 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
             .hasArg().withDescription("Specify a prefix for created error tables")
             .withLongOpt(ERROR_TABLE)
             .create());
+    exportOpts.addOption(OptionBuilder.withArgName("error-database")
+            .hasArg().withDescription("Specify error database")
+            .withLongOpt(ERROR_DATABASE)
+            .create());
     exportOpts.addOption(OptionBuilder.withArgName("fastload-socket-hostname")
             .hasArg().withDescription("Hostname or IP address of the host on which installed Sqoop")
             .withLongOpt(FASTLOAD_SOCKET_HOSTNAME)
@@ -321,6 +325,10 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
       if (in.hasOption(ERROR_TABLE)) {
         out.setErrorTable(in.getOptionValue(ERROR_TABLE));
+      }
+
+      if (in.hasOption(ERROR_DATABASE)) {
+        out.setErrorDatabase(in.getOptionValue(ERROR_DATABASE));
       }
 
       if (in.hasOption(FASTLOAD_SOCKET_HOSTNAME)) {
