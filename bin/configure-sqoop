@@ -124,8 +124,12 @@ fi
 if [ "$HIVE_HOME" == "" ]; then
    if [ -f "/usr/bin/hive" ]; then
      HIVE_HOME=$(find_home "/usr/bin/hive")
+  else
+     HIVE_HOME=${MAPR_HOME}/hive/hive-*/
   fi
 fi
+
+[ -f $HIVE_HOME/conf/hive-env.sh ] && . $HIVE_HOME/conf/hive-env.sh
 
 if [ -z "${HCAT_HOME}" ]; then
   if [ -d "$HIVE_HOME/hive-hcatalog" ]; then
