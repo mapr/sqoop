@@ -693,6 +693,10 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
           .hasArg().withDescription("Key column to use to join results")
           .withLongOpt(MERGE_KEY_ARG)
           .create());
+      importOpts.addOption(OptionBuilder.withArgName("table-name")
+              .hasArg().withDescription("Intermediate staging table")
+              .withLongOpt(STAGING_TABLE_ARG)
+              .create());
 
       addValidationOpts(importOpts);
     }
@@ -999,6 +1003,10 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
       if (in.hasOption(ACCESS_LOCK)) {
         out.setAccessLock(true);
+      }
+
+      if (in.hasOption(STAGING_TABLE_ARG)) {
+        out.setStagingTableName(in.getOptionValue(STAGING_TABLE_ARG));
       }
 
       applyIncrementalOptions(in, out);
