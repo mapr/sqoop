@@ -214,6 +214,15 @@ case $COMMAND in
 
     cat ${BASEDIR}/conf/sqoop.properties | egrep -v -e '^org.apache.sqoop.submission.engine.mapreduce.configuration.directory' > ${BASEDIR}/conf/sqoop.properties.tmp
     cp -f ${BASEDIR}/conf/sqoop.properties.tmp ${BASEDIR}/conf/sqoop.properties
+    sed -i '/org.apache.sqoop.security.authentication.type=CUSTOM/d' ${BASEDIR}/conf/sqoop.properties
+    sed -i '/org.apache.sqoop.security.authentication.custom_handler=org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler/d' ${BASEDIR}/conf/sqoop.properties
+
+    isSecure=`cat ${BASEDIR}/conf/isSecure`
+
+    if [ $isSecure -eq 1 ]; then
+      echo "org.apache.sqoop.security.authentication.type=CUSTOM" >> ${BASEDIR}/conf/sqoop.properties
+      echo "org.apache.sqoop.security.authentication.custom_handler=org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler" >> ${BASEDIR}/conf/sqoop.properties
+    fi
 
     if [ "$hadoop_mode" = "yarn" ]; then
       YARN_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
