@@ -233,6 +233,8 @@ public abstract class BaseSqoopTool
           org.apache.sqoop.tool.BaseSqoopTool.TIME_FORMAT;
   public static final String TIMESTAMP_FORMAT =
           org.apache.sqoop.tool.BaseSqoopTool.TIMESTAMP_FORMAT;
+  public static final String IGNORE_ALIAS =
+          org.apache.sqoop.tool.BaseSqoopTool.IGNORE_ALIAS;
 
   public BaseSqoopTool() {
   }

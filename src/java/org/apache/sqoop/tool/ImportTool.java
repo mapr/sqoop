@@ -771,6 +771,10 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
             .withDescription("Import job is not blocked by concurrent accesses to the same table")
             .withLongOpt(ACCESS_LOCK)
             .create());
+    importOpts.addOption(OptionBuilder.withArgName("ignore-alias")
+            .withDescription("Ignore alias during import")
+            .withLongOpt(IGNORE_ALIAS)
+            .create());
     return importOpts;
   }
 
@@ -1007,6 +1011,10 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
       if (in.hasOption(STAGING_TABLE_ARG)) {
         out.setStagingTableName(in.getOptionValue(STAGING_TABLE_ARG));
+      }
+
+      if (in.hasOption(IGNORE_ALIAS)) {
+        out.setIgnoreAlias(true);
       }
 
       applyIncrementalOptions(in, out);

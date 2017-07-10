@@ -245,6 +245,8 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
   public static final String TIME_FORMAT = "time-format";
   public static final String TIMESTAMP_FORMAT = "timestamp-format";
 
+  //MAPR-28281
+  public static final String IGNORE_ALIAS = "ignore-alias";
 
 
   public BaseSqoopTool() {

@@ -84,7 +84,7 @@ public class EvalSqlTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
           // This yields a ResultSet.
           rs = stmt.getResultSet();
           pw = new PrintWriter(System.out, true);
-          new ResultSetPrinter().printResultSet(pw, rs);
+          new ResultSetPrinter().printResultSet(pw, rs, options.getIgnoreAlias());
           pw.close();
           pw = null;
         }
