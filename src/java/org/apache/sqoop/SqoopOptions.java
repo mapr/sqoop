@@ -1024,6 +1024,8 @@ public class SqoopOptions implements Cloneable {
 
     this.skipXviews = false;
     this.accessLock = false;
+    this.keepStagingTable = false;
+    this.stagingForce = false;
   }
 
   /**
