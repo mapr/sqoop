@@ -107,6 +107,7 @@ public class ImportAllTablesTool extends com.cloudera.sqoop.tool.ImportTool {
              * we set it to the configured number before each import.
              */
             options.setNumMappers(numMappers);
+            options.setClassName(null);
             importTable(options, tableName, hiveImport);
           }
         }
