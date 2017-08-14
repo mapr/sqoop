@@ -473,7 +473,9 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
   protected boolean importTable(SqoopOptions options, String tableName,
       HiveImport hiveImport) throws IOException, ImportException {
     String jarFile = null;
-
+    if (options.doHiveImport()) {
+      options.getConf().addDefaultResource("hive-site.xml");
+    }
     // Generate the ORM code for the tables.
     jarFile = codeGenerator.generateORM(options, tableName);
 
@@ -598,7 +600,6 @@ public class ImportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
     try {
       if (options.doHiveImport()) {
-        options.getConf().addDefaultResource("hive-site.xml");
         hiveImport = new HiveImport(options, manager, options.getConf(), false);
       }
 

@@ -298,7 +298,8 @@ public abstract class SqlManager
 
         // If we have an unsigned int we need to make extra room by
         // plopping it into a bigint
-        if (typeId == Types.INTEGER &&  !metadata.isSigned(i)){
+        if ((typeId == Types.INTEGER &&  !metadata.isSigned(i)) ||
+                (typeId == Types.NUMERIC && precision == 19 && scale == 0)){
             typeId = Types.BIGINT;
         }
 
