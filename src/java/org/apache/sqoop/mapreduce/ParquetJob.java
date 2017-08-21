@@ -89,10 +89,9 @@ public final class ParquetJob {
    * {@link org.apache.avro.generic.GenericRecord}.
    */
   public static void configureImportJob(JobConf conf, Schema schema,
-      String uri, WriteMode writeMode) throws IOException {
+        String uri, boolean reuseExistingDataset, boolean overwrite) throws IOException {
     Dataset dataset;
     Configuration hiveConf = getHiveConf(conf);
-
     // Add hive delegation token only if we don't already have one.
     if (uri.startsWith("dataset:hive") && isSecureMetastore(hiveConf)) {
       // Copy hive configs to job config
@@ -102,32 +101,27 @@ public final class ParquetJob {
         addHiveDelegationToken(conf);
       }
     }
-
-    if (Datasets.exists(uri)) {
-      if (WriteMode.DEFAULT.equals(writeMode)) {
-        throw new IOException("Destination exists! " + uri);
+    if (reuseExistingDataset || overwrite) {
+      try {
+        dataset = Datasets.load(uri);
+      } catch (DatasetNotFoundException ex) {
+        dataset = createDataset(schema, getCompressionType(conf), uri);
       }
-
-      dataset = Datasets.load(uri);
       Schema writtenWith = dataset.getDescriptor().getSchema();
       if (!SchemaValidationUtil.canRead(writtenWith, schema)) {
         throw new IOException(
-            String.format("Expected schema: %s%nActual schema: %s",
-                writtenWith, schema));
+                String.format("Expected schema: %s%nActual schema: %s",
+                        writtenWith, schema));
       }
     } else {
       dataset = createDataset(schema, getCompressionType(conf), uri);
     }
     conf.set(CONF_AVRO_SCHEMA, schema.toString());
 
-    DatasetKeyOutputFormat.ConfigBuilder builder =
-        DatasetKeyOutputFormat.configure(conf);
-    if (WriteMode.OVERWRITE.equals(writeMode)) {
-      builder.overwrite(dataset);
-    } else if (WriteMode.APPEND.equals(writeMode)) {
-      builder.appendTo(dataset);
+    if (overwrite) {
+      DatasetKeyOutputFormat.configure(conf).overwrite(dataset);
     } else {
-      builder.writeTo(dataset);
+      DatasetKeyOutputFormat.configure(conf).writeTo(dataset);
     }
   }
 

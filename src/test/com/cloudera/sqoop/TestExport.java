@@ -881,7 +881,6 @@ public class TestExport extends ExportJobTestCase {
    * @throws IOException
    * @throws SQLException
    */
-  @Test
   public void testLessColumnsInFileThanInTable() throws IOException, SQLException {
     final int TOTAL_RECORDS = 10;
 
@@ -927,7 +926,6 @@ public class TestExport extends ExportJobTestCase {
    * @throws IOException
    * @throws SQLException
    */
-  @Test
   public void testLessColumnsInFileThanInTableInputNullStringPassed() throws IOException, SQLException {
     final int TOTAL_RECORDS = 10;
 
@@ -1005,7 +1003,6 @@ public class TestExport extends ExportJobTestCase {
    * @throws IOException
    * @throws SQLException
    */
-  @Test
   public void testLessColumnsInFileThanInTableInputNullIntPassed() throws IOException, SQLException {
     final int TOTAL_RECORDS = 10;
 

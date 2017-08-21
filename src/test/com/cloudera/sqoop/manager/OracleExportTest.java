@@ -278,17 +278,14 @@ public class OracleExportTest extends TestExport {
     verifyExport(TOTAL_RECORDS);
   }
 
-  @Test
   public void testExportToTableWithNameEndingWithDollarSign() throws IOException, SQLException {
     testExportToTableWithName("DOLLAR$");
   }
 
-  @Test
   public void testExportToTableWithNameContainingDollarSign() throws IOException, SQLException {
     testExportToTableWithName("FOO$BAR");
   }
 
-  @Test
   public void testExportToTableWithNameContainingHashtag() throws IOException, SQLException {
     testExportToTableWithName("FOO#BAR");
   }
