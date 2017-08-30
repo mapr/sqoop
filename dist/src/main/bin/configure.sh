@@ -92,9 +92,6 @@ while [ $# -gt 0 ]; do
 done
 
 
-# Create sqoopversion file
-echo "$SQOOP_VERSION" > "$MAPR_HOME"/sqoop/sqoopversion
-
 # save secure state
 echo $secureCluster > ${SQOOP_CONF_DIR}/isSecure
 
