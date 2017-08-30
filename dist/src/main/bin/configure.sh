@@ -35,10 +35,10 @@ changeSqoopPermission() {
 
   if [ -f "$DAEMON_CONF" ]; then
     if [ ! -z "$MAPR_USER" ]; then
-      chown -R "$MAPR_USER" "$SQOOP_HOME"
+      chown -R "$MAPR_USER" "$MAPR_HOME/sqoop"
     fi
     if [ ! -z "$MAPR_GROUP" ]; then
-      chgrp -R "$MAPR_GROUP" "$SQOOP_HOME"
+      chgrp -R "$MAPR_GROUP" "$MAPR_HOME/sqoop"
     fi
   fi
 }
