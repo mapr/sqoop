@@ -139,21 +139,20 @@ BASEDIR=`cd ${BASEDIR}/..;pwd`
 MAPR_CONF_DIR=/opt/mapr/conf
 ENV_FILE=env.sh
 export SQOOP2_HOST=$(hostname -f)
+MapRHomeDir=/opt/mapr
+hadoopVersionFile="${MapRHomeDir}/conf/hadoop_version"
 
 # MapR change. Source env.sh if it exists
 if [[ -n $(find ${MAPR_CONF_DIR} -name "${ENV_FILE}" -print) ]]; then
     source ${MAPR_CONF_DIR}/env.sh
 fi
 SQOOP_IDENT_STRING=${SQOOP_IDENT_STRING:-$USER}
-SQOOP_PID_DIR=${SQOOP_PID_DIR:-/tmp}
-sqoop_pidfile="${SQOOP_PID_DIR}/sqoop-${SQOOP_IDENT_STRING}-jetty-server.pid"
+SQOOP_PID_DIR=${SQOOP_PID_DIR:-${MapRHomeDir}/pid}
+sqoop_pidfile="${SQOOP_PID_DIR}/sqoop.pid"
 JAVA_OPTS="$JAVA_OPTS -Dsqoop.config.dir=$SQOOP_CONF_DIR"
 JAVA_OPTS="$JAVA_OPTS ${MAPR_AUTH_CLIENT_OPTS}"
 
 echo "Sqoop home directory: ${BASEDIR}"
-
-MapRHomeDir=/opt/mapr
-hadoopVersionFile="${MapRHomeDir}/conf/hadoop_version"
 
 if [ -f ${MapRHomeDir}/conf/hadoop_version ]
 then

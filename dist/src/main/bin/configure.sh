@@ -45,9 +45,7 @@ setupWardenConfFile() {
   fi
 
   # Install warden file
-  if [ ! -e ${MAPR_CONF_WARDEN_DIR}/warden.sqoop2.conf ]; then
-    cp ${SQOOP_WARDEN_FILE} ${MAPR_CONF_WARDEN_DIR}
-  fi
+  cp ${SQOOP_WARDEN_FILE} ${MAPR_CONF_WARDEN_DIR}
 }
 
 createRestartFile(){
