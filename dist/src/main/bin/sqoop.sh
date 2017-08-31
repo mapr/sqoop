@@ -190,6 +190,14 @@ case $COMMAND in
       exit
     fi
 
+    if [ "$hadoop_mode" = "yarn" ]; then
+      YARN_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
+      echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${YARN_HOME}/etc/hadoop/" >> ${BASEDIR}/conf/sqoop.properties
+    elif [ "$hadoop_mode" = "classic" ]; then
+      CLASSIC_HOME=${MapRHomeDir}/hadoop/${HADOOP_ClASSIC_VERSION}
+      echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${CLASSIC_HOME}/conf/" >> ${BASEDIR}/conf/sqoop.properties
+    fi
+
     source ${BASEDIR}/bin/sqoop-sys.sh
 
     # Remove the "tool" keyword from the command line and pass the rest
