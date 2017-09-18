@@ -63,7 +63,7 @@ createRestartFile(){
 # typically called from core configure.sh
 #
 
-USAGE="usage: $0 [--secure|--unsecure|--help]"
+USAGE="usage: $0 [--secure|--customSecure|--unsecure|--help]"
 
 if [ ${#} -gt 1 ]; then
   echo "$USAGE"
@@ -73,6 +73,10 @@ fi
 while [ $# -gt 0 ]; do
   case "$1" in
     --secure)
+    secureCluster=1
+    shift
+    ;;
+    --customSecure)
     secureCluster=1
     shift
     ;;
@@ -95,6 +99,10 @@ done
 # save secure state
 echo $secureCluster > ${SQOOP_CONF_DIR}/isSecure
 
+# remove state file
+if [ -f "$SQOOP_HOME/conf/.not_configured_yet" ]; then
+    rm -f "$SQOOP_HOME/conf/.not_configured_yet"
+fi
 
 changeSqoopPermission
 createRestartFile
