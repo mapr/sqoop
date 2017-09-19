@@ -100,8 +100,8 @@ done
 echo $secureCluster > ${SQOOP_CONF_DIR}/isSecure
 
 # remove state file
-if [ -f "$SQOOP_HOME/conf/.not_configured_yet" ]; then
-    rm -f "$SQOOP_HOME/conf/.not_configured_yet"
+if [ -f "$SQOOP_HOME/server/conf/.not_configured_yet" ]; then
+    rm -f "$SQOOP_HOME/server/conf/.not_configured_yet"
 fi
 
 changeSqoopPermission
