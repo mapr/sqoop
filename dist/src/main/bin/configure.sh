@@ -63,45 +63,50 @@ createRestartFile(){
 # typically called from core configure.sh
 #
 
-USAGE="usage: $0 [--secure|--customSecure|--unsecure|--help]"
+USAGE="usage: $0 [--secure|--customSecure|--unsecure|-EC|-R|--help]"
 
 if [ ${#} -gt 1 ]; then
+  for i in "$@" ; do
+    case "$i" in
+      --secure)
+        secureCluster=1
+        shift
+        ;;
+      --customSecure|-cs)
+        secureCluster=1
+        shift
+        ;;
+      --unsecure)
+        secureCluster=0
+        shift
+        ;;
+      --help)
+        echo "$USAGE"
+        return 0 2>/dev/null || exit 0
+        ;;
+      -EC|--EC)
+        shift
+        ;;
+      -R|--R)
+        shift
+        ;;
+      --)
+        echo "$USAGE"
+        return 1 2>/dev/null || exit 1
+      ;;
+    esac
+  done
+else
   echo "$USAGE"
   return 1 2>/dev/null || exit 1
 fi
-
-while [ $# -gt 0 ]; do
-  case "$1" in
-    --secure)
-    secureCluster=1
-    shift
-    ;;
-    --customSecure)
-    secureCluster=1
-    shift
-    ;;
-    --unsecure)
-    secureCluster=0
-    shift
-    ;;
-    --help)
-    echo "$USAGE"
-    return 0 2>/dev/null || exit 0
-    ;;
-    *)
-      echo "$USAGE"
-      return 1 2>/dev/null || exit 1
-    ;;
-  esac
-done
-
 
 # save secure state
 echo $secureCluster > ${SQOOP_CONF_DIR}/isSecure
 
 # remove state file
-if [ -f "$SQOOP_HOME/server/conf/.not_configured_yet" ]; then
-    rm -f "$SQOOP_HOME/server/conf/.not_configured_yet"
+if [ -f "$SQOOP_HOME/conf/.not_configured_yet" ]; then
+    rm -f "$SQOOP_HOME/conf/.not_configured_yet"
 fi
 
 changeSqoopPermission
