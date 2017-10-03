@@ -370,7 +370,7 @@ public class SqoopOptions implements Cloneable {
   @StoredAsProperty("timestamp.format") private String timestampFormat;
 
   //MAPR-28281
-  @StoredAsProperty("ignore.alias") private Boolean ignoreAlias;
+  @StoredAsProperty("ignore.alias") private boolean ignoreAlias;
 
   // The currently active tool. (Not saved in properties)
   // Used to pass the SqoopTool instance in to mapreduce job configuration
