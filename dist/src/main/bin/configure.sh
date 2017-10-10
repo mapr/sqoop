@@ -53,8 +53,20 @@ createRestartFile(){
     mkdir -p ${MAPR_CONF_DIR}/restart
   fi
 
-  echo "maprcli node services -action restart -name sqoop2 -nodes $(hostname)" > "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
+  echo -e "#!/bin/bash\nmaprcli node services -action restart -name sqoop2 -nodes $(hostname)" > "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
+  chmod +x "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
   chown -R $MAPR_USER:$MAPR_GROUP "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
+}
+
+configureMaprSasl(){
+  echo "org.apache.sqoop.security.authentication.type=CUSTOM" >> ${SQOOP_CONF_FILE}
+  echo "org.apache.sqoop.security.authentication.custom_handler=org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler" >> ${SQOOP_CONF_FILE}
+}
+
+disableSecurity(){
+  sed -i '/org.apache.sqoop.security.authentication/s/^#*/#/g' ${SQOOP_CONF_FILE}
+  sed -i '/org.apache.sqoop.security.authentication.type=CUSTOM/d' ${SQOOP_CONF_FILE}
+  sed -i '/org.apache.sqoop.security.authentication.custom_handler=org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler/d' ${SQOOP_CONF_FILE}
 }
 
 #
@@ -70,14 +82,21 @@ if [ ${#} -gt 1 ]; then
     case "$i" in
       --secure)
         secureCluster=1
+        disableSecurity
+        configureMaprSasl
         shift
         ;;
       --customSecure|-cs)
         secureCluster=1
+        if [ -f "$SQOOP_HOME/conf/.not_configured_yet" ]; then
+          disableSecurity
+          configureMaprSasl
+        fi
         shift
         ;;
       --unsecure)
         secureCluster=0
+        disableSecurity
         shift
         ;;
       --help)
