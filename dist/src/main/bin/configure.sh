@@ -53,7 +53,7 @@ createRestartFile(){
     mkdir -p ${MAPR_CONF_DIR}/restart
   fi
 
-  echo -e "#!/bin/bash\nmaprcli node services -action restart -name sqoop2 -nodes $(hostname)" > "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
+  echo -e "#!/bin/bash\nsudo -u $MAPR_USER maprcli node services -action restart -name sqoop2 -nodes $(hostname)" > "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
   chmod +x "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
   chown -R $MAPR_USER:$MAPR_GROUP "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
 }
