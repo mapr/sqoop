@@ -46,6 +46,7 @@ setupWardenConfFile() {
 
   # Install warden file
   cp ${SQOOP_WARDEN_FILE} ${MAPR_CONF_WARDEN_DIR}
+  chown $MAPR_USER:$MAPR_GROUP ${MAPR_CONF_WARDEN_DIR}/warden.sqoop2.conf
 }
 
 createRestartFile(){
@@ -69,6 +70,18 @@ disableSecurity(){
   sed -i '/org.apache.sqoop.security.authentication.custom_handler=org.apache.hadoop.security.authentication.server.MultiMechsAuthenticationHandler/d' ${SQOOP_CONF_FILE}
 }
 
+configureDefaultSsl(){
+  sed -i '/org.apache.sqoop.security.tls/s/^#*//g' ${SQOOP_CONF_FILE}
+  sed -i -e '/org.apache.sqoop.security.tls.enabled=/s/=.*/=true/' ${SQOOP_CONF_FILE}
+  sed -i -e '/org.apache.sqoop.security.tls.protocol=/s/=.*/=TLSv1.2/' ${SQOOP_CONF_FILE}
+  sed -i -e '/org.apache.sqoop.security.tls.keystore=/s/=.*/=\/opt\/mapr\/conf\/ssl_keystore/' ${SQOOP_CONF_FILE}
+  sed -i -e '/org.apache.sqoop.security.tls.keystore_password=/s/=.*/=mapr123/' ${SQOOP_CONF_FILE}
+}
+
+disableSsl(){
+  sed -i '/org.apache.sqoop.security.tls/s/^#*/#/g' ${SQOOP_CONF_FILE}
+}
+
 #
 # main
 #
@@ -84,6 +97,7 @@ if [ ${#} -gt 1 ]; then
         secureCluster=1
         disableSecurity
         configureMaprSasl
+        configureDefaultSsl
         shift
         ;;
       --customSecure|-cs)
@@ -91,12 +105,14 @@ if [ ${#} -gt 1 ]; then
         if [ -f "$SQOOP_HOME/conf/.not_configured_yet" ]; then
           disableSecurity
           configureMaprSasl
+          configureDefaultSsl
         fi
         shift
         ;;
       --unsecure)
         secureCluster=0
         disableSecurity
+        disableSsl
         shift
         ;;
       --help)
