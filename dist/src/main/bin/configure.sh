@@ -34,6 +34,7 @@ changeSqoopPermission() {
   if [ ! -z "$MAPR_GROUP" ]; then
     chgrp -R "$MAPR_GROUP" "$MAPR_HOME/sqoop"
   fi
+  chmod 600 "$SQOOP_CONF_FILE"
 }
 
 #
