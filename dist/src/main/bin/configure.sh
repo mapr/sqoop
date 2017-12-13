@@ -56,7 +56,15 @@ createRestartFile(){
     mkdir -p ${MAPR_CONF_DIR}/restart
   fi
 
-  echo -e "#!/bin/bash\nsudo -u $MAPR_USER maprcli node services -action restart -name sqoop2 -nodes $(hostname)" > "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
+cat > "${MAPR_CONF_DIR}/restart/sqoop-${SQOOP_VERSION}.restart" <<'EOF'
+  #!/bin/bash
+  isSecured=$(head -1 ${MAPR_HOME}/conf/mapr-clusters.conf | grep -o 'secure=\w*' | cut -d= -f2)
+  if [ "${isSecured}" = "true" ] && [ -f "${MAPR_HOME}/conf/mapruserticket" ]; then
+    export MAPR_TICKETFILE_LOCATION="${MAPR_HOME}/conf/mapruserticket"
+    fi
+  maprcli node services -action restart -name sqoop2 -nodes $(hostname)
+EOF
+
   chmod +x "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
   chown -R $MAPR_USER:$MAPR_GROUP "${MAPR_CONF_DIR}/restart/sqoop-$SQOOP_VERSION.restart"
 }
