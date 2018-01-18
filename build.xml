@@ -133,8 +133,6 @@
       value="${findbugs.out.dir}/report.xml" />
   <property name="findbugs.output.html.file"
       value="${findbugs.out.dir}/report.html" />
-  <property name="findbugs.excludes"
-      location="${test.dir}/findbugsExcludeFile.xml" />
 
   <!-- maven -->
   <property name="mvn.build.dir" value="${build.dir}/m2" />
@@ -531,7 +529,7 @@ EOF
     <if>
       <equals arg1="${windows}" arg2="true" />
       <then>
-        <java classname="com.cloudera.sqoop.Sqoop"
+        <java classname="org.apache.sqoop.Sqoop"
             fork="true"
             failonerror="true"
             output="${build.dir}/tools-list">
@@ -551,7 +549,7 @@ EOF
         <if>
           <available file="${basedir}/tools-list"/>
           <else>
-            <java classname="com.cloudera.sqoop.Sqoop"
+            <java classname="org.apache.sqoop.Sqoop"
                   fork="true"
                   failonerror="true"
                   output="${basedir}/tools-list"
@@ -1199,7 +1197,6 @@ EOF
       doctitle="${Name} ${version} API"
       bottom="Copyright &amp;copy; ${year} The Apache Software Foundation">
       <packageset dir="${src.dir}">
-        <include name="com/cloudera/sqoop/lib/**" />
         <include name="org/apache/sqoop/lib/**" />
       </packageset>
       <classpath>
@@ -1236,7 +1233,7 @@ EOF
     <mkdir dir="${findbugs.out.dir}"/>
     <findbugs home="${findbugs.home}" output="xml:withMessages"
         outputFile="${findbugs.output.xml.file}" effort="max"
-        excludeFilter="${findbugs.excludes}" jvmargs="-Xms512m -Xmx512m">
+        jvmargs="-Xms512m -Xmx512m">
       <auxClasspath>
         <path refid="test.classpath"/>
       </auxClasspath>

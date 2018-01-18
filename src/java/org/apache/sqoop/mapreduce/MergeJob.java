@@ -44,8 +44,8 @@ import org.apache.sqoop.avro.AvroUtil;
 import org.apache.sqoop.mapreduce.ExportJobBase.FileType;
 import org.apache.sqoop.util.Jars;
 
-import com.cloudera.sqoop.SqoopOptions;
-import com.cloudera.sqoop.mapreduce.JobBase;
+import org.apache.sqoop.SqoopOptions;
+import org.apache.sqoop.mapreduce.JobBase;
 import org.apache.sqoop.util.FileSystemUtil;
 
 /**

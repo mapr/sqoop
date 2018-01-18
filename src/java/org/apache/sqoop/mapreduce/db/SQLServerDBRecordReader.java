@@ -29,11 +29,11 @@ import org.apache.sqoop.mapreduce.sqlserver.SqlServerRecordReader;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-import com.cloudera.sqoop.mapreduce.db.DBConfiguration;
-import com.cloudera.sqoop.mapreduce.db.DBInputFormat;
-import com.cloudera.sqoop.mapreduce.db.DataDrivenDBInputFormat;
+import org.apache.sqoop.mapreduce.db.DBConfiguration;
+import org.apache.sqoop.mapreduce.db.DBInputFormat;
+import org.apache.sqoop.mapreduce.db.DataDrivenDBInputFormat;
 
-import  org.apache.sqoop.lib.SqoopRecord;
+import org.apache.sqoop.lib.SqoopRecord;
 
 /**
  * A RecordReader that reads records from a SQL table.

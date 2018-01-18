@@ -33,7 +33,7 @@ import org.apache.hadoop.conf.Configuration;
  * local-file-based instance to hold jobs.
  */
 public class AutoHsqldbStorage
-    extends com.cloudera.sqoop.metastore.hsqldb.HsqldbJobStorage {
+    extends org.apache.sqoop.metastore.hsqldb.HsqldbJobStorage {
 
   public static final Log LOG = LogFactory.getLog(
       AutoHsqldbStorage.class.getName());

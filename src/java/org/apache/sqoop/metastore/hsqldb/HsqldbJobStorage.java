@@ -36,10 +36,10 @@ import org.apache.commons.logging.LogFactory;
 
 import org.apache.hadoop.conf.Configuration;
 
-import com.cloudera.sqoop.SqoopOptions;
-import com.cloudera.sqoop.metastore.JobData;
-import com.cloudera.sqoop.metastore.JobStorage;
-import com.cloudera.sqoop.tool.SqoopTool;
+import org.apache.sqoop.SqoopOptions;
+import org.apache.sqoop.metastore.JobData;
+import org.apache.sqoop.metastore.JobStorage;
+import org.apache.sqoop.tool.SqoopTool;
 
 /**
  * JobStorage implementation that uses an HSQLDB-backed database to

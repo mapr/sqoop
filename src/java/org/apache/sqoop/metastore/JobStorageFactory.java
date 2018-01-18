@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.sqoop.config.ConfigurationHelper;
-import com.cloudera.sqoop.metastore.JobStorage;
 
 /**
  * Factory that produces the correct JobStorage system to work with
@@ -42,8 +41,8 @@ public class JobStorageFactory {
 
   /** The default list of available JobStorage implementations. */
   private static final String DEFAULT_AVAILABLE_STORAGES =
-      "com.cloudera.sqoop.metastore.hsqldb.HsqldbJobStorage,"
-      + "com.cloudera.sqoop.metastore.hsqldb.AutoHsqldbStorage";
+      "org.apache.sqoop.metastore.hsqldb.HsqldbJobStorage,"
+      + "org.apache.sqoop.metastore.hsqldb.AutoHsqldbStorage";
 
   public JobStorageFactory(Configuration config) {
     this.conf = config;

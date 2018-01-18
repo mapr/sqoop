@@ -32,14 +32,14 @@
 <FindBugsFilter>
   <Match>
     <!-- SQL db can return null for a boolean column; so can we. -->
-    <Class name="com.cloudera.sqoop.lib.JdbcWritableBridge" />
+    <Class name="org.apache.sqoop.lib.JdbcWritableBridge" />
     <Method name="readBoolean" />
     <Bug pattern="NP_BOOLEAN_RETURN_NULL" />
   </Match>
   <Match>
     <!-- This mapper intentially triggers an NPE to cause an exception
          which the test case much catch. -->
-    <Class name="com.cloudera.sqoop.mapreduce.TestImportJob$NullDereferenceMapper" />
+    <Class name="org.apache.sqoop.mapreduce.TestImportJob$NullDereferenceMapper" />
     <Method name="map" />
     <Bug pattern="NP_ALWAYS_NULL" />
   </Match>
@@ -47,7 +47,7 @@
     <!-- createRootTable() allows a user-specified table name retrieved
          from properties. This since instance is allowed for now.
     -->
-    <Class name="com.cloudera.sqoop.metastore.hsqldb.HsqldbJobStorage" />
+    <Class name="org.apache.sqoop.metastore.hsqldb.HsqldbJobStorage" />
     <Method name="createRootTable" />
     <Bug pattern="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE" />
   </Match>
@@ -56,22 +56,22 @@
        not need to be rigidly upheld. -->
   <Match>
     <!-- Performance warnings are ignored in test code. -->
-    <Class name="~com\.cloudera\.sqoop\..*Test.*" />
+    <Class name="~org\.apache\.sqoop\..*Test.*" />
     <Bug category="PERFORMANCE" />
   </Match>
   <Match>
     <!-- More performance warnings to suppress in tests. -->
-    <Class name="~com\.cloudera\.sqoop\..*Test.*" />
+    <Class name="~org\.apache\.sqoop\..*Test.*" />
     <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION" />
   </Match>
   <Match>
     <!-- Security warnings are ignored in test code. -->
-    <Class name="~com\.cloudera\.sqoop\..*Test.*" />
+    <Class name="~org\.apache\.sqoop\..*Test.*" />
     <Bug category="SECURITY" />
   </Match>
   <Match>
     <!-- Ok to use methods to generate SQL statements in tests. -->
-    <Class name="~com\.cloudera\.sqoop\..*Test.*" />
+    <Class name="~org\.apache\.sqoop\..*Test.*" />
     <Bug pattern="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING" />
   </Match>
 

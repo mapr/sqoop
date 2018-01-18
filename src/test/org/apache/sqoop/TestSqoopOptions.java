@@ -29,7 +29,7 @@ public class TestSqoopOptions {
   @Test
   public void testParseColumnParsing() {
     new SqoopOptions() {
-  @Test
+      @Test
       public void testParseColumnMapping() {
         Properties result = new Properties();
         parseColumnMapping("test=INTEGER,test1=DECIMAL(1%2C1),test2=NUMERIC(1%2C%202)", result);

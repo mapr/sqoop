@@ -35,19 +35,19 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.ToolRunner;
-import com.cloudera.sqoop.SqoopOptions;
-import com.cloudera.sqoop.SqoopOptions.InvalidOptionsException;
-import com.cloudera.sqoop.cli.ToolOptions;
-import com.cloudera.sqoop.metastore.hsqldb.HsqldbJobStorage;
-import com.cloudera.sqoop.metastore.JobData;
-import com.cloudera.sqoop.metastore.JobStorage;
-import com.cloudera.sqoop.metastore.JobStorageFactory;
+import org.apache.sqoop.SqoopOptions;
+import org.apache.sqoop.SqoopOptions.InvalidOptionsException;
+import org.apache.sqoop.cli.ToolOptions;
+import org.apache.sqoop.metastore.hsqldb.HsqldbJobStorage;
+import org.apache.sqoop.metastore.JobData;
+import org.apache.sqoop.metastore.JobStorage;
+import org.apache.sqoop.metastore.JobStorageFactory;
 import org.apache.sqoop.util.LoggingUtils;
 
 /**
  * Tool that creates and executes saved jobs.
  */
-public class JobTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
+public class JobTool extends BaseSqoopTool {
 
   public static final Log LOG = LogFactory.getLog(
       JobTool.class.getName());
@@ -176,8 +176,7 @@ public class JobTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
     // Now that the tool is fully configured, materialize the job.
     //TODO(jarcec): Remove the cast when JobData will be moved to apache package
-    JobData jobData = new JobData(jobOptions,
-            (com.cloudera.sqoop.tool.SqoopTool)jobTool);
+    JobData jobData = new JobData(jobOptions, jobTool);
     this.storage.create(jobName, jobData);
     return 0; // Success.
   }
