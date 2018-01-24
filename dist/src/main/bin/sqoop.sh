@@ -221,7 +221,7 @@ case $COMMAND in
 
     cat ${BASEDIR}/conf/sqoop.properties | egrep -v -e '^org.apache.sqoop.submission.engine.mapreduce.configuration.directory' > ${BASEDIR}/conf/sqoop.properties.tmp
     cp -f ${BASEDIR}/conf/sqoop.properties.tmp ${BASEDIR}/conf/sqoop.properties
-
+    rm -rf ${BASEDIR}/conf/sqoop.properties.tmp
     if [ "$hadoop_mode" = "yarn" ]; then
       YARN_HOME=${MapRHomeDir}/hadoop/${HADOOP_YARN_VERSION}
       echo "org.apache.sqoop.submission.engine.mapreduce.configuration.directory=${YARN_HOME}/etc/hadoop/" >> ${BASEDIR}/conf/sqoop.properties

@@ -35,6 +35,7 @@ changeSqoopPermission() {
     chgrp -R "$MAPR_GROUP" "$MAPR_HOME/sqoop"
   fi
   chmod 600 "$SQOOP_CONF_FILE"
+  chmod 711 "$SQOOP_HOME/bin/configure.sh"
 }
 
 #
