@@ -389,10 +389,11 @@ public class HiveImport {
     List<String> newArgs = new LinkedList<String>();
     newArgs.addAll(Arrays.asList(args));
 
-    if (System.getProperty("mapreduce.job.credentials.binary") != null) {
+    //Don't need set hive.metastore.sasl.enabled, because on MapR cluster this property get from hive-site.xml
+    /*if (System.getProperty("mapreduce.job.credentials.binary") != null) {
       newArgs.add("--hiveconf");
       newArgs.add("hive.metastore.sasl.enabled=true");
-    }
+    }*/
 
     return newArgs.toArray(new String[newArgs.size()]);
   }
