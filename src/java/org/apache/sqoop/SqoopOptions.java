@@ -81,6 +81,19 @@ public class SqoopOptions implements Cloneable {
   public static final String DEF_HCAT_HOME_OLD = "/usr/lib/hcatalog";
 
   public static final boolean METASTORE_PASSWORD_DEFAULT = false;
+
+  /**
+   * How to handle null values when doing incremental import into HBase table:
+   * <ul>
+   * <li>Ignore: ignore update, retain previous value</li>
+   * <li>Delete: delete all previous values of column</li>
+   * </ul>
+   */
+  public enum HBaseNullIncrementalMode {
+    Ignore,
+    Delete,
+  }
+
   /**
    * Thrown when invalid cmdline options are given.
    */
@@ -284,6 +297,9 @@ public class SqoopOptions implements Cloneable {
   // What was the last-imported value of incrementalTestCol?
   @StoredAsProperty("incremental.last.value")
   private String incrementalLastValue;
+
+  @StoredAsProperty("hbase.null.incremental.mode")
+  private HBaseNullIncrementalMode hbaseNullIncrementalMode;
 
   // exclude these tables when importing all tables.
   @StoredAsProperty("import.all_tables.exclude")
@@ -1060,6 +1076,7 @@ public class SqoopOptions implements Cloneable {
     this.dbOutColumns = null;
 
     this.incrementalMode = IncrementalMode.None;
+    this.hbaseNullIncrementalMode = HBaseNullIncrementalMode.Ignore;
 
     this.updateMode = UpdateMode.UpdateOnly;
 
@@ -2279,6 +2296,20 @@ public class SqoopOptions implements Cloneable {
    */
   public String getIncrementalLastValue() {
     return this.incrementalLastValue;
+  }
+
+  /**
+   * Get HBase null incremental mode to use.
+   */
+  public HBaseNullIncrementalMode getHbaseNullIncrementalMode() {
+    return hbaseNullIncrementalMode;
+  }
+
+  /**
+   * Set HBase null incremental mode to use.
+   */
+  public void setHbaseNullIncrementalMode(HBaseNullIncrementalMode hbaseNullIncrementalMode) {
+    this.hbaseNullIncrementalMode = hbaseNullIncrementalMode;
   }
 
   /**

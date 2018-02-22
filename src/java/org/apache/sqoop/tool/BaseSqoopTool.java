@@ -198,6 +198,7 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
   public static final String HBASE_BULK_LOAD_ENABLED_ARG =
       "hbase-bulkload";
   public static final String HBASE_CREATE_TABLE_ARG = "hbase-create-table";
+  public static final String HBASE_NULL_INCREMENTAL_MODE_ARG = "hbase-null-incremental-mode";
 
   //Accumulo arguments.
   public static final String ACCUMULO_TABLE_ARG = "accumulo-table";
@@ -898,6 +899,11 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
         .withDescription("If specified, create missing HBase tables")
         .withLongOpt(HBASE_CREATE_TABLE_ARG)
         .create());
+    hbaseOpts.addOption(OptionBuilder.withArgName("nullmode")
+        .hasArg()
+        .withDescription("How to handle null values during incremental import into HBase.")
+        .withLongOpt(HBASE_NULL_INCREMENTAL_MODE_ARG)
+        .create());
 
     return hbaseOpts;
   }
@@ -1482,7 +1488,7 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
     }
   }
 
-  protected void applyHBaseOptions(CommandLine in, SqoopOptions out) {
+  protected void applyHBaseOptions(CommandLine in, SqoopOptions out) throws InvalidOptionsException {
     if (in.hasOption(HBASE_TABLE_ARG)) {
       out.setHBaseTable(in.getOptionValue(HBASE_TABLE_ARG));
     }
@@ -1499,6 +1505,19 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
 
     if (in.hasOption(HBASE_CREATE_TABLE_ARG)) {
       out.setCreateHBaseTable(true);
+    }
+
+    if (in.hasOption(HBASE_NULL_INCREMENTAL_MODE_ARG)) {
+      String nullMode = in.getOptionValue(HBASE_NULL_INCREMENTAL_MODE_ARG);
+      if ("ignore".equals(nullMode)) {
+        out.setHbaseNullIncrementalMode(SqoopOptions.HBaseNullIncrementalMode.Ignore);
+      } else if ("delete".equals(nullMode)) {
+        out.setHbaseNullIncrementalMode(SqoopOptions.HBaseNullIncrementalMode.Delete);
+      } else {
+        throw new InvalidOptionsException("Unknown HBase null incremental mode: "
+            + nullMode + ". Use 'ignore' or 'delete'."
+            + HELP_STR);
+      }
     }
   }
 
