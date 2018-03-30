@@ -398,6 +398,9 @@ public class SqoopOptions implements Cloneable {
   @StoredAsProperty("time.format") private String timeFormat;
   @StoredAsProperty("timestamp.format") private String timestampFormat;
 
+  //MAPR-28281
+  @StoredAsProperty("ignore.alias") private boolean ignoreAlias;
+
   // The currently active tool. (Not saved in properties)
   // Used to pass the SqoopTool instance in to mapreduce job configuration
   // (JobBase, etc).
@@ -1094,6 +1097,8 @@ public class SqoopOptions implements Cloneable {
     this.accessLock = false;
     this.keepStagingTable = false;
     this.stagingForce = false;
+    //MAPR-28281
+    this.ignoreAlias = false;
 
     // set default mainframe data set type to partitioned data set
     this.mainframeInputDatasetType = MainframeConfiguration.MAINFRAME_INPUT_DATASET_TYPE_PARTITIONED;
@@ -2829,6 +2834,10 @@ public class SqoopOptions implements Cloneable {
   public String getTimestampFormat() {return timestampFormat;}
 
   public void setTimestampFormat(String timestampFormat) {this.timestampFormat = timestampFormat;}
+
+  public Boolean getIgnoreAlias() {return ignoreAlias;}
+
+  public void setIgnoreAlias(Boolean ignoreAlias) {this.ignoreAlias = ignoreAlias;}
 
   public Map<String, String> getCustomToolOptions() {
     return customToolOptions;

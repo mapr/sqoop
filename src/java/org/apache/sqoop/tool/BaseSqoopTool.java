@@ -256,6 +256,9 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
   public static final String TIME_FORMAT = "time-format";
   public static final String TIMESTAMP_FORMAT = "timestamp-format";
 
+  //MAPR-28281
+  public static final String IGNORE_ALIAS = "ignore-alias";
+
 
   static final String HIVE_IMPORT_WITH_LASTMODIFIED_NOT_SUPPORTED = "--incremental lastmodified option for hive imports is not "
       + "supported. Please remove the parameter --incremental lastmodified.";

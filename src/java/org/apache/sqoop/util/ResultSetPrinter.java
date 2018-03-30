@@ -63,7 +63,7 @@ public class ResultSetPrinter {
    * Format the contents of the ResultSet into something that could be printed
    * neatly; the results are appended to the supplied StringBuilder.
    */
-  public final void printResultSet(PrintWriter pw, ResultSet results)
+  public final void printResultSet(PrintWriter pw, ResultSet results, boolean ignoreAlias)
       throws IOException {
     try {
       StringBuilder sbNames = new StringBuilder();
@@ -73,7 +73,10 @@ public class ResultSetPrinter {
       ResultSetMetaData metadata = results.getMetaData();
       sbNames.append(LEFT_BORDER);
       for (int i = 1; i < cols + 1; i++) {
-        String colName = metadata.getColumnLabel(i);
+        String colName = "";
+        if (!ignoreAlias) {
+          colName = metadata.getColumnLabel(i);
+        }
         colWidths[i - 1] = Math.min(metadata.getColumnDisplaySize(i),
             MAX_COL_WIDTH);
         if (colName == null || colName.equals("")) {

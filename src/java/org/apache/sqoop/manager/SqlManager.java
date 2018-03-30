@@ -168,7 +168,10 @@ public abstract class SqlManager
       ArrayList<String> columns = new ArrayList<String>();
       ResultSetMetaData metadata = results.getMetaData();
       for (int i = 1; i < cols + 1; i++) {
-        String colName = metadata.getColumnLabel(i);
+        String colName = "";
+        if (!options.getIgnoreAlias()) {
+          colName = metadata.getColumnLabel(i);
+        }
         if (colName == null || colName.equals("")) {
           colName = metadata.getColumnName(i);
           if (null == colName) {
@@ -318,7 +321,10 @@ public abstract class SqlManager
             typeId = Types.BIGINT;
         }
 
-        String colName = metadata.getColumnLabel(i);
+        String colName = "";
+        if (!options.getIgnoreAlias()) {
+          colName = metadata.getColumnLabel(i);
+        }
         if (colName == null || colName.equals("")) {
           colName = metadata.getColumnName(i);
         }
@@ -380,7 +386,10 @@ public abstract class SqlManager
       for (int i = 1; i < cols + 1; i++) {
         String colTypeName = metadata.getColumnTypeName(i);
 
-        String colName = metadata.getColumnLabel(i);
+        String colName = "";
+        if (!options.getIgnoreAlias()) {
+          colName = metadata.getColumnLabel(i);
+        }
         if (colName == null || colName.equals("")) {
           colName = metadata.getColumnName(i);
         }
@@ -826,7 +835,7 @@ public abstract class SqlManager
       }
 
       try {
-        new ResultSetPrinter().printResultSet(pw, results);
+        new ResultSetPrinter().printResultSet(pw, results, options.getIgnoreAlias());
       } catch (IOException ioe) {
         LOG.error("IOException writing results: " + ioe.toString());
         return;
