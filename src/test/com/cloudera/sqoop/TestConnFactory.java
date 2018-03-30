@@ -133,6 +133,10 @@ public class TestConnFactory {
       return null;
     }
 
+    public String[] getColumnNamesForTeradata(String tableName) {
+      return null;
+    }
+
     public String[] getColumnNamesForProcedure(String procedureName) {
       return null;
     }

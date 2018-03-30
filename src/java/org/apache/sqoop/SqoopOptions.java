@@ -378,6 +378,26 @@ public class SqoopOptions implements Cloneable {
   // the connection manager fully qualified class name
   @StoredAsProperty("connection.manager") private String connManagerClassName;
 
+  //teradata options
+  @StoredAsProperty("input.method") private String inputMethod;
+  @StoredAsProperty("output.method") private String outputMethod;
+  @StoredAsProperty("num.partitions.for.staging.table") private int numPartitionsForStagingTable;
+  @StoredAsProperty("keep.staging.table") private boolean keepStagingTable;
+  @StoredAsProperty("staging.database") private String stagingDatabase;
+  @StoredAsProperty("staging.force") private boolean stagingForce;
+  @StoredAsProperty("batch.size") private int batchSize;
+  @StoredAsProperty("access.lock") private boolean accessLock;
+  @StoredAsProperty("query.band") private String queryBand;
+  @StoredAsProperty("error.table") private String errorTable;
+  @StoredAsProperty("error.database") private String errorDatabase;
+  @StoredAsProperty("fastload.socket.hostname") private String fastloadSocketHostname;
+  @StoredAsProperty("fastload.socket.port") private int fastloadSocketPort;
+  @StoredAsProperty("fastload.socket.timeout") private long fastloadSocketTimeout;
+  @StoredAsProperty("skip.xviews") private boolean skipXviews;
+  @StoredAsProperty("date.format") private String dateFormat;
+  @StoredAsProperty("time.format") private String timeFormat;
+  @StoredAsProperty("timestamp.format") private String timestampFormat;
+
   // The currently active tool. (Not saved in properties)
   // Used to pass the SqoopTool instance in to mapreduce job configuration
   // (JobBase, etc).
@@ -1070,6 +1090,10 @@ public class SqoopOptions implements Cloneable {
     // Relaxed isolation will not enabled by default which is the behavior
     // of sqoop until now.
     this.relaxedIsolation = false;
+    this.skipXviews = false;
+    this.accessLock = false;
+    this.keepStagingTable = false;
+    this.stagingForce = false;
 
     // set default mainframe data set type to partitioned data set
     this.mainframeInputDatasetType = MainframeConfiguration.MAINFRAME_INPUT_DATASET_TYPE_PARTITIONED;
@@ -2729,6 +2753,82 @@ public class SqoopOptions implements Cloneable {
   public void setHCatalogPartitionValues(String hpvs) {
     this.hCatalogPartitionValues = hpvs;
   }
+
+  public void setInputMethod(String input) {this.inputMethod = input;}
+
+  public String getInputMethod() {return inputMethod;}
+
+  public void setOutputMethod(String output) {this.outputMethod = output;}
+
+  public String getOutputMethod() {return outputMethod;}
+
+  public int getNumPartitionsForStagingTable() { return numPartitionsForStagingTable;}
+
+  public void setNumPartitionsForStagingTable(int numPartitionsForStagingTable) {
+    this.numPartitionsForStagingTable = numPartitionsForStagingTable;
+  }
+
+  public Boolean getKeepStagingTable() {return keepStagingTable;}
+
+  public void setKeepStagingTable(Boolean keepStagingTable) {this.keepStagingTable = keepStagingTable;}
+
+  public String getStagingDatabase() {return stagingDatabase;}
+
+  public void setStagingDatabase(String stagingDatabase) {this.stagingDatabase = stagingDatabase;}
+
+  public Boolean getStagingForce() {return stagingForce;}
+
+  public void setStagingForce(Boolean stagingForce) {this.stagingForce = stagingForce;}
+
+  public int getBatchSize() {return batchSize;}
+
+  public void setBatchSize(int batchSize) {this.batchSize = batchSize;}
+
+  public Boolean getAccessLock() {return accessLock;}
+
+  public void setAccessLock(Boolean accessLock) {this.accessLock = accessLock;}
+
+  public String getQueryBand() {return queryBand;}
+
+  public void setQueryBand(String queryBand) {this.queryBand = queryBand;}
+
+  public String getErrorTable() {return errorTable;}
+
+  public void setErrorTable(String errorTable) {this.errorTable = errorTable;}
+
+  public String getFastloadSocketHostname() {return fastloadSocketHostname;}
+
+  public void setFastloadSocketHostname(String fastloadSocketHostname) {
+    this.fastloadSocketHostname = fastloadSocketHostname;
+  }
+
+  public int getFastloadSocketPort() {return fastloadSocketPort;}
+
+  public void setFastloadSocketPort(int fastloadSocketPort) {this.fastloadSocketPort = fastloadSocketPort;}
+
+  public long getFastloadSocketTimeout() {return fastloadSocketTimeout;}
+
+  public void setFastloadSocketTimeout(long fastloadSocketTimeout) {this.fastloadSocketTimeout = fastloadSocketTimeout;}
+
+  public Boolean getSkipXviews() {return skipXviews;}
+
+  public void setSkipXviews(Boolean skipXviews) {this.skipXviews = skipXviews;}
+
+  public String getErrorDatabase() {return errorDatabase;}
+
+  public void setErrorDatabase(String errorDatabase) {this.errorDatabase = errorDatabase;}
+
+  public String getDateFormat() {return dateFormat;}
+
+  public void setDateFormat(String dateFormat) {this.dateFormat = dateFormat;}
+
+  public String getTimeFormat() {return timeFormat;}
+
+  public void setTimeFormat(String timeFormat) {this.timeFormat = timeFormat;}
+
+  public String getTimestampFormat() {return timestampFormat;}
+
+  public void setTimestampFormat(String timestampFormat) {this.timestampFormat = timestampFormat;}
 
   public Map<String, String> getCustomToolOptions() {
     return customToolOptions;

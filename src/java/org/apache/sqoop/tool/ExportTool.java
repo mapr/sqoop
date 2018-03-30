@@ -178,6 +178,35 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
          .withLongOpt(CALL_ARG)
          .create());
 
+    exportOpts.addOption(OptionBuilder.withArgName("output-method")
+            .hasArg().withDescription("Output method for export to Teradata")
+            .withLongOpt(OUTPUT_METHOD)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("keep-staging-table")
+            .withDescription("Keep staging table after export to Teradata")
+            .withLongOpt(KEEP_STAGING_TABLE)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("error-table")
+            .hasArg().withDescription("Specify a prefix for created error tables")
+            .withLongOpt(ERROR_TABLE)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("error-database")
+            .hasArg().withDescription("Specify error database")
+            .withLongOpt(ERROR_DATABASE)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("fastload-socket-hostname")
+            .hasArg().withDescription("Hostname or IP address of the host on which installed Sqoop")
+            .withLongOpt(FASTLOAD_SOCKET_HOSTNAME)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("fastload-socket-port")
+            .hasArg().withDescription("Opened port on the host on which installed Sqoop")
+            .withLongOpt(FASTLOAD_SOCKET_PORT)
+            .create());
+    exportOpts.addOption(OptionBuilder.withArgName("fastload-socket-timeout")
+            .hasArg().withDescription("Timeout for fast export")
+            .withLongOpt(FASTLOAD_SOCKET_TIMEOUT)
+            .create());
+
     addValidationOpts(exportOpts);
 
     return exportOpts;
@@ -277,6 +306,34 @@ public class ExportTool extends com.cloudera.sqoop.tool.BaseSqoopTool {
 
       if (in.hasOption(CALL_ARG)) {
           out.setCall(in.getOptionValue(CALL_ARG));
+      }
+
+      if (in.hasOption(OUTPUT_METHOD)) {
+        out.setOutputMethod(in.getOptionValue(OUTPUT_METHOD));
+      }
+
+      if (in.hasOption(KEEP_STAGING_TABLE)) {
+        out.setKeepStagingTable(true);
+      }
+
+      if (in.hasOption(ERROR_TABLE)) {
+        out.setErrorTable(in.getOptionValue(ERROR_TABLE));
+      }
+
+      if (in.hasOption(ERROR_DATABASE)) {
+        out.setErrorDatabase(in.getOptionValue(ERROR_DATABASE));
+      }
+
+      if (in.hasOption(FASTLOAD_SOCKET_HOSTNAME)) {
+        out.setFastloadSocketHostname(in.getOptionValue(FASTLOAD_SOCKET_HOSTNAME));
+      }
+
+      if (in.hasOption(FASTLOAD_SOCKET_PORT)) {
+        out.setFastloadSocketPort(Integer.parseInt(in.getOptionValue(FASTLOAD_SOCKET_PORT)));
+      }
+
+      if (in.hasOption(FASTLOAD_SOCKET_TIMEOUT)) {
+        out.setFastloadSocketTimeout(Long.parseLong(in.getOptionValue(FASTLOAD_SOCKET_TIMEOUT)));
       }
 
       applyValidationOptions(in, out);

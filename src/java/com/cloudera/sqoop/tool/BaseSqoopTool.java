@@ -200,6 +200,42 @@ public abstract class BaseSqoopTool
           org.apache.sqoop.tool.BaseSqoopTool.OLD_DATASET_ARG;
   public static final String MERGE_KEY_ARG =
           org.apache.sqoop.tool.BaseSqoopTool.MERGE_KEY_ARG;
+  public static final String INPUT_METHOD =
+          org.apache.sqoop.tool.BaseSqoopTool.INPUT_METHOD;
+  public static final String OUTPUT_METHOD =
+          org.apache.sqoop.tool.BaseSqoopTool.OUTPUT_METHOD;
+  public static final String NUM_PARTITIONS_FOR_STAGING_TABLE =
+          org.apache.sqoop.tool.BaseSqoopTool.NUM_PARTITIONS_FOR_STAGING_TABLE;
+  public static final String KEEP_STAGING_TABLE =
+          org.apache.sqoop.tool.BaseSqoopTool.KEEP_STAGING_TABLE;
+  public static final String STAGING_DATABASE =
+          org.apache.sqoop.tool.BaseSqoopTool.STAGING_DATABASE;
+  public static final String STAGING_FORCE =
+          org.apache.sqoop.tool.BaseSqoopTool.STAGING_FORCE;
+  public static final String BATCH_SIZE =
+          org.apache.sqoop.tool.BaseSqoopTool.BATCH_SIZE;
+  public static final String ACCESS_LOCK =
+          org.apache.sqoop.tool.BaseSqoopTool.ACCESS_LOCK;
+  public static final String QUERY_BAND =
+          org.apache.sqoop.tool.BaseSqoopTool.QUERY_BAND;
+  public static final String ERROR_TABLE =
+          org.apache.sqoop.tool.BaseSqoopTool.ERROR_TABLE;
+  public static final String FASTLOAD_SOCKET_HOSTNAME =
+          org.apache.sqoop.tool.BaseSqoopTool.FASTLOAD_SOCKET_HOSTNAME;
+  public static final String FASTLOAD_SOCKET_PORT =
+          org.apache.sqoop.tool.BaseSqoopTool.FASTLOAD_SOCKET_PORT;
+  public static final String FASTLOAD_SOCKET_TIMEOUT =
+          org.apache.sqoop.tool.BaseSqoopTool.FASTLOAD_SOCKET_TIMEOUT;
+  public static final String SKIP_XVIEWS =
+          org.apache.sqoop.tool.BaseSqoopTool.SKIP_XVIEWS;
+  public static final String ERROR_DATABASE =
+          org.apache.sqoop.tool.BaseSqoopTool.ERROR_DATABASE;
+  public static final String DATE_FORMAT =
+          org.apache.sqoop.tool.BaseSqoopTool.DATE_FORMAT;
+  public static final String TIME_FORMAT =
+          org.apache.sqoop.tool.BaseSqoopTool.TIME_FORMAT;
+  public static final String TIMESTAMP_FORMAT =
+          org.apache.sqoop.tool.BaseSqoopTool.TIMESTAMP_FORMAT;
 
   public BaseSqoopTool() {
   }

@@ -236,6 +236,27 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
 
   public static final String AUTORESET_TO_ONE_MAPPER = "autoreset-to-one-mapper";
 
+  //Teradata options
+  public static final String INPUT_METHOD = "input-method";
+  public static final String OUTPUT_METHOD = "output-method";
+  public static final String NUM_PARTITIONS_FOR_STAGING_TABLE = "num-partitions-for-staging-table";
+  public static final String KEEP_STAGING_TABLE = "keep-staging-table";
+  public static final String STAGING_DATABASE = "staging-database";
+  public static final String STAGING_FORCE = "staging-force";
+  public static final String BATCH_SIZE = "batch-size";
+  public static final String ACCESS_LOCK = "access-lock";
+  public static final String QUERY_BAND = "query-band";
+  public static final String ERROR_TABLE = "error-table";
+  public static final String ERROR_DATABASE = "error-database";
+  public static final String FASTLOAD_SOCKET_HOSTNAME = "fastload-socket-hostname";
+  public static final String FASTLOAD_SOCKET_PORT = "fastload-socket-port";
+  public static final String FASTLOAD_SOCKET_TIMEOUT = "fastload-socket-timeout";
+  public static final String SKIP_XVIEWS = "skip-xviews";
+  public static final String DATE_FORMAT = "date-format";
+  public static final String TIME_FORMAT = "time-format";
+  public static final String TIMESTAMP_FORMAT = "timestamp-format";
+
+
   static final String HIVE_IMPORT_WITH_LASTMODIFIED_NOT_SUPPORTED = "--incremental lastmodified option for hive imports is not "
       + "supported. Please remove the parameter --incremental lastmodified.";
 
@@ -513,6 +534,40 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
         .withDescription("Use read-uncommitted isolation for imports")
         .withLongOpt(RELAXED_ISOLATION)
         .create());
+
+    //teradata options
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Override the default staging database name")
+            .withLongOpt(STAGING_DATABASE)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .withDescription("Force the connector to create the staging table")
+            .withLongOpt(STAGING_FORCE)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Specify the number of rows processed together in one batch")
+            .withLongOpt(BATCH_SIZE)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Used to set the value of session level query band to Teradata connection")
+            .withLongOpt(QUERY_BAND)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .withDescription("Connector uses to XViews to obtain metadata")
+            .withLongOpt(SKIP_XVIEWS)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Use custom format for columns of date type")
+            .withLongOpt(DATE_FORMAT)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Use custom format for columns of time type")
+            .withLongOpt(TIME_FORMAT)
+            .create());
+    commonOpts.addOption(OptionBuilder
+            .hasArg().withDescription("Use custom format for columns of timestamp type")
+            .withLongOpt(TIMESTAMP_FORMAT)
+            .create());
 
     commonOpts.addOption(OptionBuilder
         .withDescription("Disable the escaping mechanism of the Oracle/OraOop connection managers")
@@ -1082,6 +1137,38 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
     }
     if (in.hasOption(RELAXED_ISOLATION)) {
       out.setRelaxedIsolation(true);
+    }
+
+    if (in.hasOption(STAGING_DATABASE)) {
+      out.setStagingDatabase(in.getOptionValue(STAGING_DATABASE));
+    }
+
+    if (in.hasOption(STAGING_FORCE)) {
+      out.setStagingForce(true);
+    }
+
+    if (in.hasOption(BATCH_SIZE)) {
+      out.setBatchSize(Integer.parseInt(in.getOptionValue(BATCH_SIZE)));
+    }
+
+    if (in.hasOption(QUERY_BAND)) {
+      out.setQueryBand(in.getOptionValue(QUERY_BAND));
+    }
+
+    if (in.hasOption(SKIP_XVIEWS)) {
+      out.setSkipXviews(true);
+    }
+
+    if (in.hasOption(DATE_FORMAT)) {
+      out.setDateFormat(in.getOptionValue(DATE_FORMAT));
+    }
+
+    if (in.hasOption(TIME_FORMAT)) {
+      out.setTimeFormat(in.getOptionValue(TIME_FORMAT));
+    }
+
+    if (in.hasOption(TIMESTAMP_FORMAT)) {
+      out.setTimestampFormat(in.getOptionValue(TIMESTAMP_FORMAT));
     }
 
     if (in.hasOption(METADATA_TRANSACTION_ISOLATION_LEVEL)) {

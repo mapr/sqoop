@@ -137,6 +137,13 @@ public abstract class SqlManager
 
   @Override
   /** {@inheritDoc} */
+  public String[] getColumnNamesForTeradata(String tableName) {
+    String stmt = getColNamesQuery(tableName);
+    return getColumnNamesForRawQuery(stmt);
+  }
+
+  @Override
+  /** {@inheritDoc} */
   public String [] getColumnNamesForQuery(String query) {
     String rawQuery = query.replace(SUBSTITUTE_TOKEN, " (1 = 0) ");
     return getColumnNamesForRawQuery(rawQuery);

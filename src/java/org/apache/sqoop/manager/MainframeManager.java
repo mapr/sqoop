@@ -106,6 +106,14 @@ public class MainframeManager extends com.cloudera.sqoop.manager.ConnManager {
   }
 
   @Override
+  public String[] getColumnNamesForTeradata(String tableName) {
+    // default is one column for the whole record
+    String[] colNames = new String[1];
+    colNames[0] = DEFAULT_DATASET_COLUMN_NAME;
+    return colNames;
+  }
+
+  @Override
   public Map<String, Integer> getColumnTypes(String tableName) {
     Map<String, Integer> colTypes = new HashMap<String, Integer>();
     String[] colNames = getColumnNames(tableName);
