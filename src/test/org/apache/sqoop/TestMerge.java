@@ -48,6 +48,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.sqoop.util.ParquetReader;
 import org.junit.Before;
 import org.junit.Test;
 
