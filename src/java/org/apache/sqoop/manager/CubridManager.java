@@ -67,7 +67,7 @@ public class CubridManager extends
       throws IOException, ExportException {
     context.setConnManager(this);
     JdbcExportJob exportJob = new JdbcExportJob(context, null, null,
-        ExportBatchOutputFormat.class);
+        ExportBatchOutputFormat.class, getParquetJobConfigurator().createParquetExportJobConfigurator());
 
     exportJob.runExport();
   }
@@ -82,7 +82,7 @@ public class CubridManager extends
     context.setConnManager(this);
 
     JdbcUpsertExportJob exportJob = new JdbcUpsertExportJob(context,
-        CubridUpsertOutputFormat.class);
+        CubridUpsertOutputFormat.class, getParquetJobConfigurator().createParquetExportJobConfigurator());
     exportJob.runExport();
   }
 

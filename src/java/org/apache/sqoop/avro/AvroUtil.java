@@ -266,4 +266,8 @@ public final class AvroUtil {
     fileReader.close();
     return result;
   }
+
+  public static Schema parseAvroSchema(String schemaString) {
+    return new Schema.Parser().parse(schemaString);
+  }
 }

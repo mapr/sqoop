@@ -320,7 +320,7 @@ public class OraOopConnManager extends GenericJdbcManager {
       throw ex;
     }
     JdbcExportJob exportJob =
-        new JdbcExportJob(context, null, null, oraOopOutputFormatClass);
+        new JdbcExportJob(context, null, null, oraOopOutputFormatClass, getParquetJobConfigurator().createParquetExportJobConfigurator());
     exportJob.runExport();
   }
 
@@ -342,7 +342,7 @@ public class OraOopConnManager extends GenericJdbcManager {
     }
 
     JdbcUpdateExportJob exportJob =
-        new JdbcUpdateExportJob(context, null, null, oraOopOutputFormatClass);
+        new JdbcUpdateExportJob(context, null, null, oraOopOutputFormatClass, getParquetJobConfigurator().createParquetExportJobConfigurator());
     exportJob.runExport();
   }
 

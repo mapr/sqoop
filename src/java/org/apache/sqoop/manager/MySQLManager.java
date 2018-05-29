@@ -141,7 +141,7 @@ public class MySQLManager
     LOG.warn("documentation for additional limitations.");
 
     JdbcUpsertExportJob exportJob =
-      new JdbcUpsertExportJob(context, MySQLUpsertOutputFormat.class);
+      new JdbcUpsertExportJob(context, MySQLUpsertOutputFormat.class, getParquetJobConfigurator().createParquetExportJobConfigurator());
     exportJob.runExport();
   }
 
