@@ -807,7 +807,7 @@ public class SqoopOptions implements Cloneable {
             putProperty(
                 props,
                 propName,
-                SqoopJsonUtil.getJsonStringforMap((Map) f.get(this)));
+                f.get(this) == null ? "null" : SqoopJsonUtil.getJsonStringforMap((Map) f.get(this)));
           } else {
             throw new RuntimeException("Could not set property "
                 + propName + " for type: " + typ);
