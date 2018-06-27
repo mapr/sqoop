@@ -133,7 +133,7 @@ public class DataDrivenImportJob extends ImportJobBase {
     if (uri.contains("maprfs:/")) {
       return "dataset:" + uri.replace("maprfs:/", "hdfs:/");
     } else {
-      return "dataset" + uri;
+      return "dataset:" + uri;
     }
   }
 
