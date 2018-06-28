@@ -16,21 +16,50 @@
  * limitations under the License.
  */
 
-package org.apache.sqoop.mapreduce.parquet.kite;
+package org.apache.sqoop.testutil;
 
-import org.apache.avro.generic.GenericRecord;
-import org.apache.hadoop.io.NullWritable;
-import org.apache.sqoop.mapreduce.MergeParquetReducer;
+import java.util.Objects;
 
-import java.io.IOException;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-/**
- * An implementation of {@link MergeParquetReducer} which depends on the Kite Dataset API.
- */
-public class KiteMergeParquetReducer extends MergeParquetReducer<GenericRecord, NullWritable> {
+public class Argument {
+
+  private final String name;
+
+  private final String value;
+
+  public Argument(String name) {
+    this(name, "");
+  }
+
+  public Argument(String name, String value) {
+    Objects.requireNonNull(name);
+    this.name = name;
+    this.value = value;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public static Argument fromPair(String name, String value) {
+    return new Argument(name, value);
+  }
+
+  public static Argument from(String name) {
+    return new Argument(name);
+  }
 
   @Override
-  protected void write(Context context, GenericRecord record) throws IOException, InterruptedException {
-    context.write(record, null);
+  public String toString() {
+    if (isEmpty(value)) {
+      return name;
+    } else {
+      return String.format("%s=%s", name, value);
+    }
   }
 }

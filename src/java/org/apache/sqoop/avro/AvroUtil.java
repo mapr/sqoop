@@ -18,6 +18,7 @@
 package org.apache.sqoop.avro;
 
 import org.apache.avro.LogicalType;
+import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.FileReader;
@@ -34,9 +35,16 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.io.BytesWritable;
+import org.apache.sqoop.config.ConfigurationConstants;
+import org.apache.sqoop.config.ConfigurationHelper;
 import org.apache.sqoop.lib.BlobRef;
 import org.apache.sqoop.lib.ClobRef;
 import org.apache.sqoop.orm.ClassWriter;
+import parquet.avro.AvroSchemaConverter;
+import parquet.format.converter.ParquetMetadataConverter;
+import parquet.hadoop.ParquetFileReader;
+import parquet.hadoop.metadata.ParquetMetadata;
+import parquet.schema.MessageType;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -240,24 +248,7 @@ public final class AvroUtil {
    */
   public static Schema getAvroSchema(Path path, Configuration conf)
       throws IOException {
-    FileSystem fs = path.getFileSystem(conf);
-    Path fileToTest;
-    if (fs.isDirectory(path)) {
-      FileStatus[] fileStatuses = fs.listStatus(path, new PathFilter() {
-        @Override
-        public boolean accept(Path p) {
-          String name = p.getName();
-          return !name.startsWith("_") && !name.startsWith(".");
-        }
-      });
-      if (fileStatuses.length == 0) {
-        return null;
-      }
-      fileToTest = fileStatuses[0].getPath();
-    } else {
-      fileToTest = path;
-    }
-
+    Path fileToTest = getFileToTest(path, conf);
     SeekableInput input = new FsInput(fileToTest, conf);
     DatumReader<GenericRecord> reader = new GenericDatumReader<GenericRecord>();
     FileReader<GenericRecord> fileReader = DataFileReader.openReader(input, reader);
@@ -267,7 +258,37 @@ public final class AvroUtil {
     return result;
   }
 
+  private static Path getFileToTest(Path path, Configuration conf) throws IOException {
+    FileSystem fs = path.getFileSystem(conf);
+    if (!fs.isDirectory(path)) {
+      return path;
+    }
+    FileStatus[] fileStatuses = fs.listStatus(path, new PathFilter() {
+      @Override
+      public boolean accept(Path p) {
+        String name = p.getName();
+        return !name.startsWith("_") && !name.startsWith(".");
+      }
+    });
+    if (fileStatuses.length == 0) {
+      return null;
+    }
+    return fileStatuses[0].getPath();
+  }
+
   public static Schema parseAvroSchema(String schemaString) {
     return new Schema.Parser().parse(schemaString);
+  }
+
+  public static Schema getAvroSchemaFromParquetFile(Path path, Configuration conf) throws IOException {
+    Path fileToTest = getFileToTest(path, conf);
+    if (fileToTest == null) {
+      return null;
+    }
+    ParquetMetadata parquetMetadata = ParquetFileReader.readFooter(conf, fileToTest, ParquetMetadataConverter.NO_FILTER);
+
+    MessageType parquetSchema = parquetMetadata.getFileMetaData().getSchema();
+    AvroSchemaConverter avroSchemaConverter = new AvroSchemaConverter();
+    return avroSchemaConverter.convert(parquetSchema);
   }
 }

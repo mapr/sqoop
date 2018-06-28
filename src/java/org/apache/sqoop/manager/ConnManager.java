@@ -37,7 +37,9 @@ import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema.Type;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BytesWritable;
+import org.apache.sqoop.avro.AvroUtil;
 import org.apache.sqoop.mapreduce.hcat.SqoopHCatUtilities;
 
 import org.apache.sqoop.SqoopOptions;
@@ -45,8 +47,6 @@ import org.apache.sqoop.hive.HiveTypes;
 import org.apache.sqoop.lib.BlobRef;
 import org.apache.sqoop.lib.ClobRef;
 import org.apache.sqoop.mapreduce.parquet.ParquetJobConfiguratorFactory;
-import org.apache.sqoop.mapreduce.parquet.ParquetJobConfiguratorFactoryProvider;
-import org.apache.sqoop.manager.SqlManager;
 import org.apache.sqoop.util.ExportException;
 import org.apache.sqoop.util.ImportException;
 
@@ -871,7 +871,7 @@ public abstract class ConnManager {
   }
 
   public ParquetJobConfiguratorFactory getParquetJobConfigurator() {
-    return ParquetJobConfiguratorFactoryProvider.createParquetJobConfiguratorFactory(options.getConf());
+    return options.getParquetConfiguratorImplementation().createFactory();
   }
 }
 

@@ -27,6 +27,7 @@ import java.net.URLDecoder;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -36,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.sqoop.accumulo.AccumuloConstants;
 import org.apache.sqoop.mapreduce.mainframe.MainframeConfiguration;
+import org.apache.sqoop.mapreduce.parquet.ParquetJobConfiguratorImplementation;
 import org.apache.sqoop.tool.BaseSqoopTool;
 import org.apache.sqoop.util.CredentialsUtil;
 import org.apache.sqoop.util.LoggingUtils;
@@ -52,6 +54,7 @@ import org.apache.sqoop.util.RandomHash;
 import org.apache.sqoop.util.StoredAsProperty;
 
 import static org.apache.sqoop.Sqoop.SQOOP_RETHROW_PROPERTY;
+import static org.apache.sqoop.mapreduce.parquet.ParquetJobConfiguratorImplementation.KITE;
 import static org.apache.sqoop.orm.ClassWriter.toJavaIdentifier;
 
 /**
@@ -466,6 +469,9 @@ public class SqoopOptions implements Cloneable {
 
   @StoredAsProperty(ORACLE_ESCAPING_DISABLED)
   private boolean oracleEscapingDisabled;
+
+  @StoredAsProperty("parquet.configurator.implementation")
+  private ParquetJobConfiguratorImplementation parquetConfiguratorImplementation;
 
   public SqoopOptions() {
     initDefaults(null);
@@ -1160,6 +1166,8 @@ public class SqoopOptions implements Cloneable {
 
     // set escape column mapping to true
     this.escapeColumnMappingEnabled = true;
+
+    this.parquetConfiguratorImplementation = KITE;
   }
 
   /**
@@ -2972,6 +2980,13 @@ public class SqoopOptions implements Cloneable {
       return mapColumnJava;
     }
 
+  public ParquetJobConfiguratorImplementation getParquetConfiguratorImplementation() {
+    return parquetConfiguratorImplementation;
+  }
+
+  public void setParquetConfiguratorImplementation(ParquetJobConfiguratorImplementation parquetConfiguratorImplementation) {
+    this.parquetConfiguratorImplementation = parquetConfiguratorImplementation;
+  }
 
 }
 
