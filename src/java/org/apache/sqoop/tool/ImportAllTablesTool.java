@@ -108,7 +108,7 @@ public class ImportAllTablesTool extends ImportTool {
              */
             options.setNumMappers(numMappers);
             options.setClassName(null);
-            importTable(options, tableName, hiveImport);
+            importTable(options, hiveImport);
           }
         }
       }

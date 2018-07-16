@@ -41,6 +41,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -151,6 +153,9 @@ public abstract class BaseSqoopTestCase {
     return manager;
   }
 
+  protected void setManager(ConnManager manager) {
+    this.manager = manager;
+  }
 
   /**
    * @return a connection to the database under test.
@@ -166,7 +171,7 @@ public abstract class BaseSqoopTestCase {
 
   // instance variables populated during setUp, used during tests
   private HsqldbTestServer testServer;
-  private ConnManager manager;
+  protected ConnManager manager;
 
   private static boolean isLog4jConfigured = false;
 
@@ -298,7 +303,8 @@ public abstract class BaseSqoopTestCase {
    */
   protected void dropTableIfExists(String table) throws SQLException {
     Connection conn = getManager().getConnection();
-    PreparedStatement statement = conn.prepareStatement(dropTableIfExistsCommand(table),
+    String dropStatement = dropTableIfExistsCommand(table);
+    PreparedStatement statement = conn.prepareStatement(dropStatement,
         ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
     try {
       statement.executeUpdate();
@@ -312,13 +318,25 @@ public abstract class BaseSqoopTestCase {
     return "DROP TABLE " + manager.escapeTableName(table) + " IF EXISTS";
   }
 
+  protected void createTableWithColTypesAndNames(String[] colNames,
+                                                 String[] colTypes,
+                                                 String[] vals) {
+    createTableWithColTypesAndNames(getTableName(), colNames, colTypes, vals);
+  }
+
+  protected void createTableWithColTypesAndNames(String[] colNames, String[] colTypes, List<Object> record) {
+    createTableWithColTypesAndNames(getTableName(), colNames, colTypes, toStringArray(record));
+  }
+
   /**
    * Create a table with a set of columns with their names and add a row of values.
+   * @param newTableName The name of the new table
    * @param colNames Column names
    * @param colTypes the types of the columns to make
    * @param vals the SQL text for each value to insert
    */
-  protected void createTableWithColTypesAndNames(String[] colNames,
+  protected void createTableWithColTypesAndNames(String newTableName,
+                                                 String[] colNames,
                                                  String[] colTypes,
                                                  String[] vals) {
     assert colNames != null;
@@ -332,7 +350,7 @@ public abstract class BaseSqoopTestCase {
 
     try {
       try {
-        dropTableIfExists(getTableName());
+        dropTableIfExists(newTableName);
 
         conn = getManager().getConnection();
 
@@ -342,8 +360,7 @@ public abstract class BaseSqoopTestCase {
             columnDefStr += ", ";
           }
         }
-
-        createTableStr = "CREATE TABLE " + manager.escapeTableName(getTableName()) + "(" + columnDefStr + ")";
+        createTableStr = "CREATE TABLE " + manager.escapeTableName(newTableName) + "(" + columnDefStr + ")";
         LOG.info("Creating table: " + createTableStr);
         statement = conn.prepareStatement(
             createTableStr,
@@ -377,7 +394,7 @@ public abstract class BaseSqoopTestCase {
           }
         }
         try {
-          String insertValsStr = "INSERT INTO " + manager.escapeTableName(getTableName()) + "(" + columnListStr + ")"
+          String insertValsStr = "INSERT INTO " + manager.escapeTableName(newTableName) + "(" + columnListStr + ")"
               + " VALUES(" + valueListStr + ")";
           LOG.info("Inserting values: " + insertValsStr);
           statement = conn.prepareStatement(
@@ -433,17 +450,28 @@ public abstract class BaseSqoopTestCase {
     }
   }
 
+  protected void insertIntoTable(String[] columns, String[] colTypes, List<Object> record) {
+    insertIntoTable(columns, colTypes, toStringArray(record));
+  }
+
   protected void insertIntoTable(String[] columns, String[] colTypes, String[] vals) {
-    assert colNames != null;
-    assert colNames.length == vals.length;
+    assert colTypes != null;
+    assert colTypes.length == vals.length;
 
     Connection conn = null;
     PreparedStatement statement = null;
 
-    String[] colNames = new String[vals.length];
-    for( int i = 0; i < vals.length; i++) {
-      colNames[i] = BASE_COL_NAME + Integer.toString(i);
+    String[] colNames;
+    if (columns == null){
+      colNames = new String[vals.length];
+      for( int i = 0; i < vals.length; i++) {
+        colNames[i] = BASE_COL_NAME + Integer.toString(i);
+      }
     }
+    else {
+      colNames = columns;
+    }
+
     try {
         conn = getManager().getConnection();
         for (int count=0; vals != null && count < vals.length/colTypes.length;
@@ -660,5 +688,14 @@ public abstract class BaseSqoopTestCase {
     }
 
     return result;
+  }
+
+  public static long timeFromString(String timeStampString) {
+    try {
+      SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+      return format.parse(timeStampString).getTime();
+    } catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

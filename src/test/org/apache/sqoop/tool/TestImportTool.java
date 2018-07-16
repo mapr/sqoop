@@ -85,7 +85,7 @@ public class TestImportTool {
     when(actualSchema.toString()).thenReturn(actualSchemaString);
 
     AvroSchemaMismatchException expectedException = new AvroSchemaMismatchException(errorMessage, writtenWithSchema, actualSchema);
-    doThrow(expectedException).when(importTool).importTable(any(SqoopOptions.class), anyString(), any(HiveImport.class));
+    doThrow(expectedException).when(importTool).importTable(any(SqoopOptions.class), any(HiveImport.class));
 
     SqoopOptions sqoopOptions = mock(SqoopOptions.class);
     when(sqoopOptions.doHiveImport()).thenReturn(true);
