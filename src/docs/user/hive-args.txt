@@ -42,6 +42,7 @@ Argument                      Description
 +\--map-column-hive <map>+    Override default mapping from SQL type to\
                   Hive type for configured columns. If specify commas in\
                   this argument, use URL encoded keys and values, for example,\
-                  use DECIMAL(1%2C%201) instead of DECIMAL(1, 1).
+                  use DECIMAL(1%2C%201) instead of DECIMAL(1, 1). Note that in case of Parquet file format users have\
+                  to use +\--map-column-java+ instead of this option.
 --------------------------------------------------------------------------
 

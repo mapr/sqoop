@@ -51,46 +51,47 @@ include::validation-args.txt[]
 
 .Import control arguments:
 [grid="all"]
-`---------------------------------`--------------------------------------
-Argument                          Description
+`-------------------------------------------`----------------------------
+Argument                                    Description
 -------------------------------------------------------------------------
-+\--append+                       Append data to an existing dataset\
-                                  in HDFS
-+\--as-avrodatafile+              Imports data to Avro Data Files
-+\--as-sequencefile+              Imports data to SequenceFiles
-+\--as-textfile+                  Imports data as plain text (default)
-+\--as-parquetfile+               Imports data to Parquet Files
-+\--boundary-query <statement>+   Boundary query to use for creating splits
-+\--columns <col,col,col...>+     Columns to import from table
-+\--delete-target-dir+            Delete the import target directory\
-                                  if it exists
-+\--direct+                       Use direct connector if exists for the database
-+\--fetch-size <n>+               Number of entries to read from database\
-                                  at once.
-+\--inline-lob-limit <n>+         Set the maximum size for an inline LOB
-+-m,\--num-mappers <n>+           Use 'n' map tasks to import in parallel
-+-e,\--query <statement>+         Import the results of '+statement+'.
-+\--split-by <column-name>+       Column of the table used to split work\
-                                  units.  Cannot be used with\
-                                  +--autoreset-to-one-mapper+ option.
-+\--split-limit <n>+              Upper Limit for each split size.\
-                                  This only applies to Integer and Date columns.\
-                                  For date or timestamp fields it is calculated in seconds.
-+\--autoreset-to-one-mapper+      Import should use one mapper if a table\
-                                  has no primary key and no split-by column\
-                                  is provided.  Cannot be used with\
-                                  +--split-by <col>+ option.
-+\--table <table-name>+           Table to read
-+\--target-dir <dir>+             HDFS destination dir
-+\--temporary-rootdir <dir>+      HDFS directory for temporary files created during import (overrides default "_sqoop")
-+\--warehouse-dir <dir>+          HDFS parent for table destination
-+\--where <where clause>+         WHERE clause to use during import
-+-z,\--compress+                  Enable compression
-+\--compression-codec <c>+        Use Hadoop codec (default gzip)
-+--null-string <null-string>+     The string to be written for a null\
-                                  value for string columns
-+--null-non-string <null-string>+ The string to be written for a null\
-                                  value for non-string columns
++\--append+                                 Append data to an existing dataset\
+                                            in HDFS
++\--as-avrodatafile+                        Imports data to Avro Data Files
++\--as-sequencefile+                        Imports data to SequenceFiles
++\--as-textfile+                            Imports data as plain text (default)
++\--as-parquetfile+                         Imports data to Parquet Files
++\--parquet-configurator-implementation+    Sets the implementation used during Parquet import. Supported values: kite, hadoop.
++\--boundary-query <statement>+             Boundary query to use for creating splits
++\--columns <col,col,col...>+               Columns to import from table
++\--delete-target-dir+                      Delete the import target directory\
+                                            if it exists
++\--direct+                                 Use direct connector if exists for the database
++\--fetch-size <n>+                         Number of entries to read from database\
+                                            at once.
++\--inline-lob-limit <n>+                   Set the maximum size for an inline LOB
++-m,\--num-mappers <n>+                     Use 'n' map tasks to import in parallel
++-e,\--query <statement>+                   Import the results of '+statement+'.
++\--split-by <column-name>+                 Column of the table used to split work\
+                                            units.  Cannot be used with\
+                                            +--autoreset-to-one-mapper+ option.
++\--split-limit <n>+                        Upper Limit for each split size.\
+                                            This only applies to Integer and Date columns.\
+                                            For date or timestamp fields it is calculated in seconds.
++\--autoreset-to-one-mapper+                Import should use one mapper if a table\
+                                            has no primary key and no split-by column\
+                                            is provided.  Cannot be used with\
+                                            +--split-by <col>+ option.
++\--table <table-name>+                     Table to read
++\--target-dir <dir>+                       HDFS destination dir
++\--temporary-rootdir <dir>+                HDFS directory for temporary files created during import (overrides default "_sqoop")
++\--warehouse-dir <dir>+                    HDFS parent for table destination
++\--where <where clause>+                   WHERE clause to use during import
++-z,\--compress+                            Enable compression
++\--compression-codec <c>+                  Use Hadoop codec (default gzip)
++--null-string <null-string>+               The string to be written for a null\
+                                            value for string columns
++--null-non-string <null-string>+           The string to be written for a null\
+                                            value for non-string columns
 -------------------------------------------------------------------------
 
 The +\--null-string+ and +\--null-non-string+ arguments are optional.\
@@ -257,7 +258,7 @@ username is +someuser+, then the import tool will write to
 the import with the +\--warehouse-dir+ argument. For example:
 
 ----
-$ sqoop import --connnect <connect-str> --table foo --warehouse-dir /shared \
+$ sqoop import --connect <connect-str> --table foo --warehouse-dir /shared \
     ...
 ----
 
@@ -266,7 +267,7 @@ This command would write to a set of files in the +/shared/foo/+ directory.
 You can also explicitly choose the target directory, like so:
 
 ----
-$ sqoop import --connnect <connect-str> --table foo --target-dir /dest \
+$ sqoop import --connect <connect-str> --table foo --target-dir /dest \
     ...
 ----
 
@@ -402,8 +403,8 @@ saved jobs later in this document for more information.
 File Formats
 ^^^^^^^^^^^^
 
-You can import data in one of two file formats: delimited text or
-SequenceFiles.
+You can import data in one of these file formats: delimited text,
+SequenceFiles, Avro and Parquet.
 
 Delimited text is the default import format. You can also specify it
 explicitly by using the +\--as-textfile+ argument. This argument will write
