@@ -193,8 +193,6 @@ public class AppendUtils {
               .append(partFormat.format(dirNumber++));
 
             destPath = new Path(targetDir, destFilename.toString());
-            if (fs.exists(destPath))
-              continue;
 
             /*
              * There's still a race condition right here if an
@@ -203,7 +201,7 @@ public class AppendUtils {
              * migrated dirs, or by an intermediate rename.
              */
 
-          } while (!fs.rename(fileStatus.getPath(), destPath));
+          } while (fs.exists(destPath) || !fs.rename(fileStatus.getPath(), destPath));
 
           LOG.debug("Directory: " + sourceFilename + " renamed to: " + destPath.getName());
         }
