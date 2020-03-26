@@ -1279,7 +1279,14 @@ public abstract class BaseSqoopTool extends com.cloudera.sqoop.tool.SqoopTool {
     }
 
     if (in.hasOption(HIVE_TABLE_ARG)) {
-      out.setHiveTableName(in.getOptionValue(HIVE_TABLE_ARG));
+      String hiveTable = in.getOptionValue(HIVE_TABLE_ARG);
+      int indexOfDot = hiveTable.indexOf('.');
+      if (indexOfDot != -1) {
+        out.setHiveDatabaseName(hiveTable.substring(0, indexOfDot));
+        out.setHiveTableName(hiveTable.substring(indexOfDot + 1));
+      } else {
+        out.setHiveTableName(hiveTable);
+      }
     }
 
     if (in.hasOption(HIVE_DATABASE_ARG)) {
