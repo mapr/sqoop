@@ -662,17 +662,35 @@
 
   <target name="tar" depends="package" description="Create release tarball">
     <tar compression="gzip" longfile="gnu" destfile="${tar.file}">
-      <tarfileset dir="${build.dir}" mode="664">
+      <!-- Most of files: rw,r,r -->
+      <tarfileset dir="${build.dir}" filemode="644">
         <exclude name="${bin.artifact.name}/bin/*" />
         <exclude name="${bin.artifact.name}/testdata/hive/bin/*" />
         <exclude name="${bin.artifact.name}/**/*.sh" />
+
+        <exclude name="${bin.artifact.name}/conf/*" />
+        <exclude name="${bin.artifact.name}/testdata/hcatalog/conf/*" />
+
         <include name="${bin.artifact.name}/**" />
       </tarfileset>
-      <tarfileset dir="${build.dir}" mode="755">
+
+      <!-- Configs without .sh extension: rw,rw,r -->
+      <tarfileset dir="${build.dir}" filemode="664">
+        <include name="${bin.artifact.name}/**/conf/*" />
+        <exclude name="${bin.artifact.name}/**/*.sh"/>
+      </tarfileset>
+
+      <!-- Configs with .sh extension: rwx,rwx,rx -->
+      <tarfileset dir="${build.dir}" filemode="775">
+        <include name="${bin.artifact.name}/**/conf/*.sh" />
+      </tarfileset>
+
+      <!-- Binaries: rw,rx,rx -->
+      <tarfileset dir="${build.dir}" filemode="755">
         <include name="${bin.artifact.name}/bin/*" />
         <include name="${bin.artifact.name}/testdata/hive/bin/*" />
-        <include name="${bin.artifact.name}/testdata/hcatalog/conf/*" />
         <include name="${bin.artifact.name}/**/*.sh" />
+        <exclude name="${bin.artifact.name}/**/conf/*.sh" />
       </tarfileset>
     </tar>
   </target>
