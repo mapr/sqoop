@@ -371,13 +371,13 @@
   build_uname=`uname -a`
   #MapR Version Info
   cat &gt;mapr-build.properties &lt;&lt;EOF
-  mapr.buildurl=$build_url
-  mapr.builddate=$build_date
-  mapr.builduser=$build_user
-  mapr.builduname=$build_uname
-  mapr.buildhost=$build_hostname
-  mapr.buildversion=$build_revision
-  EOF
+mapr.buildurl=$build_url
+mapr.builddate=$build_date
+mapr.builduser=$build_user
+mapr.builduname=$build_uname
+mapr.buildhost=$build_hostname
+mapr.buildversion=$build_revision
+EOF
      </echo>
      <exec executable="sh" failonerror="true">
       <arg line="${build.dir}/mapr-version.sh"/>
@@ -579,26 +579,16 @@
       </fileset>
     </copy>
 
-    <!-- copy the test artifact -->
-    <copy todir="${dist.dir}" includeEmptyDirs="false" flatten="true">
-      <fileset dir="${build.dir}">
-        <include name="${test.jar}" />
-      </fileset>
-    </copy>
-
     <!-- copy in various components of the initial source layout
          so that the redistributable can bootstrap itself. -->
     <copy todir="${dist.dir}" includeEmptyDirs="false" flatten="false">
       <fileset dir="${basedir}" defaultexcludes="no">
-        <include name="**/*" />
-        <exclude name="build/**" />
-        <exclude name="lib/**" />
-        <exclude name=".git/**" />
-        <exclude name="tags" />
-        <exclude name=".project" />
-        <exclude name=".classpath" />
-        <exclude name="conf/managers.d/**" />
-        <exclude name="conf/tools.d/**" />
+        <include name="conf/**" />
+        <include name="bin/**" />
+        <include name="LICENSE.txt" />
+        <include name="CHANGELOG.txt" />
+        <include name="NOTICE.txt" />
+        <include name="mapr-build.properties" />
       </fileset>
     </copy>
 
@@ -641,7 +631,6 @@
     <!-- make sure the bin scripts are executable. -->
     <chmod perm="ugo+x" type="file" parallel="false">
       <fileset dir="${dist.dir}/bin" />
-      <fileset dir="${dist.dir}/testdata/hive/bin" />
     </chmod>
 
     <!-- make sure any scripts named *.sh are executable. -->
@@ -665,11 +654,8 @@
       <!-- Most of files: rw,r,r -->
       <tarfileset dir="${build.dir}" filemode="644">
         <exclude name="${bin.artifact.name}/bin/*" />
-        <exclude name="${bin.artifact.name}/testdata/hive/bin/*" />
         <exclude name="${bin.artifact.name}/**/*.sh" />
-
         <exclude name="${bin.artifact.name}/conf/*" />
-        <exclude name="${bin.artifact.name}/testdata/hcatalog/conf/*" />
 
         <include name="${bin.artifact.name}/**" />
       </tarfileset>
@@ -688,7 +674,6 @@
       <!-- Binaries: rw,rx,rx -->
       <tarfileset dir="${build.dir}" filemode="755">
         <include name="${bin.artifact.name}/bin/*" />
-        <include name="${bin.artifact.name}/testdata/hive/bin/*" />
         <include name="${bin.artifact.name}/**/*.sh" />
         <exclude name="${bin.artifact.name}/**/conf/*.sh" />
       </tarfileset>
