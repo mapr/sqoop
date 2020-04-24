@@ -655,27 +655,13 @@ EOF
       <tarfileset dir="${build.dir}" filemode="644">
         <exclude name="${bin.artifact.name}/bin/*" />
         <exclude name="${bin.artifact.name}/**/*.sh" />
-        <exclude name="${bin.artifact.name}/conf/*" />
-
         <include name="${bin.artifact.name}/**" />
       </tarfileset>
 
-      <!-- Configs without .sh extension: rw,rw,r -->
-      <tarfileset dir="${build.dir}" filemode="664">
-        <include name="${bin.artifact.name}/**/conf/*" />
-        <exclude name="${bin.artifact.name}/**/*.sh"/>
-      </tarfileset>
-
-      <!-- Configs with .sh extension: rwx,rwx,rx -->
-      <tarfileset dir="${build.dir}" filemode="775">
-        <include name="${bin.artifact.name}/**/conf/*.sh" />
-      </tarfileset>
-
-      <!-- Binaries: rw,rx,rx -->
+      <!-- Binaries: rwx,rx,rx -->
       <tarfileset dir="${build.dir}" filemode="755">
         <include name="${bin.artifact.name}/bin/*" />
         <include name="${bin.artifact.name}/**/*.sh" />
-        <exclude name="${bin.artifact.name}/**/conf/*.sh" />
       </tarfileset>
     </tar>
   </target>
