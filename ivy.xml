@@ -128,6 +128,18 @@ under the License.
       <exclude org="org.apache.hadoop" module="hadoop-auth"/>
       <exclude org="org.apache.hadoop" module="hadoop-common"/>
       <exclude org="org.apache.sqoop" module="sqoop"/>
+      <exclude org="com.teradata" module="tdgssconfig"/>
+      <exclude org="com.teradata" module="connector"/>
+      <exclude org="com.teradata" module="jdbc"/>
+    </dependency>
+    <dependency org="com.teradata" name="tdgssconfig" rev="${teradata.version}"
+                conf="common->default">
+    </dependency>
+    <dependency org="com.teradata" name="connector" rev="${teradata.version}"
+                conf="common->default">
+    </dependency>
+    <dependency org="com.teradata" name="jdbc" rev="${teradata.version}"
+                conf="common->default">
     </dependency>
 
     <!-- dependencies for static analysis -->
