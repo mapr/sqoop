@@ -249,6 +249,7 @@ under the License.
 
     <exclude org="org.apache.hadoop" module="avro"/>
     <exclude org="commons-daemon" module="commons-daemon" />
+    <exclude org="com.fasterxml.jackson.core" />
     <exclude type="pom" />
 
   </dependencies>
