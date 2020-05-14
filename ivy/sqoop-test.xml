@@ -40,7 +40,7 @@ under the License.
     <artifact conf="master"/>
   </publications>
   <dependencies>
-    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${hadoop-all.version}"
+    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${hadoop.version}"
      conf="common->default"/>
    <dependency org="org.apache.hadoop" name="hadoop-test"
      rev="${hadoop-test.version}" conf="common->default"/>

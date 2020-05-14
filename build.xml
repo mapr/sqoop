@@ -40,11 +40,13 @@
   <property environment="env"/>
   <property name="name" value="sqoop" />
   <property name="Name" value="Sqoop" />
-  <property name="version" value="1.4.7-mapr" />
+  <property name="mep" value="7.0" />
+  <property name="version" value="1.4.7-mapr-mep-${mep}" />
 
   <!-- Ivy library properties -->
   <property name="ivy.dir" location="${basedir}/ivy" />
   <loadproperties srcfile="${ivy.dir}/libraries.properties"/>
+  <loadproperties srcfile="${ivy.dir}/mep-${mep}-libraries.properties"/>
 
   <!-- The last version released. -->
   <property name="oldversion" value="1.4.6-mapr" />
@@ -180,7 +182,7 @@
   <property name="build.ivy.lib.dir" location="${build.ivy.dir}/lib" />
   <property name="build.ivy.report.dir" location="${build.ivy.dir}/report" />
   <property name="redist.ivy.lib.dir"
-      location="${build.ivy.lib.dir}/${name}/redist"/>
+      location="${build.ivy.lib.dir}/${name}/redist-mep-${mep}"/>
 
   <!--this is the naming policy for artifacts we want pulled down-->
   <property name="ivy.artifact.retrieve.pattern"
@@ -1372,12 +1374,12 @@ EOF
 
   <!-- retrieve ivy-managed artifacts for the redist configuration -->
   <target name="ivy-resolve-redist" depends="ivy-init">
-    <ivy:resolve settingsRef="${name}.ivy.settings" conf="redist" />
+    <ivy:resolve settingsRef="${name}.ivy.settings" conf="redist-mep-${mep}" />
   </target>
   <target name="ivy-retrieve-redist" depends="ivy-resolve-redist">
     <ivy:retrieve settingsRef="${name}.ivy.settings"
       pattern="${build.ivy.lib.dir}/${ivy.artifact.retrieve.pattern}" sync="true" />
-    <ivy:cachepath pathid="${name}.redist.classpath" conf="redist" />
+    <ivy:cachepath pathid="${name}.redist.classpath" conf="redist-mep-${mep}" />
   </target>
 
   <!-- retrieve ivy-managed artifacts from the Hadoop distribution -->
