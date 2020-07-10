@@ -553,7 +553,7 @@ EOF
             fork="true"
             failonerror="true"
             output="${build.dir}/tools-list"
-            error="/dev/null">
+            logError="true">
           <jvmarg value="-Dhadoop.security.log.file=./build/security-audit.log" />
           <arg value="help" />
           <classpath refid="compile.classpath"/>
