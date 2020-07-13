@@ -549,20 +549,25 @@ EOF
         </exec>
       </then>
       <else>
-        <java classname="com.cloudera.sqoop.Sqoop"
-            fork="true"
-            failonerror="true"
-            output="${build.dir}/tools-list"
-            logError="true">
-          <jvmarg value="-Dhadoop.security.log.file=./build/security-audit.log" />
-          <arg value="help" />
-          <classpath refid="compile.classpath"/>
-        </java>
+        <if>
+          <available file="${basedir}/tools-list"/>
+          <else>
+            <java classname="com.cloudera.sqoop.Sqoop"
+                  fork="true"
+                  failonerror="true"
+                  output="${basedir}/tools-list"
+                  logError="true">
+              <jvmarg value="-Dhadoop.security.log.file=./build/security-audit.log" />
+              <arg value="help" />
+              <classpath refid="compile.classpath"/>
+            </java>
+          </else>
+        </if>
         <exec executable="${script.src.dir}/create-tool-scripts.sh"
             dir="${basedir}" failonerror="true">
           <arg value="${build.bin.dir}" />
           <arg value="${script.src.dir}/tool-script.sh.template" />
-          <arg value="${build.dir}/tools-list" />
+          <arg value="${basedir}/tools-list" />
         </exec>
       </else>
     </if>
