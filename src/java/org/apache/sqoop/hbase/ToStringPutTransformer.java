@@ -172,8 +172,8 @@ public class ToStringPutTransformer extends PutTransformer {
   private List<Mutation> mutationRecordInHBase(Map<String, Object> record,
     String colFamily, String rowKey) {
     byte[] colFamilyBytes = Bytes.toBytes(colFamily);
-    List<Mutation> mutationList = new ArrayList<Mutation>();
-    Put put = null;
+    Put put = new Put(Bytes.toBytes(rowKey));
+    Delete delete = new Delete(Bytes.toBytes(rowKey));
     for (Map.Entry<String, Object> fieldEntry : record.entrySet()) {
       String colName = fieldEntry.getKey();
       boolean rowKeyCol = false;
@@ -190,11 +190,6 @@ public class ToStringPutTransformer extends PutTransformer {
         // check addRowKey flag before including rowKey field.
         Object val = fieldEntry.getValue();
         if (null != val) {
-          // Put row-key in HBase
-          if (put == null) {
-            put = new Put(Bytes.toBytes(rowKey));
-            mutationList.add(put);
-          }
           if ( val instanceof byte[]) {
             put.addColumn(colFamilyBytes, getFieldNameBytes(colName),
                 (byte[])val);
@@ -202,13 +197,10 @@ public class ToStringPutTransformer extends PutTransformer {
 	          put.addColumn(colFamilyBytes, getFieldNameBytes(colName),
 	              Bytes.toBytes(toHBaseString(val)));
           }
-          mutationList.add(put);
         } else {
           switch (nullMode) {
           case Delete:
-            Delete delete = new Delete(Bytes.toBytes(rowKey));
             delete.addColumns(colFamilyBytes, getFieldNameBytes(colName));
-            mutationList.add(delete);
             break;
           case Ignore:
             // Do nothing
@@ -216,6 +208,13 @@ public class ToStringPutTransformer extends PutTransformer {
           }
         }
       }
+    }
+    List<Mutation> mutationList = new ArrayList<Mutation>();
+    if (!put.isEmpty()) {
+      mutationList.add(put);
+    }
+    if (!delete.isEmpty()) {
+      mutationList.add(delete);
     }
     return Collections.unmodifiableList(mutationList);
   }
