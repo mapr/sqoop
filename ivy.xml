@@ -110,6 +110,8 @@ under the License.
       conf="common->default;redist->default"/>
     <dependency org="org.apache.commons" name="commons-lang3" rev="${commons-lang3.version}"
       conf="common->default;redist->default"/>
+    <dependency org="org.apache.commons" name="commons-compress" rev="${commons-compress.version}"
+      conf="common->default;redist->default"/>
     <dependency org="org.kitesdk" name="kite-data-mapreduce" rev="${kite-data.version}"
       conf="common->default;redist->default">
       <exclude org="org.apache.avro" module="avro" />
@@ -240,6 +242,7 @@ under the License.
       <exclude org="org.mortbay.jetty" module="jetty"/>
       <exclude org="org.jboss.netty" module="netty"/>
       <exclude org="org.apache.velocity" module="velocity"/>
+      <exclude org="org.apache.commons" module="commons-compress"/>
     </dependency>
     <dependency org="org.apache.avro" name="avro-mapred" rev="${avro.version}"
       m:classifier="hadoop2" conf="common->default;redist->default">
@@ -247,6 +250,7 @@ under the License.
       <exclude org="org.mortbay.jetty" module="jetty"/>
       <exclude org="org.jboss.netty" module="netty"/>
       <exclude org="org.apache.velocity" module="velocity"/>
+      <exclude org="org.apache.commons" module="commons-compress"/>
     </dependency>
 
     <exclude org="org.apache.hadoop" module="avro"/>
