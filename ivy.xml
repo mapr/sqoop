@@ -46,6 +46,7 @@ under the License.
     <conf name="redist" visibility="private" extends="master" />
     <conf name="redist-mep-6.3" visibility="private" extends="redist" />
     <conf name="redist-mep-7.0" visibility="private" extends="redist" />
+    <conf name="redist-mep-7.1" visibility="private" extends="redist" />
 
     <!-- This configuration is used to identify dependencies on our own
          shim targets required by clients of Sqoop who use maven. -->

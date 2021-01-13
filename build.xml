@@ -40,13 +40,12 @@
   <property environment="env"/>
   <property name="name" value="sqoop" />
   <property name="Name" value="Sqoop" />
-  <property name="mep" value="7.0" />
-  <property name="version" value="1.4.7-mapr-mep-${mep}" />
+  <property name="mep" value="7.1" />
+  <property name="version" value="1.4.7.0-mapr-mep-${mep}" />
 
   <!-- Ivy library properties -->
   <property name="ivy.dir" location="${basedir}/ivy" />
   <loadproperties srcfile="${ivy.dir}/libraries.properties"/>
-  <loadproperties srcfile="${ivy.dir}/mep-${mep}-libraries.properties"/>
 
   <!-- The last version released. -->
   <property name="oldversion" value="1.4.6-mapr" />
