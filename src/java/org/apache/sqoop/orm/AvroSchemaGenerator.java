@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.avro.LogicalType;
+import org.apache.avro.JsonProperties;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.Schema.Type;
@@ -37,7 +38,6 @@ import org.apache.sqoop.manager.ConnManager;
 import org.apache.sqoop.avro.AvroUtil;
 
 import org.apache.sqoop.config.ConfigurationConstants;
-import org.codehaus.jackson.node.NullNode;
 
 /**
  * Creates an Avro schema to represent a table from a database.
@@ -94,7 +94,7 @@ public class AvroSchemaGenerator {
       Integer precision = columnInfoList.get(1);
       Integer scale = columnInfoList.get(2);
       Schema avroSchema = toAvroSchema(sqlType, columnName, precision, scale);
-      Field field = new Field(cleanedCol, avroSchema, null,  NullNode.getInstance());
+      Field field = new Field(cleanedCol, avroSchema, null,  JsonProperties.NULL_VALUE);
       field.addProp("columnName", columnName);
       field.addProp("sqlType", Integer.toString(sqlType));
       fields.add(field);
