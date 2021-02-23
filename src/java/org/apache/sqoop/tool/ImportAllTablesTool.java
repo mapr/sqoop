@@ -108,9 +108,8 @@ public class ImportAllTablesTool extends ImportTool {
              */
             options.setNumMappers(numMappers);
             options.setClassName(null);
-            SqoopOptions clonedOptions = (SqoopOptions) options.clone();
-            clonedOptions.setTableName(tableName);
-            importTable(clonedOptions, hiveImport);
+            options.setTableName(tableName);
+            importTable(options, hiveImport);
           }
         }
       }
