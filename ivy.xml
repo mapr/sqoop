@@ -114,7 +114,7 @@ under the License.
       conf="common->default;redist->default"/>
     <dependency org="org.apache.commons" name="commons-compress" rev="${commons-compress.version}"
       conf="common->default;redist->default"/>
-    <dependency org="com.twitter" name="parquet-avro" rev="${parquet.version}" conf="common->default;redist->default"/>
+    <dependency org="org.apache.parquet" name="parquet-avro" rev="${parquet.version}" conf="common->default;redist->default"/>
 
     <dependency org="org.apache.sqoop.connector" name="sqoop-connector-tdch" rev="${sqoop-tdch.version}"
                 conf="common->default;redist->default">
