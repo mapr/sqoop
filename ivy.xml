@@ -230,21 +230,17 @@ under the License.
       <artifact name="zookeeper" type="jar" />
     </dependency>
 
+    <!-- Apache Avro -->
     <dependency org="org.apache.avro" name="avro" rev="${avro.version}"
       conf="runtime->default;redist->default">
-      <exclude org="org.slf4j" module="slf4j-api"/>
-      <exclude org="org.mortbay.jetty" module="jetty"/>
-      <exclude org="org.jboss.netty" module="netty"/>
-      <exclude org="org.apache.velocity" module="velocity"/>
-      <exclude org="org.apache.commons" module="commons-compress"/>
     </dependency>
     <dependency org="org.apache.avro" name="avro-mapred" rev="${avro.version}"
       conf="common->default;redist->default">
-      <exclude org="org.slf4j" module="slf4j-api"/>
-      <exclude org="org.mortbay.jetty" module="jetty"/>
-      <exclude org="org.jboss.netty" module="netty"/>
       <exclude org="org.apache.velocity" module="velocity"/>
       <exclude org="org.apache.commons" module="commons-compress"/>
+      <exclude org="org.eclipse.jetty" module="jetty-servlet"/>
+      <exclude org="org.eclipse.jetty" module="jetty-server"/>
+      <exclude org="org.eclipse.jetty" module="jetty-util"/>
     </dependency>
 
     <exclude org="org.apache.hadoop" module="avro"/>
