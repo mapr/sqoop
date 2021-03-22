@@ -44,6 +44,8 @@ under the License.
          Things we actually need to ship are marked with a 'redist'
          configuration. -->
     <conf name="redist" visibility="private" extends="master" />
+    <conf name="redist-mep-6.3" visibility="private" extends="redist" />
+    <conf name="redist-mep-7.0" visibility="private" extends="redist" />
     <conf name="redist-mep-7.1" visibility="private" extends="redist" />
 
     <!-- This configuration is used to identify dependencies on our own
@@ -126,7 +128,16 @@ under the License.
       <exclude org="com.teradata" module="connector"/>
       <exclude org="com.teradata" module="jdbc"/>
     </dependency>
-  
+    <dependency org="com.teradata" name="tdgssconfig" rev="${teradata.version}"
+                conf="common->default;redist-mep-6.3->default">
+    </dependency>
+    <dependency org="com.teradata" name="connector" rev="${teradata.version}"
+                conf="common->default;redist-mep-6.3->default">
+    </dependency>
+    <dependency org="com.teradata" name="jdbc" rev="${teradata.version}"
+                conf="common->default;redist-mep-6.3->default">
+    </dependency>
+
     <!-- dependencies for static analysis -->
     <dependency org="checkstyle" name="checkstyle" rev="${checkstyle.version}"
       conf="checkstyle->default" />
