@@ -41,7 +41,8 @@
   <property name="name" value="sqoop" />
   <property name="Name" value="Sqoop" />
   <property name="mep" value="7.1" />
-  <property name="version" value="1.4.7.0-mapr-710" />
+  <property name="version" value="1.4.7-mapr-710" />
+  <property name="version4Digits" value="1.4.7.0-mapr-710" />
 
   <!-- Ivy library properties -->
   <property name="ivy.dir" location="${basedir}/ivy" />
@@ -53,9 +54,9 @@
   <property name="prev.git.hash"
       value="81624ddf3c8ca5834ab015ebafc8b8649ac36ab7" />
 
-  <property name="artifact.name" value="${name}-${version}" />
+  <property name="artifact.name" value="${name}-${version4Digits}" />
   <property name="dest.jar" value="${artifact.name}.jar" />
-  <property name="test.jar" value="${name}-test-${version}.jar" />
+  <property name="test.jar" value="${name}-test-${version4Digits}.jar" />
   <property name="git.hash" value="" />
 
   <!-- programs used -->
