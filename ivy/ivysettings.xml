@@ -34,6 +34,12 @@ under the License.
   <property name="repo.maven.org"
       value="${env.MAPR_MAVEN_REPO}"
       override="false"/> 
+  <property name="repo.mapr.snapshot"
+      value="${env.MAPR_SNAPSHOTS_REPO}"
+      override="false"/> 
+  <property name="repo.mapr.central"
+      value="${env.MAPR_CENTRAL}"
+      override="false"/> 
   <property name="releases.mapr.com"
        value="http://repository.mapr.com/maven/"
        override="false"/>
@@ -62,6 +68,10 @@ under the License.
 
   <resolvers>
     <ibiblio name="mapr-releases" root="${releases.mapr.com}"
+     pattern="${maven2.pattern.ext}" m2compatible="true"/>
+    <ibiblio name="mapr-snapshot" root="${repo.mapr.snapshot}"
+     pattern="${maven2.pattern.ext}" m2compatible="true"/>
+    <ibiblio name="mapr-central" root="${repo.mapr.central}"
      pattern="${maven2.pattern.ext}" m2compatible="true"/>
     <ibiblio name="maven2" root="${repo.maven.org}"
         pattern="${maven2.pattern.ext}" m2compatible="true"/> 
@@ -92,6 +102,8 @@ under the License.
       <resolver ref="fs2"/>
       <resolver ref="fs"/>
       <resolver ref="mapr-releases"/>
+      <resolver ref="mapr-snapshot"/>
+      <resolver ref="mapr-central"/>
       <resolver ref="apache-release"/>
       <resolver ref="apache-snapshot"/>
       <resolver ref="datanucleus"/>
@@ -108,11 +120,15 @@ under the License.
       <resolver ref="datanucleus"/>
       <resolver ref="cloudera-staging"/>
       <resolver ref="maven2"/> 
+      <resolver ref="mapr-snapshot"/>
+      <resolver ref="mapr-central"/>
       <resolver ref="conjars"/>
     </chain>
 
     <chain name="external">
       <resolver ref="maven2"/>
+      <resolver ref="mapr-snapshot"/>
+      <resolver ref="mapr-central"/>
       <resolver ref="conjars"/>
     </chain>
 

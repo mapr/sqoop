@@ -392,7 +392,7 @@ EOF
         <exec executable="${script.src.dir}/write-version-info.cmd"
             dir="${basedir}" failonerror="true">
           <arg value="${build.dir}" />
-          <arg value="${version}" />
+          <arg value="${version4Digits}" />
           <arg value="${git.hash}" />
         </exec>
       </then>
@@ -400,7 +400,7 @@ EOF
         <exec executable="${script.src.dir}/write-version-info.sh"
             dir="${basedir}" failonerror="true">
           <arg value="${build.dir}" />
-          <arg value="${version}" />
+          <arg value="${version4Digits}" />
           <arg value="${git.hash}" />
         </exec>
       </else>
@@ -1014,7 +1014,7 @@ EOF
 
   <target name="checkversion">
     <if>
-      <contains string="${version}" substring="SNAPSHOT" />
+      <contains string="${version4Digits}" substring="SNAPSHOT" />
       <then>
         <fail message="Error: cannot release a snapshot. Set -Dversion" />
       </then>
@@ -1027,7 +1027,7 @@ EOF
 
     <!-- if we're building a snapshot release, don't make release notes. -->
     <if>
-      <contains string="${version}" substring="SNAPSHOT" />
+      <contains string="${version4Digits}" substring="SNAPSHOT" />
       <then>
         <property name="relnotes.exists" value="true" />
       </then>
@@ -1041,7 +1041,7 @@ EOF
       <arg value="${build.relnotes.dir}" />
       <arg value="${basedir}" />
       <arg value="${prev.git.hash}..HEAD" />
-      <arg value="${version}" />
+      <arg value="${version4Digits}" />
       <arg value="${oldversion}" />
     </exec>
   </target>
@@ -1084,7 +1084,7 @@ EOF
     <!-- Change the version in the pom file to reflect our claimed version. -->
     <replaceregexp>
       <regexp pattern="&lt;version&gt;.*&lt;/version&gt;" />
-      <substitution expression="&lt;version&gt;${version}&lt;/version&gt;" />
+      <substitution expression="&lt;version&gt;${version4Digits}&lt;/version&gt;" />
       <fileset dir="${mvn.build.dir}">
         <include name="*.pom" />
       </fileset>
@@ -1108,7 +1108,7 @@ EOF
       <fileset dir="${src.dir}" />
       <fileset dir="${build.src.dir}" />
     </jar>
-    <jar jarfile="${build.srcjar.dir}/${name}-test-${version}-sources.jar">
+    <jar jarfile="${build.srcjar.dir}/${name}-test-${version4Digits}-sources.jar">
       <manifest>
         <section name="org/apache/sqoop">
         <attribute name="MapR-BuildDate" value="${mapr.builddate}"/>
@@ -1135,7 +1135,7 @@ EOF
     <artifact:pom file="${sqooptest.pom}" id="sqoop-test" />
     <artifact:install file="${build.dir}/${test.jar}">
       <pom refid="sqoop-test" />
-      <attach file="${build.srcjar.dir}/${name}-test-${version}-sources.jar"
+      <attach file="${build.srcjar.dir}/${name}-test-${version4Digits}-sources.jar"
           classifier="sources" />
     </artifact:install>
   </target>
@@ -1154,7 +1154,7 @@ EOF
     <artifact:deploy file="${build.dir}/${test.jar}">
       <remoteRepository id="${mvn.repo.id}" url="${mvn.deploy.url}"/>
       <pom refid="sqoop-test" />
-      <attach file="${build.srcjar.dir}/${name}-test-${version}-sources.jar"
+      <attach file="${build.srcjar.dir}/${name}-test-${version4Digits}-sources.jar"
           classifier="sources" />
     </artifact:deploy>
 
@@ -1168,7 +1168,7 @@ EOF
       <arg value="-C" />
       <arg value="${basedir}/src/docs" />
       <arg value="BUILDROOT=${build.dir}" />
-      <arg value="VERSION=${version}" />
+      <arg value="VERSION=${version4Digits}" />
     </exec>
     <touch file="${build.docs.timestamp}" />
   </target>
