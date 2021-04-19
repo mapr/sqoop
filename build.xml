@@ -54,9 +54,9 @@
   <property name="prev.git.hash"
       value="81624ddf3c8ca5834ab015ebafc8b8649ac36ab7" />
 
-  <property name="artifact.name" value="${name}-${version4Digits}-SNAPSHOT" />
+  <property name="artifact.name" value="${name}-${version4Digits}" />
   <property name="dest.jar" value="${artifact.name}.jar" />
-  <property name="test.jar" value="${name}-test-${version4Digits}-SNAPSHOT.jar" />
+  <property name="test.jar" value="${name}-test-${version4Digits}.jar" />
   <property name="git.hash" value="" />
 
   <!-- programs used -->
@@ -117,8 +117,8 @@
   <property name="src.tar.file" location="${build.dir}/${src.artifact.name}.tar.gz" />
 
   <!-- compilation -->
-  <property name="targetJavaVersion" value="1.7" />
-  <property name="sourceJavaVersion" value="1.7" />
+  <property name="targetJavaVersion" value="11" />
+  <property name="sourceJavaVersion" value="11" />
   <property name="javac.deprecation" value="off"/>
   <property name="javac.debug" value="on"/>
   <property name="build.encoding" value="ISO-8859-1"/>
@@ -140,7 +140,7 @@
   <!--property name="mvn.repo" value="snapshots" /-->
   <property name="mvn.repo.id" value="mapr-snapshots" />
   <property name="mvn.deploy.url"
-      value="${env.MAPR_SNAPSHOTS_REPO}"/>
+      value="${env.MAPR_RELEASES_REPO}"/>
   <property name="sqoop.pom" value="${mvn.build.dir}/sqoop.pom" />
   <property name="sqooptest.pom" value="${mvn.build.dir}/sqoop-test.pom" />
 
@@ -1084,7 +1084,7 @@ EOF
     <!-- Change the version in the pom file to reflect our claimed version. -->
     <replaceregexp>
       <regexp pattern="&lt;version&gt;.*&lt;/version&gt;" />
-      <substitution expression="&lt;version&gt;${version4Digits}-SNAPSHOT&lt;/version&gt;" />
+      <substitution expression="&lt;version&gt;${version4Digits}&lt;/version&gt;" />
       <fileset dir="${mvn.build.dir}">
         <include name="*.pom" />
       </fileset>
@@ -1108,7 +1108,7 @@ EOF
       <fileset dir="${src.dir}" />
       <fileset dir="${build.src.dir}" />
     </jar>
-    <jar jarfile="${build.srcjar.dir}/${name}-test-${version4Digits}-SNAPSHOT-sources.jar">
+    <jar jarfile="${build.srcjar.dir}/${name}-test-${version4Digits}-sources.jar">
       <manifest>
         <section name="org/apache/sqoop">
         <attribute name="MapR-BuildDate" value="${mapr.builddate}"/>
@@ -1135,7 +1135,7 @@ EOF
     <artifact:pom file="${sqooptest.pom}" id="sqoop-test" />
     <artifact:install file="${build.dir}/${test.jar}">
       <pom refid="sqoop-test" />
-      <attach file="${build.srcjar.dir}/${name}-test-${version4Digits}-SNAPSHOT-sources.jar"
+      <attach file="${build.srcjar.dir}/${name}-test-${version4Digits}-sources.jar"
           classifier="sources" />
     </artifact:install>
   </target>
@@ -1154,7 +1154,7 @@ EOF
     <artifact:deploy file="${build.dir}/${test.jar}">
       <remoteRepository id="${mvn.repo.id}" url="${mvn.deploy.url}"/>
       <pom refid="sqoop-test" />
-      <attach file="${build.srcjar.dir}/${name}-test-${version4Digits}-SNAPSHOT-sources.jar"
+      <attach file="${build.srcjar.dir}/${name}-test-${version4Digits}-sources.jar"
           classifier="sources" />
     </artifact:deploy>
 
